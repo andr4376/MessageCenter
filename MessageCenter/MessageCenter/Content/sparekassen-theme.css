@@ -1,0 +1,69 @@
+﻿
+body {
+background-color:#ebebeb;
+}
+h2 {
+	font-family: 'Titillium Web', sans-serif;
+}
+
+/*The sandy navbar*/
+.sparkron-navbar {
+	background-color: #D8D0C0;
+	border-color: #D8D0C0;
+	
+}
+/*Sparekassen Kronjyllands logo style*/
+.logo-img {
+	max-height:75%;
+	max-width:75%;
+	margin-top:2.5%;
+}
+
+/*the style for the links in the navbar (fx, "Home")*/
+.nav-link {
+	color: #000;
+	font-family: 'Titillium Web', sans-serif;
+	text-decoration: none;
+	font-size: 24px;
+}
+
+/*The box containing the template messages*/
+.template-msg-listbox {
+	font-family: 'Titillium Web', sans-serif;
+	font-size: 24px;
+	width: 100%;
+	max-width: 300%;
+	margin-bottom: 20px;
+	border:none;
+	background-color:inherit;
+	overflow-y:hidden;
+}
+
+/*Remove blue outline when a select(asp:ListBox) item is clicked*/
+select:focus {
+outline:0;}
+
+.sparkron-jumbotron {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
+	color: inherit;
+	background-color: #EFE9E0;	
+}
+
+/*header for the listbox*/
+.box-header-sandy {
+	border-top-right-radius: 25px;
+	border-top-left-radius: 5px;
+	border: 3px solid #EDD0A8;
+	background-color: #EDD0A8;
+	margin-bottom: inherit;
+}
+/*the box containing the listbox*/
+.box-sandy {
+	border: 2px solid #EFE9E0;
+	background-color: #EFE9E0;
+	border-bottom-left-radius: 25px;
+	border-bottom-right-radius: 5px;
+	border: 3px solid #EDD0A8;
+}
