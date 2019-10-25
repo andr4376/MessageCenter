@@ -30,13 +30,18 @@ h2 {
 /*The box containing the template messages*/
 .template-msg-listbox {
 	font-family: 'Titillium Web', sans-serif;
-	font-size: 24px;
-	width: 100%;
-	max-width: 300%;
+	font-size: 12px;
+	max-width: 100%;
+	color:red;
 	margin-bottom: 20px;
-	border:none;
-	background-color:inherit;
-	overflow-y:hidden;
+	border: none;
+	background-color: inherit;
+	overflow-y: hidden;
+	word-break: break-all;
+}
+/**/
+option {
+	
 }
 
 /*Remove blue outline when a select(asp:ListBox) item is clicked*/

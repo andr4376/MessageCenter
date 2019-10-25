@@ -14,7 +14,7 @@
 
     <webopt:bundlereference runat="server" path="~/Content/css" />
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-    <link href="Content/sparekassen-theme.css" rel="stylesheet" />
+    <link href="~/Content/sparekassen-theme.css" rel="stylesheet" />
 
     <!-- Henter fonten "Titillium fra google -->
     <link href="https://fonts.googleapis.com/css?family=Titillium+Web&display=swap" rel="stylesheet">
@@ -57,7 +57,7 @@
                     </ul>
                 </div>
             </div>
-        </div>
+    
         <div class="container body-content">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
