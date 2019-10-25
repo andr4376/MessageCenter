@@ -10,32 +10,47 @@ namespace MessageCenter
 {
     public partial class _Default : Page
     {
-        public List<MessageTemplate> listOfMessages;
-
         protected void Page_Load(object sender, EventArgs e)
         {
-            PopulateMessagePrefabListBox();
+            if (!Page.IsPostBack)
+            {
+                if (PopulateMessagePrefabListBox() != 0)
+                {
+                    //ERROR
+                }
+               
+            }
+           
         }
 
-        private void PopulateMessagePrefabListBox()
+        private int PopulateMessagePrefabListBox()
         {
-            listOfMessages = DatabaseManager.Instance.GetMessageTemplates();
+            Dictionary<string, string> listOfMessages = DatabaseManager.Instance.GetMessageTemplatesDictionaryTitleId();
+
+            if (listOfMessages == null)
+            {
+                return 9; //error
+            }
 
             if (listBoxMessageTemplates.Items.Count > 0)
             {
                 listBoxMessageTemplates.Items.Clear();
-            }
-
-
-            foreach (MessageTemplate item in listOfMessages)
-            {
-                System.Diagnostics.Debug.WriteLine(item.title);
-                listBoxMessageTemplates.Items.Add(item.title);
-
 
             }
 
-            // listBoxMessageTemplates.DataSource = listOfMessages;
+
+            listBoxMessageTemplates.DataSource = listOfMessages;
+            listBoxMessageTemplates.DataTextField = "Value";
+            listBoxMessageTemplates.DataValueField = "Key";
+            listBoxMessageTemplates.DataBind();
+         
+
+            return 0;
+        }
+
+        protected void listBoxMessageTemplates_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine(listBoxMessageTemplates.SelectedValue);
         }
     }
 }

@@ -44,7 +44,7 @@
      </div>
         <div class ="row">
 
-    <div class="container col-md-2">
+    <div class="container col-md-4">
         <div>
             <h3>Søg</h3>
         <asp:TextBox runat="server" />
@@ -53,13 +53,22 @@
         </div>
     </div>
      <!-- ListBox som indeholder Besked Skabeloner -->
-    <div class="container col-md-8">        
-                    <h2 class="box-header-sandy">Besked skabeloner</h2>
-
-            <asp:ListBox ID="listBoxMessageTemplates" runat="server" 
-             CssClass ="template-msg-listbox box-sandy"></asp:ListBox>           
-             </div>
-        </div>
-    
+    <div class="container col-md-6 msg-box-sizer">      
         
+            <h2 class="box-header-sandy">
+                <asp:Image ID="logo" runat="server" ImageUrl="~/Images/envelope.png" CssClass="mini-logo"/>
+                Besked skabeloner</h2>               
+
+            <asp:ListBox 
+             ID="listBoxMessageTemplates" runat="server" 
+             CssClass ="template-msg-listbox box-sandy"            
+            ></asp:ListBox>           
+             
+        </div>
+        </div>   
+
+    <div class="navbar">
+    <p>123</p>
+    <p>456</p>
+   </div>
 </asp:Content>

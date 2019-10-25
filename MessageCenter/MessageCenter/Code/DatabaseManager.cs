@@ -38,7 +38,21 @@ namespace MessageCenter.Code
         {
             System.Diagnostics.Debug.WriteLine("Initializing DatabaseManager");
 
-            messages = new List<MessageTemplate>() { new MessageTemplate("en"), new MessageTemplate("dhnk,jfsjksknabdkjsahdkjashdjksahkjdhkjsahdjksahdkjashdasddhjkfsddsf"), new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIRE"), };
+            messages = new List<MessageTemplate>() { new MessageTemplate("en"),
+                new MessageTemplate("dhnk,jfsjksknabdkjsahdkjashdjksahkjdhkjsahdjksahdkjashdasddhjkfsddsf"),
+                new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIRE"),
+                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIRE"),
+                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("sd"),
+                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIRE"),
+                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FsadasdIRE"),
+                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIRE"),
+                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIasRE"),
+                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIRE"),
+                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("asdasdasssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"),
+                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIRE"),
+                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIRE"),
+                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("asdsadasdasdasdasdas"),
+             new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FdasdasdasdsadasdsadsaIRE")};
 
             return 0;
         }
@@ -48,6 +62,23 @@ namespace MessageCenter.Code
             return messages;
         }
 
-        
+        public Dictionary<string,string> GetMessageTemplatesDictionaryTitleId()
+        {
+            if (messages.Count==0)
+            {
+                return null;
+            }
+
+            Dictionary<string, string> messagesDictionary = new Dictionary<string, string>();
+
+            foreach (MessageTemplate message in messages)
+            {
+                messagesDictionary.Add(message.id.ToString(), message.title);
+
+            }
+            return messagesDictionary;
+        }
+
+
     }
 }

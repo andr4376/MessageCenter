@@ -23,30 +23,41 @@ h2 {
 .nav-link {
 	color: #000;
 	font-family: 'Titillium Web', sans-serif;
-	text-decoration: none;
+	
 	font-size: 24px;
+	
+}
+
+/*hover color for navlinks are red and white*/
+.nav > li > a:hover {
+	background-color: #D11A24;
+	color: white;
 }
 
 /*The box containing the template messages*/
 .template-msg-listbox {
 	font-family: 'Titillium Web', sans-serif;
-	font-size: 12px;
+	font-size: 16px;
+	width: 100%;
 	max-width: 100%;
-	color:red;
 	margin-bottom: 20px;
-	border: none;
-	background-color: inherit;
-	overflow-y: hidden;
-	word-break: break-all;
-}
-/**/
-option {
+	border:none;
+	background-color:inherit;
+	overflow-y:scroll;
+	word-break:break-all;
+
 	
 }
-
-/*Remove blue outline when a select(asp:ListBox) item is clicked*/
-select:focus {
-outline:0;}
+	.template-msg-listbox > option:hover {
+		color: white;
+		background-color: #D11A24;
+	
+	}
+	
+	/*Remove blue outline when a select(asp:ListBox) item is clicked*/
+	select:focus {
+		outline: 0;
+	}
 
 .sparkron-jumbotron {
 	padding-top: 5px;
@@ -56,6 +67,7 @@ outline:0;}
 	background-color: #EFE9E0;	
 }
 
+
 /*header for the listbox*/
 .box-header-sandy {
 	border-top-right-radius: 25px;
@@ -63,12 +75,23 @@ outline:0;}
 	border: 3px solid #EDD0A8;
 	background-color: #EDD0A8;
 	margin-bottom: inherit;
+	box-shadow: 10px 10px 11px 0px rgba(0,0,0,0.22);
 }
 /*the box containing the listbox*/
 .box-sandy {
 	border: 2px solid #EFE9E0;
-	background-color: #EFE9E0;
+	background-color: white;
 	border-bottom-left-radius: 25px;
 	border-bottom-right-radius: 5px;
 	border: 3px solid #EDD0A8;
+	height: 500px !important;
+	box-shadow: 10px 10px 11px 0px rgba(0,0,0,0.22);
 }
+
+.mini-logo {
+	max-height: 5%;
+	max-width: 5%;
+	margin-left:2.5%
+}
+
+
