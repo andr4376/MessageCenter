@@ -14,4 +14,11 @@
         <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
         <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
     </address>
+
+       <!-- Input til søgning -->
+        <div>
+             <h3>CPR</h3>
+            <asp:TextBox ID="cprInput" runat="server" />
+            <asp:RequiredFieldValidator runat ="server" ID="rfvCprInput" ControlToValidate="cprInput" ErrorMessage="Skal udfyldes*"></asp:RequiredFieldValidator>
+        </div>
 </asp:Content>

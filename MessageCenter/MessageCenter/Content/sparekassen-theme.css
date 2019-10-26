@@ -1,7 +1,8 @@
 ﻿
 body {
-background-color:#ebebeb;
+	background-color: #ebebeb;
 }
+
 h2 {
 	font-family: 'Titillium Web', sans-serif;
 }
@@ -10,22 +11,19 @@ h2 {
 .sparkron-navbar {
 	background-color: #D8D0C0;
 	border-color: #D8D0C0;
-	
 }
 /*Sparekassen Kronjyllands logo style*/
 .logo-img {
-	max-height:75%;
-	max-width:75%;
-	margin-top:2.5%;
+	max-height: 75%;
+	max-width: 75%;
+	margin-top: 2.5%;
 }
 
 /*the style for the links in the navbar (fx, "Home")*/
 .nav-link {
 	color: #000;
 	font-family: 'Titillium Web', sans-serif;
-	
 	font-size: 24px;
-	
 }
 
 /*hover color for navlinks are red and white*/
@@ -40,31 +38,29 @@ h2 {
 	font-size: 16px;
 	width: 100%;
 	max-width: 100%;
-	margin-bottom: 20px;
-	border:none;
-	background-color:inherit;
-	overflow-y:scroll;
-	word-break:break-all;
-
-	
+	margin-bottom: 10px;
+	border: none;
+	background-color: inherit;
+	overflow-y: scroll;
+	word-break: break-all;
 }
+
 	.template-msg-listbox > option:hover {
 		color: white;
-		background-color: #D11A24;
-	
+		background-color: #313131;
 	}
-	
-	/*Remove blue outline when a select(asp:ListBox) item is clicked*/
-	select:focus {
-		outline: 0;
-	}
+
+/*Remove blue outline when a select(asp:ListBox) item is clicked*/
+select:focus {
+	outline: 0;
+}
 
 .sparkron-jumbotron {
 	padding-top: 5px;
 	padding-bottom: 5px;
 	margin-bottom: 5px;
 	color: inherit;
-	background-color: #EFE9E0;	
+	background-color: #EFE9E0;
 }
 
 
@@ -72,26 +68,58 @@ h2 {
 .box-header-sandy {
 	border-top-right-radius: 25px;
 	border-top-left-radius: 5px;
-	border: 3px solid #EDD0A8;
-	background-color: #EDD0A8;
+	border: 3px solid #313131;
+	background-color: #313131;
 	margin-bottom: inherit;
-	box-shadow: 10px 10px 11px 0px rgba(0,0,0,0.22);
+	box-shadow: 10px 10px 8px 0px rgba(0,0,0,0.22);
+	color: white;
 }
 /*the box containing the listbox*/
 .box-sandy {
-	border: 2px solid #EFE9E0;
+	border: 2px solid #313131;
 	background-color: white;
 	border-bottom-left-radius: 25px;
 	border-bottom-right-radius: 5px;
-	border: 3px solid #EDD0A8;
+	border: 3px solid #313131;
 	height: 500px !important;
-	box-shadow: 10px 10px 11px 0px rgba(0,0,0,0.22);
+	box-shadow: 10px 10px 8px 0px rgba(0,0,0,0.22);
 }
 
 .mini-logo {
 	max-height: 5%;
 	max-width: 5%;
-	margin-left:2.5%
+	margin-left: 2.5%
 }
 
 
+.sparkron-submit-btn {
+	font-family: 'Titillium Web', sans-serif;
+	font-size: 26px;
+	background-color: #D11A24;
+	color: white;
+	border: none;
+	box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.22);
+	float:right;
+}
+.sparkron-search-btn {
+	font-family: 'Titillium Web', sans-serif;
+	font-size: 26px;
+	background-color: white;
+	color: #D11A24;
+	border: 2px solid darkgrey;
+	box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.22);
+	padding-right: 10px;
+	padding-bottom: 5px;
+}
+	.sparkron-search-btn:hover {
+		background-color: darkgrey;
+		color: white;
+	}
+	.sparkron-search-input {
+		font-family: 'Titillium Web', sans-serif;
+		font-size: 20px;
+		background-color: white;
+		color: grey;
+		margin-bottom: 5%;
+
+	}

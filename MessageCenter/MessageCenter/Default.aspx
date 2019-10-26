@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Home" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="MessageCenter._Default" %>
+﻿<%@ Page Title="Home" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="MessageCenter._Default" MaintainScrollPositionOnPostback="true" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
@@ -44,16 +44,19 @@
      </div>
         <div class ="row">
 
-    <div class="container col-md-4">
-        <div>
-            <h3>Søg</h3>
-        <asp:TextBox runat="server" />
-             <h3>CPR</h3>
-        <asp:TextBox runat="server" />
-        </div>
+    <!-- Input til søgning START-->
+    <div class="container col-md-2">
+        <div>            
+            <asp:TextBox ID="searchInput" runat="server"  defaultButton="searchBtn" placeholder="Søg efter besked..." CssClass="sparkron-search-input"/>
+            <asp:Button ID ="searchBtn" runat="server" OnClick="searchBtn_Click" Text="Søg" CssClass="sparkron-search-btn"/>
+            
+        </div>       
+        
     </div>
-     <!-- ListBox som indeholder Besked Skabeloner -->
-    <div class="container col-md-6 msg-box-sizer">      
+     <!-- Input til søgning SLUT-->
+
+     <!-- ListBox som indeholder Besked Skabeloner START-->
+    <div class="container col-md-6 msg-box-sizer" style="padding-left:50px">      
         
             <h2 class="box-header-sandy">
                 <asp:Image ID="logo" runat="server" ImageUrl="~/Images/envelope.png" CssClass="mini-logo"/>
@@ -62,13 +65,10 @@
             <asp:ListBox 
              ID="listBoxMessageTemplates" runat="server" 
              CssClass ="template-msg-listbox box-sandy"            
-            ></asp:ListBox>           
-             
-        </div>
-        </div>   
-
-    <div class="navbar">
-    <p>123</p>
-    <p>456</p>
+            ></asp:ListBox>         
+             <asp:Button ID="btn_proceedToMessagePage" Text="Fortsæt" runat="server" OnClick="btn_proceedToMessagePage_Click" CssClass="sparkron-submit-btn" />                    
    </div>
+     <!-- ListBox som indeholder Besked Skabeloner SLUT-->
+
+    </div>
 </asp:Content>

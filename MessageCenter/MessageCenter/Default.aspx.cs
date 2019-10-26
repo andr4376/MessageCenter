@@ -52,5 +52,16 @@ namespace MessageCenter
         {
             System.Diagnostics.Debug.WriteLine(listBoxMessageTemplates.SelectedValue);
         }
+
+        protected void btn_proceedToMessagePage_Click(object sender, EventArgs e)
+        {
+
+        }
+        
+
+              protected void searchBtn_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("F");
+        }
     }
 }
