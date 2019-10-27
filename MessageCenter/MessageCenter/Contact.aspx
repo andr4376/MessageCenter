@@ -19,6 +19,6 @@
         <div>
              <h3>CPR</h3>
             <asp:TextBox ID="cprInput" runat="server" />
-            <asp:RequiredFieldValidator runat ="server" ID="rfvCprInput" ControlToValidate="cprInput" ErrorMessage="Skal udfyldes*"></asp:RequiredFieldValidator>
+            <asp:RequiredFieldValidator runat ="server" ID="rfvCprInput" ControlToValidate="cprInput" ErrorMessage="Skal udfyldes*" Display="Dynamic"></asp:RequiredFieldValidator>
         </div>
 </asp:Content>

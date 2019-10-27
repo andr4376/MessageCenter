@@ -18,8 +18,16 @@ namespace MessageCenter
                 {
                     //ERROR
                 }
-               
             }
+
+
+                if (Request["__EVENTARGUMENT"] != null && Request["__EVENTARGUMENT"] == "doubleClick")
+                {
+                    GoToMessagePage();
+
+                }
+                listBoxMessageTemplates.Attributes.Add("ondblclick", ClientScript.GetPostBackEventReference(listBoxMessageTemplates, "doubleClick"));
+
            
         }
 
@@ -55,13 +63,33 @@ namespace MessageCenter
 
         protected void btn_proceedToMessagePage_Click(object sender, EventArgs e)
         {
-
+            GoToMessagePage();
+            
         }
         
 
               protected void searchBtn_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("F");
+
+         
+            System.Diagnostics.Debug.WriteLine("searching for input:");
+            System.Diagnostics.Debug.WriteLine(searchInput.Text);
+
+        }
+        private void GoToMessagePage()
+        {
+            System.Diagnostics.Debug.WriteLine("proceeding to message page");
+
+            System.Diagnostics.Debug.WriteLine(listBoxMessageTemplates.SelectedItem.Value);
+            System.Diagnostics.Debug.WriteLine(listBoxMessageTemplates.SelectedItem.Text);
         }
     }
 }
+
+
+
+
+
+
+
+

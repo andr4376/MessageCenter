@@ -42,11 +42,14 @@
         </div>
     </div>       
      </div>
+
+    <!--række til søge input og listbox med beskeder -->
         <div class ="row">
 
     <!-- Input til søgning START-->
     <div class="container col-md-2">
-        <div>            
+        <div>    
+            
             <asp:TextBox ID="searchInput" runat="server"  defaultButton="searchBtn" placeholder="Søg efter besked..." CssClass="sparkron-search-input"/>
             <asp:Button ID ="searchBtn" runat="server" OnClick="searchBtn_Click" Text="Søg" CssClass="sparkron-search-btn"/>
             
@@ -58,14 +61,16 @@
      <!-- ListBox som indeholder Besked Skabeloner START-->
     <div class="container col-md-6 msg-box-sizer" style="padding-left:50px">      
         
-            <h2 class="box-header-sandy">
+            <h2 class="sparkron-box-header">
                 <asp:Image ID="logo" runat="server" ImageUrl="~/Images/envelope.png" CssClass="mini-logo"/>
                 Besked skabeloner</h2>               
 
             <asp:ListBox 
              ID="listBoxMessageTemplates" runat="server" 
-             CssClass ="template-msg-listbox box-sandy"            
-            ></asp:ListBox>         
+             CssClass ="template-msg-listbox sparkron-box"            
+            defaultButton="btn_proceedToMessagePage"></asp:ListBox>         
+        
+        <!--fortsæt knap-->
              <asp:Button ID="btn_proceedToMessagePage" Text="Fortsæt" runat="server" OnClick="btn_proceedToMessagePage_Click" CssClass="sparkron-submit-btn" />                    
    </div>
      <!-- ListBox som indeholder Besked Skabeloner SLUT-->

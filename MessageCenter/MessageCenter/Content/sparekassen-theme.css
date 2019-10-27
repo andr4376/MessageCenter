@@ -65,7 +65,7 @@ select:focus {
 
 
 /*header for the listbox*/
-.box-header-sandy {
+.sparkron-box-header {
 	border-top-right-radius: 25px;
 	border-top-left-radius: 5px;
 	border: 3px solid #313131;
@@ -75,7 +75,7 @@ select:focus {
 	color: white;
 }
 /*the box containing the listbox*/
-.box-sandy {
+.sparkron-box {
 	border: 2px solid #313131;
 	background-color: white;
 	border-bottom-left-radius: 25px;
