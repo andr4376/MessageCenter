@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace MessageCenter.Code
 {
@@ -35,43 +36,49 @@ namespace MessageCenter.Code
         }
 
         private DatabaseManager()
-        {
-                                 
-            if (Initialize() != ReturnCode.OK)
-            {
-                //ERROR 
+        {                        
+            if (Initialize() == ReturnCode.ERROR)
+            {                
                 System.Diagnostics.Debug.WriteLine("Failed to initialize DatabaseManager");
 
+                return;
             }
+            //TODO: load pages - see ConsoleEntries project - read from DB
+            LoadMessageTemplates();
          
         }
 
-        private ReturnCode Initialize()
+        private ReturnCode LoadMessageTemplates()
         {
-            System.Diagnostics.Debug.WriteLine("Initializing DatabaseManager");
-
             ReturnCode returnCode = ReturnCode.OK;
 
-            DBConnect = new SQLiteConnection("Data source = " + dbPath + "; Version = 3; ");
-
-            returnCode = CreateDbFileIfNotExists();
-
-            returnCode = CreateTablesIfNotExists();
 
 
             return returnCode;
         }
 
-        private ReturnCode CreateDbFileIfNotExists()
+        private ReturnCode Initialize()
+        {
+            System.Diagnostics.Debug.WriteLine("Initializing DatabaseManager");
+                        
+
+            DBConnect = new SQLiteConnection("Data source = " + dbPath + "; Version = 3; ");
+
+            //Setup Database file - if it goes well, Create the table if needed, else return error.
+            return SetupDbFile() == ReturnCode.OK ? CreateTablesIfNotExists() : ReturnCode.ERROR;
+                        
+        }
+
+        private ReturnCode SetupDbFile()
         {
 
-            if (CreateDbDirectories() != ReturnCode.OK)
+            if (CreateDbDirectoriesIfNotExists() != ReturnCode.OK)
             {
                 return ReturnCode.ERROR;
             }
 
 
-            if (CreateDbFile() != ReturnCode.OK)
+            if (CreateDbFileIfNotExists() != ReturnCode.OK)
             {
                 return ReturnCode.ERROR;
             }
@@ -81,7 +88,7 @@ namespace MessageCenter.Code
         }
 
 
-        private ReturnCode CreateDbDirectories()
+        private ReturnCode CreateDbDirectoriesIfNotExists()
         {
             try
             {
@@ -107,20 +114,28 @@ namespace MessageCenter.Code
             {
 
                 System.Diagnostics.Debug.WriteLine(e.Message);
-                string directoryPath = dbPath;
-                directoryPath.Replace("\\Database.db", "");
 
+                string directoryPath = dbPath;
+
+                // lav \ om til /, så den kan skrives til UI
+                directoryPath = Regex.Replace(directoryPath, @"\\", "/");
+
+                //fjern filen fra mappestien
+                directoryPath = directoryPath.Replace("/Database.db", "");
+
+                //skriv fejlbesked til UI
                 Utility.WriteWarningMessage("Oops! Programmet kunne ikke oprette stien til database filen ('"
                     + directoryPath +
-                    "'). Programmet blev enten nægtet adgang, eller stien er ugyldig" +
-                    "\nKontakt venligst teknisk support på følgende mail: " + supportEmail);
+                    "'). Programmet blev enten nægtet adgang, eller stien er ugyldig... " +
+                    "Kontakt venligst teknisk support på følgende mail: " + supportEmail);
+
                 return ReturnCode.ERROR;
             }
 
             return ReturnCode.OK;
         }
 
-        private ReturnCode CreateDbFile()
+        private ReturnCode CreateDbFileIfNotExists()
         {
             try
             {
@@ -153,10 +168,22 @@ namespace MessageCenter.Code
 
         private ReturnCode CreateTablesIfNotExists()
         {
-            string createEntriesTable = "Create table IF NOT EXISTS " + messageTemplatesTableName + "" +
+             
+            string createMessageTemplatesTable = "Create table IF NOT EXISTS " + messageTemplatesTableName + "" +
                 "(id integer primary key, title varchar, text varchar, date varchar)";
 
-            return ExecuteSQLiteNonQuery(createEntriesTable);
+            ReturnCode returnCode = ExecuteSQLiteNonQuery(createMessageTemplatesTable);
+
+            if (returnCode==ReturnCode.OK)
+            {
+                System.Diagnostics.Debug.WriteLine("Table '"+messageTemplatesTableName+"' is ready!");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("ERROR: Could not create table '" + messageTemplatesTableName + "'!");
+            }
+
+            return returnCode;
 
         }
 
@@ -174,6 +201,8 @@ namespace MessageCenter.Code
             catch (System.Exception e)
             {
                 System.Diagnostics.Debug.WriteLine("Error in executing SQLiteNonQuery! Error messages: \n" + e.Message);
+                System.Diagnostics.Debug.WriteLine("SQLite command: "+command);
+
                 returnCode = ReturnCode.ERROR;
             }
             DBConnect.Close();
