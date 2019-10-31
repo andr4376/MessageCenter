@@ -14,7 +14,7 @@ namespace MessageCenter
         {
             if (!Page.IsPostBack)
             {
-                if (PopulateMessagePrefabListBox() != 0)
+                if (PopulateMessagePrefabListBox() != ReturnCode.OK)
                 {
                     //ERROR
                 }
@@ -31,13 +31,13 @@ namespace MessageCenter
            
         }
 
-        private int PopulateMessagePrefabListBox()
+        private ReturnCode PopulateMessagePrefabListBox()
         {
             Dictionary<string, string> listOfMessages = DatabaseManager.Instance.GetMessageTemplatesDictionaryTitleId();
 
             if (listOfMessages == null)
             {
-                return 9; //error
+                return ReturnCode.ERROR; 
             }
 
             if (listBoxMessageTemplates.Items.Count > 0)
@@ -53,7 +53,7 @@ namespace MessageCenter
             listBoxMessageTemplates.DataBind();
          
 
-            return 0;
+            return ReturnCode.OK;
         }
 
         protected void listBoxMessageTemplates_SelectedIndexChanged(object sender, EventArgs e)
@@ -65,10 +65,11 @@ namespace MessageCenter
         {
             GoToMessagePage();
             
-        }
-        
 
-              protected void searchBtn_Click(object sender, EventArgs e)
+        }
+
+
+        protected void searchBtn_Click(object sender, EventArgs e)
         {
 
          
@@ -78,6 +79,10 @@ namespace MessageCenter
         }
         private void GoToMessagePage()
         {
+            if (listBoxMessageTemplates.SelectedItem == null)
+            {
+                return;
+            }
             System.Diagnostics.Debug.WriteLine("proceeding to message page");
 
             System.Diagnostics.Debug.WriteLine(listBoxMessageTemplates.SelectedItem.Value);

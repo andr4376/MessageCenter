@@ -140,3 +140,4 @@ D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\obj\Debug
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\obj\Debug\MessageCenter.csproj.CopyComplete
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\obj\Debug\MessageCenter.dll
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\obj\Debug\MessageCenter.pdb
+D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\System.Data.SQLite.dll
