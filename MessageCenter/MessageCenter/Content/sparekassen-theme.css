@@ -83,12 +83,12 @@ select:focus {
 	border: 3px solid #313131;
 	height: 500px !important;
 	box-shadow: 10px 10px 8px 0px rgba(0,0,0,0.22);
+
 }
 
 .mini-logo {
 	max-height: 5%;
 	max-width: 5%;
-	margin-left: 2.5%
 }
 
 
@@ -99,8 +99,21 @@ select:focus {
 	color: white;
 	border: none;
 	box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.22);
-	float:right;
+	float: right;
+	--webkit-tranistion: color 0.25s ease-in; /*for Safari and Chrome*/
+	transition: color 0.25s ease-in; /*for IE*/
+	--moz-transition: color 0.25s ease-in; /* for Mozilla Firefox*/
+	--webkit-tranistion: background-color 0.25s ease-in; /*for Safari and Chrome*/
+	transition: background-color 0.25s ease-in; /*for IE*/
+	--moz-transition: background-color 0.25s ease-in; /* for Mozilla Firefox*/
 }
+
+	.sparkron-submit-btn:hover {
+		background-color: white;
+		color: #D11A24;
+		
+	}
+
 .sparkron-search-btn {
 	font-family: 'Titillium Web', sans-serif;
 	font-size: 26px;
@@ -110,16 +123,23 @@ select:focus {
 	box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.22);
 	padding-right: 10px;
 	padding-bottom: 5px;
+	--webkit-tranistion: color 0.25s ease-in; /*for Safari and Chrome*/
+	transition: color 0.25s ease-in; /*for IE*/
+	--moz-transition: color 0.25s ease-in; /* for Mozilla Firefox*/
+	--webkit-tranistion: background-color 0.25s ease-in; /*for Safari and Chrome*/
+	transition: background-color 0.25s ease-in; /*for IE*/
+	--moz-transition: background-color 0.25s ease-in; /* for Mozilla Firefox*/
 }
+
 	.sparkron-search-btn:hover {
 		background-color: darkgrey;
 		color: white;
 	}
-	.sparkron-search-input {
-		font-family: 'Titillium Web', sans-serif;
-		font-size: 20px;
-		background-color: white;
-		color: grey;
-		margin-bottom: 5%;
 
-	}
+.sparkron-search-input {
+	font-family: 'Titillium Web', sans-serif;
+	font-size: 20px;
+	background-color: white;
+	color: grey;
+	margin-bottom: 5%;
+}
