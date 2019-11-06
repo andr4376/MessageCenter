@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 
@@ -16,6 +17,17 @@ namespace MessageCenter.Code
             System.Web.HttpContext.Current.Response.Write("<SCRIPT LANGUAGE=\"\"JavaScript\"\">alert(\"" + message + "\")</SCRIPT>");           
         }
 
+        public static Dictionary<string,string> ConvertTemplateListToDictionary(List<MessageTemplate> list)
+        {
+            Dictionary<string, string> messagesDictionary = new Dictionary<string, string>();
+
+            foreach (MessageTemplate message in list)
+            {
+                messagesDictionary.Add(message.id.ToString(), message.title);
+
+            }
+            return messagesDictionary;
+        }
 
     }
 
