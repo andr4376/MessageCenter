@@ -179,7 +179,49 @@ namespace MessageCenterDataApi.Code
             return listOfCustomers;
         }
 
-      
+        public Customer GetCustomer(string cpr)
+        {
+            Customer tmpCustomer = null;
+
+            DBConnect.Open();
+            SQLiteCommand Command = new SQLiteCommand("select * from " + customerTableName + " where Cpr = "+cpr+" LIMIT 1;", DBConnect);
+
+
+            using (SQLiteDataReader reader = Command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    tmpCustomer = new Customer();
+                    try
+                    {
+                        tmpCustomer.Id = reader.GetInt32(0);
+                        tmpCustomer.FirstName = reader.GetString(1);
+                        tmpCustomer.LastName = reader.GetString(2);
+                        tmpCustomer.Birthday = reader.GetString(3);
+                        tmpCustomer.Cpr = reader.GetString(4);
+                        tmpCustomer.Advisor = reader.GetString(5);
+                        tmpCustomer.Department = reader.GetString(6);
+                        tmpCustomer.Email = reader.GetString(7);
+                        tmpCustomer.PhoneNumber = reader.GetString(8);
+
+                    }
+                    catch (Exception)
+                    {
+#if DEBUG
+                        System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af kunde med cpr: "+cpr);
+                        throw;
+#endif
+                    }
+
+                }
+            }
+
+
+            DBConnect.Close();
+            return tmpCustomer;
+        }
+
+
         public static List<int> ReadFromDBInt(string command, string returnValue)
         {
             List<int> returnList = new List<int>();

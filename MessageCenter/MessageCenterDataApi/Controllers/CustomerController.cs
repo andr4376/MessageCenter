@@ -13,44 +13,23 @@ namespace MessageCenterDataApi.Controllers
     {
         List<Customer> tmpList = new List<Customer>();
 
-        public CustomerController()
-        {
-           
-        }
+
         // GET: api/Customer
+        [Route("api/Customers")]
+
         public List<Customer> Get()
         {
             return Database.Instance.GetAllCustomers();
         }
 
-        // GET: api/Customer/5
-        public Customer Get(int id)
-        {
-            return new Customer();
-        }
-
-
-        [Route("api/Customer/cpr/{cpr}")]
+        [Route("api/Customers/cpr/{cpr}")]
         [HttpGet]
         public Customer Get(string cpr)
         {
-            Customer tmpCustomer = Database.Instance.GetAllCustomers().
-                Where(customer => customer.Cpr == cpr).FirstOrDefault();
-                       
+            Customer tmpCustomer = Database.Instance.GetCustomer(cpr);
 
-          return  tmpCustomer!=null?tmpCustomer:new Customer();
+            return tmpCustomer != null ? tmpCustomer : new Customer() { FirstName = "Kunde findes ikke" };
         }
 
-        // POST: api/Customer
-        public void Post([FromBody]string value)
-        {
-        }
-
-
-
-        // DELETE: api/Customer/5
-        public void Delete(int id)
-        {
-        }
     }
 }
