@@ -88,13 +88,14 @@ namespace MessageCenter
             if (listBoxMessageTemplates.Items.Count > 0)
             {
                 listBoxMessageTemplates.Items.Clear();
-
             }
 
             listBoxMessageTemplates.DataSource = listBoxMessageDictionary;
             listBoxMessageTemplates.DataTextField = "Value";
             listBoxMessageTemplates.DataValueField = "Key";
             listBoxMessageTemplates.DataBind();
+
+          
         }
         private void GoToMessagePage()
         {
