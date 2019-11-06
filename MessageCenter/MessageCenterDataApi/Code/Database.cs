@@ -135,5 +135,85 @@ namespace MessageCenterDataApi.Code
             DBConnect.Close();
         }
 
+        public List<Customer> GetAllCustomers()
+        {
+            List<Customer> listOfCustomers = new List<Customer>();
+            Customer tmpCustomer = null;
+
+            DBConnect.Open();
+            SQLiteCommand Command = new SQLiteCommand("select * from "+customerTableName+";", DBConnect);
+
+
+            using (SQLiteDataReader reader = Command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    tmpCustomer = new Customer();
+                    try
+                    {
+                        tmpCustomer.Id = reader.GetInt32(0);
+                        tmpCustomer.FirstName = reader.GetString(1);
+                        tmpCustomer.LastName = reader.GetString(2);
+                        tmpCustomer.Birthday = reader.GetString(3);
+                        tmpCustomer.Cpr = reader.GetString(4);
+                        tmpCustomer.Advisor = reader.GetString(5);
+                        tmpCustomer.Department = reader.GetString(6);
+                        tmpCustomer.Email = reader.GetString(7);
+                        tmpCustomer.PhoneNumber = reader.GetString(8);
+
+                        listOfCustomers.Add(tmpCustomer);
+                    }
+                    catch (Exception)
+                    {
+#if DEBUG
+                        System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af alle kunder!");
+                        throw;
+#endif
+                    }
+                  
+                }
+            }
+
+
+            DBConnect.Close();
+            return listOfCustomers;
+        }
+
+      
+        public static List<int> ReadFromDBInt(string command, string returnValue)
+        {
+            List<int> returnList = new List<int>();
+            SQLiteConnection DBConnect = new SQLiteConnection("Data source = " + dbPath + "; Version = 3; ");
+            DBConnect.Open();
+            SQLiteCommand Command = new SQLiteCommand(command, DBConnect);
+            SQLiteDataReader highscoreReader = Command.ExecuteReader();
+            while (highscoreReader.Read())
+            {
+                returnList.Add(Convert.ToInt32(highscoreReader[returnValue]));
+            }
+            DBConnect.Close();
+
+            return returnList;
+        }
+
+        /// <summary>
+        /// returns a list of strings from DB
+        /// </summary>
+        /// <param name="command"></param>
+        public static List<string> ReadFromDBString(string command, string returnValue)
+        {
+            List<string> returnList = new List<string>();
+            SQLiteConnection DBConnect = new SQLiteConnection("Data source = "+dbPath+"; Version = 3; ");
+            DBConnect.Open();
+            SQLiteCommand Command = new SQLiteCommand(command, DBConnect);
+            SQLiteDataReader highscoreReader = Command.ExecuteReader();
+            while (highscoreReader.Read())
+            {
+                returnList.Add((string)highscoreReader[returnValue]);
+            }
+            DBConnect.Close();
+
+            return returnList;
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace MessageCenterDataApi.Controllers
         // GET: api/Customer
         public List<Customer> Get()
         {
-            return tmpList;
+            return Database.Instance.GetAllCustomers();
         }
 
         // GET: api/Customer/5
@@ -34,7 +34,7 @@ namespace MessageCenterDataApi.Controllers
         [HttpGet]
         public Customer Get(string cpr)
         {
-            Customer tmpCustomer = Customer.GetCustomers.
+            Customer tmpCustomer = Database.Instance.GetAllCustomers().
                 Where(customer => customer.Cpr == cpr).FirstOrDefault();
                        
 
