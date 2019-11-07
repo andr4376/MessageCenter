@@ -11,9 +11,6 @@ namespace MessageCenterDataApi.Controllers
 {
     public class CustomerController : ApiController
     {
-        List<Customer> tmpList = new List<Customer>();
-
-
         // GET: api/Customer
         [Route("api/Customers")]
 

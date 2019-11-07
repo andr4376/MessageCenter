@@ -174,7 +174,41 @@ namespace MessageCenterDataApi.Code
             DBConnect.Close();
             return listOfCustomers;
         }
+        public List<Employee> GetAllEmployees()
+        {
+            List<Employee> listOfEmployees = new List<Employee>();
+            Employee tmpEmployee = null;
 
+            DBConnect.Open();
+            SQLiteCommand Command = new SQLiteCommand("select * from " + employeeTableName + ";", DBConnect);
+
+            try
+            {
+                using (SQLiteDataReader dataReader = Command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        tmpEmployee = new Employee();
+
+                        tmpEmployee = ExtractEmployeeData(dataReader);
+
+                        listOfEmployees.Add(tmpEmployee);
+
+
+                    }
+                }
+            }
+            catch (Exception)
+            {
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af alle medarbejdere!");
+                throw;
+#endif
+            }
+
+            DBConnect.Close();
+            return listOfEmployees;
+        }
 
         public Customer GetCustomer(string cpr)
         {
@@ -208,7 +242,39 @@ namespace MessageCenterDataApi.Code
             DBConnect.Close();
             return tmpCustomer;
         }
+        public Employee GetEmployee(string tuser)
+        {
+            Employee tmpEmployee = null;
 
+
+            DBConnect.Open();
+            SQLiteCommand Command = new SQLiteCommand("select * from " + employeeTableName + " where TUser = '" + tuser + "' LIMIT 1;", DBConnect);
+
+
+            using (SQLiteDataReader dataReader = Command.ExecuteReader())
+            {
+                while (dataReader.Read())
+                {
+                    try
+                    {
+                        tmpEmployee = ExtractEmployeeData(dataReader);
+
+                    }
+                    catch (Exception)
+                    {
+#if DEBUG
+                        System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af medarbejder med cpr: " + tuser);
+                        throw;
+#endif
+                    }
+
+                }
+            }
+
+
+            DBConnect.Close();
+            return tmpEmployee;
+        }
         private Customer ExtractCustomerData(SQLiteDataReader dataReader)
         {
             Customer tmpCustomer = new Customer();
@@ -226,6 +292,22 @@ namespace MessageCenterDataApi.Code
             return tmpCustomer;
         }
 
+        private Employee ExtractEmployeeData(SQLiteDataReader dataReader)
+        {
+            Employee tmpEmployee = new Employee();
+
+            tmpEmployee.Tuser = dataReader.GetString(0);
+            tmpEmployee.FirstName = dataReader.GetString(1);
+            tmpEmployee.LastName = dataReader.GetString(2);
+            tmpEmployee.Birthday = dataReader.GetString(3);
+            tmpEmployee.Cpr = dataReader.GetString(4);
+            tmpEmployee.Department = dataReader.GetString(5);
+            tmpEmployee.Email = dataReader.GetString(6);
+            tmpEmployee.PhoneNumber = dataReader.GetString(7);
+            tmpEmployee.PassWord = dataReader.GetString(8);
+
+            return tmpEmployee;
+        }
 
     }
 }

@@ -19,7 +19,7 @@ namespace MessageCenter.Code
         {
             byte[] encodedPassword = System.Text.Encoding.ASCII.GetBytes(passWord);
             encodedPassword = new System.Security.Cryptography.SHA256Managed().ComputeHash(encodedPassword);
-            return System.Text.Encoding.ASCII.GetString(encodedPassword);
+            return System.Convert.ToBase64String(encodedPassword);
         }
     }
 }

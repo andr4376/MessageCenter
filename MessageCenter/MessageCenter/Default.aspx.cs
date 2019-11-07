@@ -14,7 +14,7 @@ namespace MessageCenter
 
         protected void Page_Load(object sender, EventArgs e)
         {
-          
+            
             if (!Page.IsPostBack)
             {
                 if (PopulateMessageTemplatesListBox() != ReturnCode.OK)
