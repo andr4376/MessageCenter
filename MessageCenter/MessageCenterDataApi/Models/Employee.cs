@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 
 namespace MessageCenterDataApi.Models
 {
-    public class Tusers
+    public class Employee
     {
         public string Tuser { get; set; }
         public string FirstName { get; set; }
@@ -15,20 +16,21 @@ namespace MessageCenterDataApi.Models
         public string Department { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
+        public string PassWord { get; set; }
 
         private static Random rnd;
 
-        private static List<Tusers> tUsers;
+        private static List<Employee> employees;
 
-        public static List<Tusers> GetTusers
+        public static List<Employee> GetEmployees
         {
             get
             {
-                if (tUsers == null)
+                if (employees == null)
                 {
-                    GenerateTusers();
+                    GenerateEmployees();
                 }
-                return tUsers;
+                return employees;
             }
         }
 
@@ -36,13 +38,13 @@ namespace MessageCenterDataApi.Models
         /// returns a random TUser
         /// </summary>
         /// <returns></returns>
-        public static Tusers GetRandomTUser()
+        public static Employee GetRandomTUser()
         {
             if (rnd == null) { rnd = new Random(); }
 
-            int rndIndex = rnd.Next(0, GetTusers.Count);
+            int rndIndex = rnd.Next(0, GetEmployees.Count);
 
-            Tusers t = GetTusers[rndIndex];
+            Employee t = GetEmployees[rndIndex];
 
             System.Diagnostics.Debug.WriteLine(t.FirstName + " " + t.LastName + " was randomly chosen (index: " + rndIndex + ")");
 
@@ -52,12 +54,12 @@ namespace MessageCenterDataApi.Models
         /// <summary>
         /// Generates Tusers (employees) with believable data
         /// </summary>
-        private static void GenerateTusers()
+        private static void GenerateEmployees()
         {
-            tUsers = new List<Tusers>();
+            employees = new List<Employee>();
 
-            tUsers.Add(
-                new Tusers()
+            employees.Add(
+                new Employee()
                 {
                     Tuser = "T210672",
                     FirstName = "Knud",
@@ -66,11 +68,12 @@ namespace MessageCenterDataApi.Models
                     Cpr = "2606651245",
                     Department = "Randers",
                     Email = "kna@sparkron.dk",
-                    PhoneNumber = "26564578"
+                    PhoneNumber = "26564578",
+                    PassWord = "?X?B??%?&?,????????3!K}b?dG/??"
 
                 });
-            tUsers.Add(
-                new Tusers()
+            employees.Add(
+                new Employee()
                 {
                     Tuser = "T200454",
                     FirstName = "Svend-Erik",
@@ -79,11 +82,12 @@ namespace MessageCenterDataApi.Models
                     Cpr = "2606871245",
                     Department = "Spentrup",
                     Email = "Seh@sparkron.dk",
-                    PhoneNumber = "20516498"
+                    PhoneNumber = "20516498",
+                    PassWord = "?X?B??%?&?,????????3!K}b?dG/??"
 
                 });
-            tUsers.Add(
-               new Tusers()
+            employees.Add(
+               new Employee()
                {
                    Tuser = "T196543",
                    FirstName = "Bjarke",
@@ -92,12 +96,13 @@ namespace MessageCenterDataApi.Models
                    Cpr = "2212831346",
                    Department = "Tronholmen",
                    Email = "Bhm@sparkron.dk",
-                   PhoneNumber = "4051463125"
+                   PhoneNumber = "4051463125",
+                   PassWord = "?X?B??%?&?,????????3!K}b?dG/??"
 
                });
 
-            tUsers.Add(
-              new Tusers()
+            employees.Add(
+              new Employee()
               {
                   Tuser = "T210345",
                   FirstName = "Bo",
@@ -106,9 +111,27 @@ namespace MessageCenterDataApi.Models
                   Cpr = "2212763164",
                   Department = "Processer & Effektivisering",
                   Email = "Bori@sparkron.dk",
-                  PhoneNumber = "55443187"
+                  PhoneNumber = "55443187",
+                  PassWord = "?X?B??%?&?,????????3!K}b?dG/??"
 
               });
+        }
+
+        public static string GenerateCreateTableCommand(string tableName)
+        {
+            string command =
+                        "Create table " + tableName + " " +
+                      "(TUser varchar primary key," +
+                      "FirstName varchar," +
+                      "LastName varchar," +
+                      "Birthday varchar," +
+                      "Cpr varchar," +                      
+                      "Department varchar," +
+                      "Email varchar," +
+                      "PhoneNumber varchar," +
+                      "PassWord varchar)";
+
+            return command;
         }
     }
 }

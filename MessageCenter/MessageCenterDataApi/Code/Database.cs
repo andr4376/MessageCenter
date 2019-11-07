@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 
 namespace MessageCenterDataApi.Code
@@ -12,10 +13,10 @@ namespace MessageCenterDataApi.Code
     {
         private static Database instance;
 
-        private static string dbPath = "C:\\MessageCenterDataApi\\Database\\Database.db";
+        private static string dbPath = "Database.db";
 
         private static string customerTableName = "Customers";
-
+        private static string employeeTableName = "Employees";
         private SQLiteConnection DBConnect;
 
         public static Database Instance
@@ -33,6 +34,9 @@ namespace MessageCenterDataApi.Code
 
         private Database()
         {
+
+
+
             Initialize();
 
 
@@ -42,59 +46,38 @@ namespace MessageCenterDataApi.Code
 
         private void Initialize()
         {
+            string appdatafolder = Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "App_Data");
+            dbPath = appdatafolder + "\\" + dbPath;
+
             DBConnect = new SQLiteConnection("Data source = " + dbPath + "; Version = 3; ");
+
             SetupDbFile();
+
 
 
         }
 
         private void SetupDbFile()
         {
-
-
-            if (!(Directory.Exists("C:\\MessageCenterDataApi")))
-            {
-                Directory.CreateDirectory("C:\\MessageCenter");
-            }
-
-            if (!(Directory.Exists("C:\\MessageCenterDataApi\\Database")))
-            {
-                Directory.CreateDirectory("C:\\MessageCenterDataApi\\Database");
-                System.Diagnostics.Debug.WriteLine("Db directories created");
-
-            }
             if (!(File.Exists(dbPath)))
             {
                 SQLiteConnection.CreateFile(dbPath);
-
                 System.Diagnostics.Debug.WriteLine("Db file created @" + dbPath);
-
                 CreateTables();
 
-            }
+                PopulateDBWithTestCustomers();
+                PopulateDBWithTestEmployees();
 
+            }
         }
 
         private void CreateTables()
         {
-            string sqlCommand = "DROP TABLE IF EXISTS "+customerTableName;
 
-            ExecuteSQLiteNonQuery(sqlCommand);
+            ExecuteSQLiteNonQuery(Customer.GenerateCreateTableCommand(customerTableName));
 
-            sqlCommand = "Create table " + customerTableName + " " +
-                "(Id integer primary key," +
-                "FirstName varchar," +
-                "LastName varchar," +
-                "Birthday varchar," +
-                "Cpr varchar," +
-                "Advisor varchar," +
-                "Department varchar," +
-                "Email varchar," +
-                "PhoneNumber varchar)";
+            ExecuteSQLiteNonQuery(Employee.GenerateCreateTableCommand(employeeTableName));
 
-            ExecuteSQLiteNonQuery(sqlCommand);
-
-            PopulateDBWithTestCustomers();
         }
 
         private void PopulateDBWithTestCustomers()
@@ -103,18 +86,39 @@ namespace MessageCenterDataApi.Code
             {
                 string command =
                "insert into " + customerTableName + " values (null," +
-               "'"+customer.FirstName+"'," +
+               "'" + customer.FirstName + "'," +
                "'" + customer.LastName + "'," +
                "'" + customer.Birthday + "'," +
                "'" + customer.Cpr + "'," +
-               "'" + customer.Advisor+ "'," +
+               "'" + customer.Advisor + "'," +
                "'" + customer.Department + "'," +
                "'" + customer.Email + "'," +
                "'" + customer.PhoneNumber + "')";
 
                 ExecuteSQLiteNonQuery(command);
             }
-           
+
+        }
+
+        private void PopulateDBWithTestEmployees()
+        {
+            foreach (Employee employee in Employee.GetEmployees)
+            {
+                string command =
+               "insert into " + employeeTableName + " values (" +
+               "'" + employee.Tuser + "'," +
+               "'" + employee.FirstName + "'," +
+               "'" + employee.LastName + "'," +
+               "'" + employee.Birthday + "'," +
+               "'" + employee.Cpr + "'," +
+               "'" + employee.Department + "'," +
+               "'" + employee.Email + "'," +
+               "'" + employee.PhoneNumber + "'," +
+               "'" + employee.PassWord + "')";
+
+                ExecuteSQLiteNonQuery(command);
+            }
+
         }
 
         public void ExecuteSQLiteNonQuery(string command)
@@ -141,74 +145,58 @@ namespace MessageCenterDataApi.Code
             Customer tmpCustomer = null;
 
             DBConnect.Open();
-            SQLiteCommand Command = new SQLiteCommand("select * from "+customerTableName+";", DBConnect);
+            SQLiteCommand Command = new SQLiteCommand("select * from " + customerTableName + ";", DBConnect);
 
-
-            using (SQLiteDataReader reader = Command.ExecuteReader())
+            try
             {
-                while (reader.Read())
+                using (SQLiteDataReader dataReader = Command.ExecuteReader())
                 {
-                    tmpCustomer = new Customer();
-                    try
+                    while (dataReader.Read())
                     {
-                        tmpCustomer.Id = reader.GetInt32(0);
-                        tmpCustomer.FirstName = reader.GetString(1);
-                        tmpCustomer.LastName = reader.GetString(2);
-                        tmpCustomer.Birthday = reader.GetString(3);
-                        tmpCustomer.Cpr = reader.GetString(4);
-                        tmpCustomer.Advisor = reader.GetString(5);
-                        tmpCustomer.Department = reader.GetString(6);
-                        tmpCustomer.Email = reader.GetString(7);
-                        tmpCustomer.PhoneNumber = reader.GetString(8);
+                        tmpCustomer = new Customer();
+
+                        tmpCustomer = ExtractCustomerData(dataReader);
 
                         listOfCustomers.Add(tmpCustomer);
+
+
                     }
-                    catch (Exception)
-                    {
-#if DEBUG
-                        System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af alle kunder!");
-                        throw;
-#endif
-                    }
-                  
                 }
             }
-
+            catch (Exception)
+            {
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af alle kunder!");
+                throw;
+#endif
+            }
 
             DBConnect.Close();
             return listOfCustomers;
         }
+
 
         public Customer GetCustomer(string cpr)
         {
             Customer tmpCustomer = null;
 
             DBConnect.Open();
-            SQLiteCommand Command = new SQLiteCommand("select * from " + customerTableName + " where Cpr = "+cpr+" LIMIT 1;", DBConnect);
+            SQLiteCommand Command = new SQLiteCommand("select * from " + customerTableName + " where Cpr = " + cpr + " LIMIT 1;", DBConnect);
 
 
-            using (SQLiteDataReader reader = Command.ExecuteReader())
+            using (SQLiteDataReader dataReader = Command.ExecuteReader())
             {
-                while (reader.Read())
+                while (dataReader.Read())
                 {
-                    tmpCustomer = new Customer();
                     try
                     {
-                        tmpCustomer.Id = reader.GetInt32(0);
-                        tmpCustomer.FirstName = reader.GetString(1);
-                        tmpCustomer.LastName = reader.GetString(2);
-                        tmpCustomer.Birthday = reader.GetString(3);
-                        tmpCustomer.Cpr = reader.GetString(4);
-                        tmpCustomer.Advisor = reader.GetString(5);
-                        tmpCustomer.Department = reader.GetString(6);
-                        tmpCustomer.Email = reader.GetString(7);
-                        tmpCustomer.PhoneNumber = reader.GetString(8);
+                        tmpCustomer = ExtractCustomerData(dataReader);
 
                     }
                     catch (Exception)
                     {
 #if DEBUG
-                        System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af kunde med cpr: "+cpr);
+                        System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af kunde med cpr: " + cpr);
                         throw;
 #endif
                     }
@@ -221,41 +209,23 @@ namespace MessageCenterDataApi.Code
             return tmpCustomer;
         }
 
-
-        public static List<int> ReadFromDBInt(string command, string returnValue)
+        private Customer ExtractCustomerData(SQLiteDataReader dataReader)
         {
-            List<int> returnList = new List<int>();
-            SQLiteConnection DBConnect = new SQLiteConnection("Data source = " + dbPath + "; Version = 3; ");
-            DBConnect.Open();
-            SQLiteCommand Command = new SQLiteCommand(command, DBConnect);
-            SQLiteDataReader highscoreReader = Command.ExecuteReader();
-            while (highscoreReader.Read())
-            {
-                returnList.Add(Convert.ToInt32(highscoreReader[returnValue]));
-            }
-            DBConnect.Close();
+            Customer tmpCustomer = new Customer();
 
-            return returnList;
+            tmpCustomer.Id = dataReader.GetInt32(0);
+            tmpCustomer.FirstName = dataReader.GetString(1);
+            tmpCustomer.LastName = dataReader.GetString(2);
+            tmpCustomer.Birthday = dataReader.GetString(3);
+            tmpCustomer.Cpr = dataReader.GetString(4);
+            tmpCustomer.Advisor = dataReader.GetString(5);
+            tmpCustomer.Department = dataReader.GetString(6);
+            tmpCustomer.Email = dataReader.GetString(7);
+            tmpCustomer.PhoneNumber = dataReader.GetString(8);
+
+            return tmpCustomer;
         }
 
-        /// <summary>
-        /// returns a list of strings from DB
-        /// </summary>
-        /// <param name="command"></param>
-        public static List<string> ReadFromDBString(string command, string returnValue)
-        {
-            List<string> returnList = new List<string>();
-            SQLiteConnection DBConnect = new SQLiteConnection("Data source = "+dbPath+"; Version = 3; ");
-            DBConnect.Open();
-            SQLiteCommand Command = new SQLiteCommand(command, DBConnect);
-            SQLiteDataReader highscoreReader = Command.ExecuteReader();
-            while (highscoreReader.Read())
-            {
-                returnList.Add((string)highscoreReader[returnValue]);
-            }
-            DBConnect.Close();
 
-            return returnList;
-        }
     }
 }

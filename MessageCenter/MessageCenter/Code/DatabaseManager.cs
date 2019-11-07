@@ -3,6 +3,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 
 namespace MessageCenter.Code
 {
@@ -14,7 +15,7 @@ namespace MessageCenter.Code
         public List<MessageTemplate> messages;
 
 
-        private static string dbPath = "C:\\MessageCenter\\Database\\Database.db";
+        private static string dbPath = "Database.db";
 
         private static string messageTemplatesTableName = "MessageTemplates";
 
@@ -41,7 +42,7 @@ namespace MessageCenter.Code
         {
             if (Initialize() == ReturnCode.ERROR)
             {
-                System.Diagnostics.Debug.WriteLine("Failed to initialize DatabaseManager");
+                Utility.WriteLog("Failed to initialize DatabaseManager");
 
                 return;
             }
@@ -61,106 +62,48 @@ namespace MessageCenter.Code
 
         private ReturnCode Initialize()
         {
+
             System.Diagnostics.Debug.WriteLine("Initializing DatabaseManager");
 
+            string appdatafolder = Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "App_Data");
+            dbPath = appdatafolder + "\\" + dbPath;
 
             DBConnect = new SQLiteConnection("Data source = " + dbPath + "; Version = 3; ");
 
             //Setup Database file - if it goes well, Create the table if needed, else return error.
-            return SetupDbFile() == ReturnCode.OK ? CreateTablesIfNotExists() : ReturnCode.ERROR;
+            return CreateDbFileIfNotExists() == ReturnCode.OK ? CreateTablesIfNotExists() : ReturnCode.ERROR;
 
-        }
-
-        private ReturnCode SetupDbFile()
-        {
-
-            if (CreateDbDirectoriesIfNotExists() != ReturnCode.OK)
-            {
-                return ReturnCode.ERROR;
-            }
+        }       
 
 
-            if (CreateDbFileIfNotExists() != ReturnCode.OK)
-            {
-                return ReturnCode.ERROR;
-            }
-
-
-            return ReturnCode.OK;
-        }
-
-
-        private ReturnCode CreateDbDirectoriesIfNotExists()
-        {
-            try
-            {
-                if (!(Directory.Exists("C:\\MessageCenter")))
-                {
-                    Directory.CreateDirectory("C:\\MessageCenter");
-                }
-
-                if (!(Directory.Exists("C:\\MessageCenter\\Database")))
-                {
-                    Directory.CreateDirectory("C:\\MessageCenter\\Database");
-                    System.Diagnostics.Debug.WriteLine("Db directories created");
-
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("Db directories found");
-
-                }
-
-            }
-            catch (System.Exception e)
-            {
-
-                System.Diagnostics.Debug.WriteLine(e.Message);
-
-                string directoryPath = dbPath;
-
-                // lav \ om til /, så den kan skrives til UI
-                directoryPath = Regex.Replace(directoryPath, @"\\", "/");
-
-                //fjern filen fra mappestien
-                directoryPath = directoryPath.Replace("/Database.db", "");
-
-                //skriv fejlbesked til UI
-                Utility.WriteWarningMessage("Oops! Programmet kunne ikke oprette stien til database filen ('"
-                    + directoryPath +
-                    "'). Programmet blev enten nægtet adgang, eller stien er ugyldig... " +
-                    "Kontakt venligst teknisk support på følgende mail: " + supportEmail);
-
-                return ReturnCode.ERROR;
-            }
-
-            return ReturnCode.OK;
-        }
+        
 
         private ReturnCode CreateDbFileIfNotExists()
         {
             try
-            {
+            {                
                 if (!(File.Exists(dbPath)))
                 {
                     SQLiteConnection.CreateFile(dbPath);
                     Utility.WriteWarningMessage("Programmet opretter en ny database - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + dbPath + "." +
                     "\nKontakt venligst teknisk support på følgende mail: " + supportEmail);
-                    System.Diagnostics.Debug.WriteLine("Db file created @" + dbPath);
+                    Utility.WriteLog("Db file created @" + dbPath);
 
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine("Db file found @" + dbPath);
+                    Utility.WriteLog("Db file found @" + dbPath);
                 }
             }
             catch (System.Exception e)
             {
 
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                Utility.WriteLog(e.Message);
 
                 Utility.WriteWarningMessage("Oops! Programmet kunne ikke oprette database filen - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + dbPath + "." +
                     "\nKontakt venligst teknisk support på følgende mail: " + supportEmail);
+
+
 
                 return ReturnCode.ERROR;
             }
@@ -178,11 +121,11 @@ namespace MessageCenter.Code
 
             if (returnCode == ReturnCode.OK)
             {
-                System.Diagnostics.Debug.WriteLine("Table '" + messageTemplatesTableName + "' is ready!");
+                Utility.WriteLog("Table '" + messageTemplatesTableName + "' is ready!");
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("ERROR: Could not create table '" + messageTemplatesTableName + "'!");
+                Utility.WriteLog("ERROR: Could not create table '" + messageTemplatesTableName + "'!");
             }
 
             return returnCode;
@@ -202,8 +145,8 @@ namespace MessageCenter.Code
             }
             catch (System.Exception e)
             {
-                System.Diagnostics.Debug.WriteLine("Error in executing SQLiteNonQuery! Error messages: \n" + e.Message);
-                System.Diagnostics.Debug.WriteLine("SQLite command: " + command);
+                Utility.WriteLog("Error in executing SQLiteNonQuery! Error messages: \n" + e.Message);
+                Utility.WriteLog("SQLite command: " + command);
 
                 returnCode = ReturnCode.ERROR;
             }

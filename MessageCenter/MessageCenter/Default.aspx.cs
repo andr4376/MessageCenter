@@ -14,6 +14,7 @@ namespace MessageCenter
 
         protected void Page_Load(object sender, EventArgs e)
         {
+          
             if (!Page.IsPostBack)
             {
                 if (PopulateMessageTemplatesListBox() != ReturnCode.OK)
@@ -35,7 +36,7 @@ namespace MessageCenter
 
         private ReturnCode PopulateMessageTemplatesListBox()
         {
-           listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary( DatabaseManager.Instance.GetMessageTemplates());
+           listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(DatabaseManager.Instance.GetMessageTemplates());
 
             if (listBoxMessageDictionary == null)
             {
@@ -49,7 +50,7 @@ namespace MessageCenter
 
         protected void listBoxMessageTemplates_SelectedIndexChanged(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine(listBoxMessageTemplates.SelectedValue);
+            Utility.WriteLog(listBoxMessageTemplates.SelectedValue);
         }
 
         protected void btn_proceedToMessagePage_Click(object sender, EventArgs e)
@@ -63,7 +64,7 @@ namespace MessageCenter
         protected void searchBtn_Click(object sender, EventArgs e)
         {
             string inputText = searchInput.Text;
-            System.Diagnostics.Debug.WriteLine("searching for input: " + inputText);
+            Utility.WriteLog("searching for input: " + inputText);
 
             if (inputText == "")
             {
@@ -103,10 +104,10 @@ namespace MessageCenter
             {
                 return;
             }
-            System.Diagnostics.Debug.WriteLine("proceeding to message page");
-
-            System.Diagnostics.Debug.WriteLine(listBoxMessageTemplates.SelectedItem.Value);
-            System.Diagnostics.Debug.WriteLine(listBoxMessageTemplates.SelectedItem.Text);
+            Utility.WriteLog("proceeding to message page");
+          
+            Utility.WriteLog(listBoxMessageTemplates.SelectedItem.Value);
+            Utility.WriteLog(listBoxMessageTemplates.SelectedItem.Text);
         }
     }
 }

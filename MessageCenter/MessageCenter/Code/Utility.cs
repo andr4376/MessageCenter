@@ -29,6 +29,11 @@ namespace MessageCenter.Code
             return messagesDictionary;
         }
 
+        public static void WriteLog(string textToLog)
+        {
+            System.Diagnostics.Debug.WriteLine(textToLog);
+        }
+
     }
 
   

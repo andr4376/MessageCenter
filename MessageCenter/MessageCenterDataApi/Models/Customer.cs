@@ -35,17 +35,21 @@ namespace MessageCenterDataApi.Models
         {
             List<Customer> tmpCustomers = new List<Customer>();
 
+            Employee customersAdvisor = Employee.GetRandomTUser();
+
             tmpCustomers.Add(new Customer()
             {
                 FirstName = "Andreas",
                 LastName = "Kirkegaard Jensen",
                 Birthday = "26/01/1994",
                 Cpr = "2601941751",
-                Advisor = Tusers.GetRandomTUser().Tuser,
-                Department = "Spentrup",
+                Advisor = customersAdvisor.Tuser,
+                Department = customersAdvisor.Department,
                 Email = "andr4376@gmail.com",
                 PhoneNumber = "40965001"
             });
+
+            customersAdvisor = Employee.GetRandomTUser();
 
             tmpCustomers.Add(new Customer()
             {
@@ -53,37 +57,56 @@ namespace MessageCenterDataApi.Models
                 LastName = "Larsen",
                 Birthday = "21/02/1992",
                 Cpr = "2102921346",
-                Advisor = Tusers.GetRandomTUser().Tuser,
-                Department = "Grenaa",
+                Advisor = customersAdvisor.Tuser,
+                Department = customersAdvisor.Department,
                 Email = "Louisemusen123@gmail.com",
                 PhoneNumber = "23458978"
             });
 
+            customersAdvisor = Employee.GetRandomTUser();
             tmpCustomers.Add(new Customer()
             {
                 FirstName = "Hansi",
                 LastName = "Hinterseer",
                 Birthday = "13/06/1954",
                 Cpr = "1306541349",
-                Advisor = Tusers.GetRandomTUser().Tuser,
-                Department = "Hamburg",
+                Advisor = customersAdvisor.Tuser,
+                Department = customersAdvisor.Department,
                 Email = "Hansi.official@hansi.de",
                 PhoneNumber = "31649764"
             });
 
+            customersAdvisor = Employee.GetRandomTUser();
             tmpCustomers.Add(new Customer()
             {
                 FirstName = "Test",
                 LastName = "Testesen",
                 Birthday = "02/02/1922",
                 Cpr = "02022202",
-                Advisor = Tusers.GetRandomTUser().Tuser,
-                Department = "Teststrup",
+                Advisor = customersAdvisor.Tuser,
+                Department = customersAdvisor.Department,
                 Email = "Test.Testesen@test.test",
                 PhoneNumber = "87651232"
             });
 
             customers = tmpCustomers;
+        }
+
+        public static string GenerateCreateTableCommand(string tableName)
+        {
+            string command =
+                        "Create table "+ tableName + " " +
+                      "(Id integer primary key," +
+                      "FirstName varchar," +
+                      "LastName varchar," +
+                      "Birthday varchar," +
+                      "Cpr varchar," +
+                      "Advisor varchar," +
+                      "Department varchar," +
+                      "Email varchar," +
+                      "PhoneNumber varchar)";
+
+            return command;
         }
     }
 }
