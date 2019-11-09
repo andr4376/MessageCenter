@@ -22,20 +22,38 @@ namespace MessageCenter
                 Initialize();
 
             }
+            CheckIfListboxDoubleClick();
 
         }
+
+        /// <summary>
+        /// Initialization of the front page. 
+        /// </summary>
         private void Initialize()
         {
             Utility.WriteLog("Initializing Front Page");
+            SetupListBox();
+            
+        }
 
+        /// <summary>
+        /// Populates listbox and sets up double click event
+        /// </summary>
+        private void SetupListBox()
+        {
             if (PopulateMessageTemplatesListBox() != ReturnCode.OK)
             {
                 //ERROR
-                Utility.WriteLog("Error in initializing front page - couldn not populate ListBox");
+                Utility.WriteLog("Error in initializing front page - could not populate ListBox");
 
             }
 
-            //Add doubleClick event
+            
+        }
+
+        private void CheckIfListboxDoubleClick()
+        {
+            //Check if doubleClick event on listbox
             if (Request["__EVENTARGUMENT"] != null && Request["__EVENTARGUMENT"] == "doubleClick")
             {
                 GoToMessagePage();
