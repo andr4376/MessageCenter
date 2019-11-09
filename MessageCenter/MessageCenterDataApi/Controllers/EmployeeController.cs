@@ -20,11 +20,11 @@ namespace MessageCenterDataApi.Controllers
 
         [Route("api/Employees/tuser/{tuser}")]
         [HttpGet]
-        public Employee Get(string tuser)
+        public List<Employee> Get(string tuser)
         {
-            Employee tmpEmployee = Database.Instance.GetEmployee(tuser);
+            List<Employee> tmpEmployee = new List<Employee>() { Database.Instance.GetEmployee(tuser) };
 
-            return tmpEmployee != null ? tmpEmployee : new Employee() { FirstName = "Medarbejder findes ikke" };
+            return tmpEmployee;
         }
     }
 }

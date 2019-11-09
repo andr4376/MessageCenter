@@ -1,4 +1,5 @@
 ﻿using MessageCenter.Code;
+using MessageCenter.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +15,24 @@ namespace MessageCenter
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            
+
+            //Initializing
             if (!Page.IsPostBack)
             {
-                if (PopulateMessageTemplatesListBox() != ReturnCode.OK)
-                {
-                    //ERROR
-                }
+                Initialize();
+
+            }
+
+        }
+        private void Initialize()
+        {
+            Utility.WriteLog("Initializing Front Page");
+
+            if (PopulateMessageTemplatesListBox() != ReturnCode.OK)
+            {
+                //ERROR
+                Utility.WriteLog("Error in initializing front page - couldn not populate ListBox");
+
             }
 
             //Add doubleClick event
@@ -30,8 +42,6 @@ namespace MessageCenter
 
             }
             listBoxMessageTemplates.Attributes.Add("ondblclick", ClientScript.GetPostBackEventReference(listBoxMessageTemplates, "doubleClick"));
-
-
         }
 
         private ReturnCode PopulateMessageTemplatesListBox()

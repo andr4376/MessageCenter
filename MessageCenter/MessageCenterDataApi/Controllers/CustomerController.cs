@@ -21,11 +21,11 @@ namespace MessageCenterDataApi.Controllers
 
         [Route("api/Customers/cpr/{cpr}")]
         [HttpGet]
-        public Customer Get(string cpr)
+        public List<Customer> Get(string cpr)
         {
-            Customer tmpCustomer = Database.Instance.GetCustomer(cpr);
+            List<Customer> tmpCustomer = new List<Customer>() { Database.Instance.GetCustomer(cpr) };
 
-            return tmpCustomer != null ? tmpCustomer : new Customer() { FirstName = "Kunde findes ikke" };
+            return tmpCustomer;
         }
 
     }

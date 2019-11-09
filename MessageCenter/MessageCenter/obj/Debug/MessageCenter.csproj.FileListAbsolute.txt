@@ -141,3 +141,5 @@ D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\obj\Debug
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\obj\Debug\MessageCenter.dll
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\obj\Debug\MessageCenter.pdb
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\System.Data.SQLite.dll
+D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\System.Net.Http.Formatting.dll
+D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\System.Net.Http.Formatting.xml
