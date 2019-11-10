@@ -26,5 +26,13 @@ namespace MessageCenterDataApi.Controllers
 
             return tmpEmployee;
         }
+        [Route("api/Employees/login/{tuser}/{password}")]
+        [HttpGet]
+        public List<Employee> Get(string tuser,string password)
+        {
+            List<Employee> tmpEmployee = new List<Employee>() { Database.Instance.GetEmployee(tuser,password) };
+
+            return tmpEmployee;
+        }
     }
 }

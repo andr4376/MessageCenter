@@ -17,6 +17,7 @@ namespace MessageCenter.Code
         public static readonly string getAllCustomerParameters = "customers/";
         public static readonly string getEmployeeFromTUserParameters = "employees/tuser/";
         public static readonly string getCustomerFromCprParameters = "customers/cpr/";
+        public static readonly string getEmployeeFromCredentials = "employees/login/";
 
 
         private HttpClient httpClient;
@@ -62,12 +63,9 @@ namespace MessageCenter.Code
 
             if (response.IsSuccessStatusCode)
             {
-                // Parse the response body.
-                List<T> dataObjects = (List<T>) response.Content.ReadAsAsync<IEnumerable<T>>().Result;  //Make sure to add a reference to System.Net.Http.Formatting.dll
-                foreach (T d in dataObjects)
-                {
-                    returnElements.Add(d);
-                }
+                // parse response 
+                returnElements = (List<T>) response.Content.ReadAsAsync<IEnumerable<T>>().Result;  //Make sure to add a reference to System.Net.Http.Formatting.dll
+                
             }
             else
             {

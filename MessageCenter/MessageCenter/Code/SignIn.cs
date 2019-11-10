@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MessageCenter.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,8 +8,56 @@ namespace MessageCenter.Code
 {
     public class SignIn
     {
+        private static SignIn instance;
 
+        private  Employee user;
 
+        public Employee User
+        {
+            get { return user; }
+        }
+
+        public static SignIn Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new SignIn();
+                }
+                return instance;
+            }
+        }
+
+        public ReturnCode LogIn(string tUser, string passWord)
+        {
+            ReturnCode returnCode = ReturnCode.ERROR;
+
+            try
+            {
+                this.user = ApiManager.Instance.MakeRestCall<Employee>
+                (ApiManager.getEmployeeFromCredentials
+                + tUser + "/"
+                + EncryptPassword(passWord))[0];
+
+                if (User == null)
+                {
+                    returnCode = ReturnCode.FORHINDRING;
+                    Utility.WriteLog("Ingen medarbejder fundet med disse login oplysninger!");
+                }
+                else
+                {
+                    returnCode = ReturnCode.OK;
+                }
+            }
+            catch (Exception)
+            {
+                Utility.WriteWarningMessage("Api Exception! kunne lave kald for at finde loginbruger");                
+            }            
+
+            
+            return returnCode;
+        }
 
         /// <summary>
         /// Hashes the password using SHA (Secure Hash Algorithm)
@@ -19,7 +68,8 @@ namespace MessageCenter.Code
         {
             byte[] encodedPassword = System.Text.Encoding.ASCII.GetBytes(passWord);
             encodedPassword = new System.Security.Cryptography.SHA256Managed().ComputeHash(encodedPassword);
-            return System.Convert.ToBase64String(encodedPassword);
+                       
+            return System.Convert.ToBase64String(encodedPassword).Replace('/', '_').Replace('+', 'q').Replace('=', 'a');
         }
     }
 }

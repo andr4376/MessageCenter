@@ -19,6 +19,7 @@ namespace MessageCenter
             //Initializing
             if (!Page.IsPostBack)
             {
+
                 Initialize();
 
             }

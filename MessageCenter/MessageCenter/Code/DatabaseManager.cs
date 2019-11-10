@@ -14,14 +14,13 @@ namespace MessageCenter.Code
 
         public List<MessageTemplate> messages;
 
-
-        private static string dbPath = "Database.db";
+        public static readonly string dbFileName = "Database.db";
 
         private static string messageTemplatesTableName = "MessageTemplates";
 
         private SQLiteConnection DBConnect;
 
-        private static string supportEmail = "andr4376@gmail.com";
+        private readonly string supportEmail = "andr4376@gmail.com";
 
 
 
@@ -65,10 +64,9 @@ namespace MessageCenter.Code
 
             System.Diagnostics.Debug.WriteLine("Initializing DatabaseManager");
 
-            string appdatafolder = Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "App_Data");
-            dbPath = appdatafolder + "\\" + dbPath;
+            
 
-            DBConnect = new SQLiteConnection("Data source = " + dbPath + "; Version = 3; ");
+            DBConnect = new SQLiteConnection("Data source = " + AppDataManager.Instance.dbFile + "; Version = 3; ");
 
             //Setup Database file - if it goes well, Create the table if needed, else return error.
             return CreateDbFileIfNotExists() == ReturnCode.OK ? CreateTablesIfNotExists() : ReturnCode.ERROR;
@@ -82,17 +80,17 @@ namespace MessageCenter.Code
         {
             try
             {                
-                if (!(File.Exists(dbPath)))
+                if (!(File.Exists(AppDataManager.Instance.dbFile)))
                 {
-                    SQLiteConnection.CreateFile(dbPath);
-                    Utility.WriteWarningMessage("Programmet opretter en ny database - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + dbPath + "." +
+                    SQLiteConnection.CreateFile(AppDataManager.Instance.dbFile);
+                    Utility.WriteWarningMessage("Programmet opretter en ny database - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + AppDataManager.Instance.dbFile + "." +
                     "\nKontakt venligst teknisk support på følgende mail: " + supportEmail);
-                    Utility.WriteLog("Db file created @" + dbPath);
+                    Utility.WriteLog("Db file created @" + AppDataManager.Instance.dbFile);
 
                 }
                 else
                 {
-                    Utility.WriteLog("Db file found @" + dbPath);
+                    Utility.WriteLog("Db file found @" + AppDataManager.Instance.dbFile);
                 }
             }
             catch (System.Exception e)
@@ -100,7 +98,7 @@ namespace MessageCenter.Code
 
                 Utility.WriteLog(e.Message);
 
-                Utility.WriteWarningMessage("Oops! Programmet kunne ikke oprette database filen - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + dbPath + "." +
+                Utility.WriteWarningMessage("Oops! Programmet kunne ikke oprette database filen - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + AppDataManager.Instance.dbFile + "." +
                     "\nKontakt venligst teknisk support på følgende mail: " + supportEmail);
 
 

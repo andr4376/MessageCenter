@@ -69,7 +69,7 @@ namespace MessageCenterDataApi.Models
                     Department = "Randers",
                     Email = "kna@sparkron.dk",
                     PhoneNumber = "26564578",
-                    PassWord = "yFjFQqyHJbMmAYIsH5rZ4Y3S/6vpMyFLfWLnZEcv1J0="
+                    PassWord = "yFjFQqyHJbMmAYIsH5rZ4Y3S_6vpMyFLfWLnZEcv1J0a"
 
                 });
             employees.Add(
@@ -83,7 +83,7 @@ namespace MessageCenterDataApi.Models
                     Department = "Spentrup",
                     Email = "Seh@sparkron.dk",
                     PhoneNumber = "20516498",
-                    PassWord = "yFjFQqyHJbMmAYIsH5rZ4Y3S/6vpMyFLfWLnZEcv1J0="
+                    PassWord = "yFjFQqyHJbMmAYIsH5rZ4Y3S_6vpMyFLfWLnZEcv1J0a"
 
 
                 });
@@ -98,7 +98,7 @@ namespace MessageCenterDataApi.Models
                    Department = "Tronholmen",
                    Email = "Bhm@sparkron.dk",
                    PhoneNumber = "4051463125",
-                   PassWord = "yFjFQqyHJbMmAYIsH5rZ4Y3S/6vpMyFLfWLnZEcv1J0="
+                   PassWord = "yFjFQqyHJbMmAYIsH5rZ4Y3S_6vpMyFLfWLnZEcv1J0a"
 
 
                });
@@ -114,7 +114,7 @@ namespace MessageCenterDataApi.Models
                   Department = "Processer & Effektivisering",
                   Email = "Bori@sparkron.dk",
                   PhoneNumber = "55443187",
-                  PassWord = "yFjFQqyHJbMmAYIsH5rZ4Y3S/6vpMyFLfWLnZEcv1J0="
+                  PassWord = "yFjFQqyHJbMmAYIsH5rZ4Y3S_6vpMyFLfWLnZEcv1J0a"
 
 
               });

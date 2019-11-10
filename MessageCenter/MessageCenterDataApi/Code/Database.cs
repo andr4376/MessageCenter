@@ -275,6 +275,40 @@ namespace MessageCenterDataApi.Code
             DBConnect.Close();
             return tmpEmployee;
         }
+        public Employee GetEmployee(string tuser, string password)
+        {
+            Employee tmpEmployee = null;
+
+
+            DBConnect.Open();
+            SQLiteCommand Command = new SQLiteCommand("select * from " + employeeTableName + " where TUser = '" + tuser + "'" +
+                "AND password= '"+password+"' LIMIT 1;", DBConnect);
+
+
+            using (SQLiteDataReader dataReader = Command.ExecuteReader())
+            {
+                while (dataReader.Read())
+                {
+                    try
+                    {
+                        tmpEmployee = ExtractEmployeeData(dataReader);
+
+                    }
+                    catch (Exception)
+                    {
+#if DEBUG
+                        System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af medarbejder med cpr: " + tuser);
+                        throw;
+#endif
+                    }
+
+                }
+            }
+
+
+            DBConnect.Close();
+            return tmpEmployee;
+        }
         private Customer ExtractCustomerData(SQLiteDataReader dataReader)
         {
             Customer tmpCustomer = new Customer();
