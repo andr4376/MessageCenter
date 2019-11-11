@@ -38,7 +38,7 @@ namespace MessageCenter.Code
             {
                 this.user = ApiManager.Instance.MakeRestCall<Employee>
                 (ApiManager.getEmployeeFromCredentials
-                + tUser + "/"
+                + tUser.ToUpper() + "/"
                 + EncryptPassword(passWord))[0];
 
                 if (User == null)
