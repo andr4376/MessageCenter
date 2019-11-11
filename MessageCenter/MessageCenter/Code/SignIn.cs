@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Services;
 
 namespace MessageCenter.Code
 {
@@ -47,6 +48,7 @@ namespace MessageCenter.Code
                 }
                 else
                 {
+                    Utility.WriteLog("login: " + user.Tuser + " - " + user.FirstName + " " + user.LastName);
                     returnCode = ReturnCode.OK;
                 }
             }
@@ -71,5 +73,12 @@ namespace MessageCenter.Code
                        
             return System.Convert.ToBase64String(encodedPassword).Replace('/', '_').Replace('+', 'q').Replace('=', 'a');
         }
+
+        public override string ToString()
+        {
+            return this.user.FirstName + " " + this.user.LastName;
+        }
+
+
     }
 }
