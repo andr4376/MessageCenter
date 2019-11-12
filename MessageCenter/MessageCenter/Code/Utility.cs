@@ -23,7 +23,7 @@ namespace MessageCenter.Code
 
             foreach (MessageTemplate message in list)
             {
-                messagesDictionary.Add(message.id.ToString(), message.title);
+                messagesDictionary.Add(message.Id.ToString(), message.Title);
 
             }
             return messagesDictionary;

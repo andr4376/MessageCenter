@@ -80,7 +80,7 @@ namespace MessageCenter.Code
                     {
                         return ReturnCode.ERROR;
                     }
-                    
+
                     break;
 
                 //DB fil findes i forvejen
@@ -137,24 +137,33 @@ namespace MessageCenter.Code
 
         private ReturnCode PopulateDb()
         {
+
+            MessageTemplate testMessage = new MessageTemplate("Besked om økonomiske vanskligheder","blablabla du skylder penge", 0);
+
+            ReturnCode returnCode = AddMessageTemplate(testMessage);
+
+            return returnCode;
+        }
+
+        /// <summary>
+        /// Adds a new message template to the database
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private ReturnCode AddMessageTemplate(MessageTemplate message)
+        {
             string cmd = "insert into " + messageTemplatesTableName + " values (null," +
-               "''," +
-               "''," +
-               "''," +
-               "''," +
-               "''," +
-               "''," +
-               "''," +
-               "'')";
-
-            ExecuteSQLiteNonQuery(cmd);
-
+              "'" + message.Title + "',"+
+              "'" + message.Text + "', " +
+              +message.MessageTypeId + ")";
+            
             ReturnCode returnCode = ExecuteSQLiteNonQuery(cmd);
 
             if (returnCode != ReturnCode.OK)
             {
                 Utility.WriteLog("SQLite Error: " + cmd);
                 Utility.WriteWarningMessage("Fejl ved tilføjelse af test beskeder");
+
             }
             return returnCode;
         }
@@ -177,7 +186,7 @@ namespace MessageCenter.Code
             "(id integer primary key, " +
             "title varchar, " +
             "text varchar, " +
-            "date varchar)";
+            "messageType integer)";
 
             returnCode = ExecuteSQLiteNonQuery(cmd);
 
@@ -190,7 +199,7 @@ namespace MessageCenter.Code
                 {
                     returnCode = ReturnCode.ERROR;
                 }
-                
+
 #endif
 
             }
@@ -261,7 +270,7 @@ namespace MessageCenter.Code
 
             foreach (MessageTemplate message in messages)
             {
-                messagesDictionary.Add(message.id.ToString(), message.title);
+                messagesDictionary.Add(message.Id.ToString(), message.Title);
 
             }
             return messagesDictionary;
@@ -270,25 +279,13 @@ namespace MessageCenter.Code
         private ReturnCode GetAllMessagesFromDB()
         {
             //TODO: get messages from db instead! DELETE THIS
-            messages = new List<MessageTemplate>() { new MessageTemplate("Send fødselsdagsbesked til kunde"),
-                new MessageTemplate("Inviter kunde til årlig møde"),
-                new MessageTemplate("Dette er en test beskedsskabelon med en meget lang titel\n for at teste hvordan brugergrænsefladen reagere"), new MessageTemplate("Besked mht. mistænksom bevægelse på kundens netbank"),
-                 new MessageTemplate("Test beskedsskabelon 1"), new MessageTemplate("Test beskedsskabelon 2"),
-                 new MessageTemplate("Test beskedsskabelon 3"), new MessageTemplate("Test beskedsskabelon 4"),
-                 new MessageTemplate("Test beskedsskabelon 5"), new MessageTemplate("Test beskedsskabelon 6"),
-                 new MessageTemplate("Test beskedsskabelon 7"), new MessageTemplate("Test beskedsskabelon 8"),
-                 new MessageTemplate("Test beskedsskabelon 9"), new MessageTemplate("Test beskedsskabelon 10"),
-                 new MessageTemplate("Test beskedsskabelon 11"), new MessageTemplate("Test beskedsskabelon 12"),
-                 new MessageTemplate("Test beskedsskabelon 13"), new MessageTemplate("Test beskedsskabelon 14"),
-                 new MessageTemplate("Test beskedsskabelon 15"), new MessageTemplate("Test beskedsskabelon 16"),
-                 new MessageTemplate("Test beskedsskabelon 17"), new MessageTemplate("Test beskedsskabelon 18"),
-                 new MessageTemplate("Test beskedsskabelon 19"), new MessageTemplate("Test beskedsskabelon 20"),
-                 new MessageTemplate("Test beskedsskabelon 21"), new MessageTemplate("Test beskedsskabelon 22"),
-             new MessageTemplate("Test beskedsskabelon 23"), new MessageTemplate("Test beskedsskabelon 24")};
+            messages = new List<MessageTemplate>();
             //
 
             return ReturnCode.OK;
         }
+
+
 
         public List<MessageTemplate> GetMessagesContainingText(string text)
         {
@@ -297,7 +294,7 @@ namespace MessageCenter.Code
 
 
             return tmp = messages.Where(x =>
-            x.title.ToUpper().
+            x.Title.ToUpper().
             Contains(text.ToUpper()))
             .ToList();
         }
