@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
@@ -54,7 +55,7 @@ namespace MessageCenter.Code
         {
             ReturnCode returnCode = ReturnCode.OK;
 
-
+            //TODO: db get all messages
 
             return returnCode;
         }
@@ -64,22 +65,44 @@ namespace MessageCenter.Code
 
             System.Diagnostics.Debug.WriteLine("Initializing DatabaseManager");
 
-            
+
 
             DBConnect = new SQLiteConnection("Data source = " + AppDataManager.Instance.dbFile + "; Version = 3; ");
 
             //Setup Database file - if it goes well, Create the table if needed, else return error.
-            return CreateDbFileIfNotExists() == ReturnCode.OK ? CreateTablesIfNotExists() : ReturnCode.ERROR;
 
-        }       
+            ReturnCode code = CreateDbFileIfNotExists();
+            switch (code)
+            {
+                //Ingen db fil fundet - ny er oprettet
+                case ReturnCode.OK:
+                    if (CreateTables() != ReturnCode.OK)
+                    {
+                        return ReturnCode.ERROR;
+                    }
+                    
+                    break;
+
+                //DB fil findes i forvejen
+                case ReturnCode.FORHINDRING:
+                    break;
+
+                //fejl ved oprettelse / identificering af db fil
+                case ReturnCode.ERROR:
+                    break;
+
+            }
+            return code;
+
+        }
 
 
-        
+
 
         private ReturnCode CreateDbFileIfNotExists()
         {
             try
-            {                
+            {
                 if (!(File.Exists(AppDataManager.Instance.dbFile)))
                 {
                     SQLiteConnection.CreateFile(AppDataManager.Instance.dbFile);
@@ -87,10 +110,13 @@ namespace MessageCenter.Code
                     "\nKontakt venligst teknisk support på følgende mail: " + supportEmail);
                     Utility.WriteLog("Db file created @" + AppDataManager.Instance.dbFile);
 
+
+
                 }
                 else
                 {
                     Utility.WriteLog("Db file found @" + AppDataManager.Instance.dbFile);
+                    return ReturnCode.FORHINDRING;
                 }
             }
             catch (System.Exception e)
@@ -109,21 +135,70 @@ namespace MessageCenter.Code
             return ReturnCode.OK;
         }
 
-        private ReturnCode CreateTablesIfNotExists()
+        private ReturnCode PopulateDb()
+        {
+            string cmd = "insert into " + messageTemplatesTableName + " values (null," +
+               "''," +
+               "''," +
+               "''," +
+               "''," +
+               "''," +
+               "''," +
+               "''," +
+               "'')";
+
+            ExecuteSQLiteNonQuery(cmd);
+
+            ReturnCode returnCode = ExecuteSQLiteNonQuery(cmd);
+
+            if (returnCode != ReturnCode.OK)
+            {
+                Utility.WriteLog("SQLite Error: " + cmd);
+                Utility.WriteWarningMessage("Fejl ved tilføjelse af test beskeder");
+            }
+            return returnCode;
+        }
+
+        private ReturnCode CreateTables()
         {
 
-            string createMessageTemplatesTable = "Create table IF NOT EXISTS " + messageTemplatesTableName + "" +
-                "(id integer primary key, title varchar, text varchar, date varchar)";
+            string cmd = "DROP TABLE IF EXISTS " + messageTemplatesTableName;
 
-            ReturnCode returnCode = ExecuteSQLiteNonQuery(createMessageTemplatesTable);
+            ReturnCode returnCode = ExecuteSQLiteNonQuery(cmd);
+
+            if (returnCode != ReturnCode.OK)
+            {
+                Utility.WriteLog("SQLite Error: " + cmd);
+                Utility.WriteWarningMessage("Fejl ved oprettelse af database - kontakt venligt it support");
+                return returnCode;
+            }
+
+            cmd = "Create table " + messageTemplatesTableName + "" +
+            "(id integer primary key, " +
+            "title varchar, " +
+            "text varchar, " +
+            "date varchar)";
+
+            returnCode = ExecuteSQLiteNonQuery(cmd);
 
             if (returnCode == ReturnCode.OK)
             {
-                Utility.WriteLog("Table '" + messageTemplatesTableName + "' is ready!");
+                Utility.WriteLog("Table '" + messageTemplatesTableName + "' has been created!");
+
+#if DEBUG
+                if (PopulateDb() != ReturnCode.OK)
+                {
+                    returnCode = ReturnCode.ERROR;
+                }
+                
+#endif
+
             }
             else
             {
                 Utility.WriteLog("ERROR: Could not create table '" + messageTemplatesTableName + "'!");
+                Utility.WriteWarningMessage("Fejl ved oprettelse af database - kontakt venligt it support");
+
             }
 
             return returnCode;
@@ -220,7 +295,7 @@ namespace MessageCenter.Code
             GetAllMessagesFromDB();
             List<MessageTemplate> tmp = messages;
 
-            
+
             return tmp = messages.Where(x =>
             x.title.ToUpper().
             Contains(text.ToUpper()))

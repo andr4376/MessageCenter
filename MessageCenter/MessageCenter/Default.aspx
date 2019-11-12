@@ -1,21 +1,23 @@
-﻿<%@ Page Title="Home" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="MessageCenter._Default" MaintainScrollPositionOnPostback="true" %>
+﻿<%@ Page Title="Home" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs"
+    Inherits="MessageCenter._Default" MaintainScrollPositionOnPostback="true" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
 
     <!--række til søge input og listbox med beskeder -->
     <div class="row">
+        <asp:Panel runat="server" DefaultButton="searchBtn">
+            <!-- Input til søgning START-->
+            <div class="container col-md-2 search-group">
+                <div>
 
-        <!-- Input til søgning START-->
-        <div class="container col-md-2 search-group">
-            <div>
+                    <asp:TextBox ID="searchInput" runat="server" defaultButton="searchBtn" placeholder="Søg efter besked..." CssClass="sparkron-search-input" />
+                    <asp:Button ID="searchBtn" runat="server" OnClick="searchBtn_Click" Text="Søg" CssClass="sparkron-search-btn" CausesValidation="False" />
 
-                <asp:TextBox ID="searchInput" runat="server" defaultButton="searchBtn" placeholder="Søg efter besked..." CssClass="sparkron-search-input" />
-                <asp:Button ID="searchBtn" runat="server" OnClick="searchBtn_Click" Text="Søg" CssClass="sparkron-search-btn" />
+                </div>
 
             </div>
-
-        </div>
+        </asp:Panel>
         <!-- Input til søgning SLUT-->
 
         <!-- ListBox som indeholder Besked Skabeloner START-->

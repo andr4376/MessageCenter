@@ -34,7 +34,7 @@ namespace MessageCenter
         {
             Utility.WriteLog("Initializing Front Page");
             SetupListBox();
-            
+
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace MessageCenter
 
             }
 
-            
+
         }
 
         private void CheckIfListboxDoubleClick()
@@ -65,12 +65,12 @@ namespace MessageCenter
 
         private ReturnCode PopulateMessageTemplatesListBox()
         {
-           listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(DatabaseManager.Instance.GetMessageTemplates());
+            listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(DatabaseManager.Instance.GetMessageTemplates());
 
             if (listBoxMessageDictionary == null)
             {
                 return ReturnCode.ERROR;
-            }          
+            }
 
             UpdateListBox();
 
@@ -106,7 +106,7 @@ namespace MessageCenter
                 listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(templates);
 
                 UpdateListBox();
-               
+
             }
 
 
@@ -125,7 +125,7 @@ namespace MessageCenter
             listBoxMessageTemplates.DataValueField = "Key";
             listBoxMessageTemplates.DataBind();
 
-          
+
         }
         private void GoToMessagePage()
         {
@@ -133,10 +133,27 @@ namespace MessageCenter
             {
                 return;
             }
+
+            if (SignIn.Instance.User == null)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
+                return;
+            }
+
+            //TODO: continue if element exists in db
+            /*
+            if (DatabaseManager.Instance.get)
+            {
+
+            }
+            */
             Utility.WriteLog("proceeding to message page");
-          
             Utility.WriteLog(listBoxMessageTemplates.SelectedItem.Value);
             Utility.WriteLog(listBoxMessageTemplates.SelectedItem.Text);
+
+            Session["Page"] = listBoxMessageTemplates.SelectedItem.Value;
+            Response.Redirect("Messages.aspx");
+
         }
     }
 }
