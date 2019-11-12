@@ -30,6 +30,14 @@ namespace MessageCenter.Code
             }
         }
 
+        public bool IsLoggedIn
+        {
+            get
+            {
+                return User != null;
+            }
+        }
+
         public ReturnCode LogIn(string tUser, string passWord)
         {
             ReturnCode returnCode = ReturnCode.ERROR;

@@ -21,6 +21,11 @@ namespace MessageCenter
         protected void btn_login_Click(object sender, EventArgs e)
         {
 
+            if (SignIn.Instance.IsLoggedIn)
+            {
+                return;
+            }
+
             ReturnCode loginStatus = SignIn.Instance.LogIn(loginTuserInput.Text, loginPasswordInput.Text);
 
             loginLink.Visible = SignIn.Instance.User == null ? true : false;

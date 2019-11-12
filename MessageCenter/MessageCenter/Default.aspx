@@ -22,7 +22,6 @@
 
         <!-- ListBox som indeholder Besked Skabeloner START-->
         <div class="container col-md-8" style="padding-left: 50px">
-
             <h2 class="sparkron-box-header">
                 <asp:Image ID="logo" runat="server" ImageUrl="~/Images/envelope.png" CssClass="mini-logo" />
                 Besked skabeloner</h2>
@@ -30,7 +29,7 @@
             <asp:ListBox
                 ID="listBoxMessageTemplates" runat="server"
                 CssClass="template-msg-listbox sparkron-box"
-                defaultButton="btn_proceedToMessagePage"></asp:ListBox>
+                ></asp:ListBox>
 
             <!--fortsæt knap-->
             <asp:Button ID="btn_proceedToMessagePage" Text="Fortsæt" runat="server" OnClick="btn_proceedToMessagePage_Click" CssClass="sparkron-submit-btn" />
