@@ -46,8 +46,8 @@ namespace MessageCenter.Code
 
                 return;
             }
-            //TODO: load pages - see ConsoleEntries project - read from DB
-            LoadAllMessageTemplates();
+
+           // LoadAllMessageTemplates();
 
         }
         private MessageTemplate ExtractMessageTemplateData(SQLiteDataReader dataReader)
@@ -111,7 +111,7 @@ namespace MessageCenter.Code
 
 
 
-            DBConnect = new SQLiteConnection("Data source = " + AppDataManager.Instance.dbFile + "; Version = 3; ");
+            DBConnect = new SQLiteConnection("Data source = " + AppDataManager.Instance.DbFile + "; Version = 3; ");
 
             //Setup Database file - if it goes well, Create the table if needed, else return error.
 
@@ -147,19 +147,17 @@ namespace MessageCenter.Code
         {
             try
             {
-                if (!(File.Exists(AppDataManager.Instance.dbFile)))
+                if (!(File.Exists(AppDataManager.Instance.DbFile)))
                 {
-                    SQLiteConnection.CreateFile(AppDataManager.Instance.dbFile);
-                    Utility.WriteWarningMessage("Programmet opretter en ny database - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + AppDataManager.Instance.dbFile + "." +
+                    SQLiteConnection.CreateFile(AppDataManager.Instance.DbFile);
+                    Utility.PrintWarningMessage("Programmet opretter en ny database - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + AppDataManager.Instance.DbFile + "." +
                     "\nKontakt venligst teknisk support på følgende mail: " + supportEmail);
-                    Utility.WriteLog("Db file created @" + AppDataManager.Instance.dbFile);
-
-
-
+                    Utility.WriteLog("Db file created @" + AppDataManager.Instance.DbFile);
+                                       
                 }
                 else
                 {
-                    Utility.WriteLog("Db file found @" + AppDataManager.Instance.dbFile);
+                    Utility.WriteLog("Db file found @" + AppDataManager.Instance.DbFile);
                     return ReturnCode.FORHINDRING;
                 }
             }
@@ -168,7 +166,7 @@ namespace MessageCenter.Code
 
                 Utility.WriteLog(e.Message);
 
-                Utility.WriteWarningMessage("Oops! Programmet kunne ikke oprette database filen - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + AppDataManager.Instance.dbFile + "." +
+                Utility.PrintWarningMessage("Oops! Programmet kunne ikke oprette database filen - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + AppDataManager.Instance.DbFile + "." +
                     "\nKontakt venligst teknisk support på følgende mail: " + supportEmail);
 
 
@@ -179,26 +177,30 @@ namespace MessageCenter.Code
             return ReturnCode.OK;
         }
 
+        /// <summary>
+        /// Populates the DB with test MessageTemplates if the solution is running in debug mode.
+        /// </summary>
+        /// <returns>status</returns>
         private ReturnCode PopulateDb()
         {
+
             Random rnd = new Random();
 
             ReturnCode status = ReturnCode.OK;
 
+#if DEBUG
             for (int i = 0; i < 25; i++)
             {
-                MessageTemplate testMessage = new MessageTemplate("Besked om økonomiske vanskligheder"+i, "blablabla, du skylder penge fister"+i, rnd.Next(0,1+1));
+                MessageTemplate testMessage = new MessageTemplate("Besked om økonomiske vanskligheder" + i, "blablabla, du skylder penge fister" + i, rnd.Next(0, 1 + 1));
 
-              status= AddMessageTemplate(testMessage);
+                status = AddMessageTemplate(testMessage);
 
                 if (status != ReturnCode.OK)
                 {
                     break;
                 }
-
-
             }
-
+#endif
             return status;
         }
 
@@ -219,7 +221,7 @@ namespace MessageCenter.Code
             if (returnCode != ReturnCode.OK)
             {
                 Utility.WriteLog("SQLite Error: " + cmd);
-                Utility.WriteWarningMessage("Fejl ved tilføjelse af test beskeder");
+                Utility.PrintWarningMessage("Fejl ved tilføjelse af test beskeder");
 
             }
             return returnCode;
@@ -235,7 +237,7 @@ namespace MessageCenter.Code
             if (returnCode != ReturnCode.OK)
             {
                 Utility.WriteLog("SQLite Error: " + cmd);
-                Utility.WriteWarningMessage("Fejl ved oprettelse af database - kontakt venligt it support");
+                Utility.PrintWarningMessage("Fejl ved oprettelse af database - kontakt venligt it support");
                 return returnCode;
             }
 
@@ -263,7 +265,7 @@ namespace MessageCenter.Code
             else
             {
                 Utility.WriteLog("ERROR: Could not create table '" + messageTemplatesTableName + "'!");
-                Utility.WriteWarningMessage("Fejl ved oprettelse af database - kontakt venligt it support");
+                Utility.PrintWarningMessage("Fejl ved oprettelse af database - kontakt venligt it support");
 
             }
 
@@ -295,20 +297,46 @@ namespace MessageCenter.Code
         }
 
 
-
-        public List<MessageTemplate> GetMessageTemplates()
+        /// <summary>
+        /// Returns a list containing all MessageTemplates stored in the DB
+        /// </summary>
+        /// <returns>all MessageTemplates stored in the DB</returns>
+        public List<MessageTemplate> GetAllMessageTemplates()
         {
-            if (messages == null || messages.Count == 0)
+            List<MessageTemplate> listOfMessages = new List<MessageTemplate>();
+            MessageTemplate tmpMessage = null;
+
+            DBConnect.Open();
+
+            SQLiteCommand Command = new SQLiteCommand("select * from "
+            + messageTemplatesTableName +";", DBConnect);
+
+            try
             {
-                if (GetAllMessagesFromDB() == ReturnCode.ERROR)
+                using (SQLiteDataReader dataReader = Command.ExecuteReader())
                 {
-                    return null;
+                    while (dataReader.Read())
+                    {
+                        tmpMessage = ExtractMessageTemplateData(dataReader);
+
+                        listOfMessages.Add(tmpMessage);
+                    }
                 }
             }
+            catch (Exception)
+            {
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af alle beskedskabeloner!");
+                throw;
+#endif
+            }
 
+            DBConnect.Close();
+
+            return listOfMessages;
             return messages;
         }
-
+/*
         public Dictionary<string, string> GetMessageTemplatesDictionaryTitleId()
         {
 
@@ -332,7 +360,7 @@ namespace MessageCenter.Code
             }
             return messagesDictionary;
         }
-
+        */
         private ReturnCode GetAllMessagesFromDB()
         {
             //TODO: get messages from db instead! DELETE THIS
@@ -344,7 +372,7 @@ namespace MessageCenter.Code
 
 
 
-        public List<MessageTemplate> GetMessagesContainingText(string text)
+        public List<MessageTemplate> GetMessagesTitleContainsText(string text)
         {
             List<MessageTemplate> messagesContainingString = DBQueryTitleContains(text);
 

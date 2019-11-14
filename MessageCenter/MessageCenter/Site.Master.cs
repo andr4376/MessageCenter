@@ -16,10 +16,13 @@ namespace MessageCenter
              
             loginLink.Visible = SignIn.Instance.User == null ? true : false;
 
+        
+
         }
 
         protected void btn_login_Click(object sender, EventArgs e)
         {
+            Utility.WriteLog("Attempting to log in");
 
             if (SignIn.Instance.IsLoggedIn)
             {
@@ -37,6 +40,9 @@ namespace MessageCenter
                     loginPasswordInput.Visible = false;
                     loginTuserInput.Visible = false;
                     btn_login.Visible = false;
+                    btn_login.UseSubmitBehavior = false;
+                    Utility.WriteLog("Login success");
+
                     break;
                 case ReturnCode.FORHINDRING:
                     loginStatusText.Text = "Forkert TUser eller kode!";

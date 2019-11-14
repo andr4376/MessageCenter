@@ -34,6 +34,9 @@ namespace MessageCenter
             Utility.WriteLog("Initializing Front Page");
             SetupListBox();
 
+            listBoxMessageTemplates.Attributes.Add("ondblclick", ClientScript.GetPostBackEventReference(listBoxMessageTemplates, "doubleClick"));
+
+
         }
 
         /// <summary>
@@ -59,12 +62,11 @@ namespace MessageCenter
                 GoToMessagePage();
 
             }
-            listBoxMessageTemplates.Attributes.Add("ondblclick", ClientScript.GetPostBackEventReference(listBoxMessageTemplates, "doubleClick"));
         }
 
         private ReturnCode PopulateMessageTemplatesListBox()
         {
-           Dictionary<string,string> listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(DatabaseManager.Instance.GetMessageTemplates());
+           Dictionary<string,string> listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(DatabaseManager.Instance.GetAllMessageTemplates());
 
             if (listBoxMessageDictionary == null)
             {
@@ -81,26 +83,37 @@ namespace MessageCenter
             Utility.WriteLog(listBoxMessageTemplates.SelectedValue);
         }
 
+        /// <summary>
+        /// Proceeds to a message page for the selected ListBox MessageTemplate item
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void btn_proceedToMessagePage_Click(object sender, EventArgs e)
         {
             GoToMessagePage();
 
-
         }
 
-
+        /// <summary>
+        /// Searches for MessageTemplates where the title contains the text from the search input textbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void searchBtn_Click(object sender, EventArgs e)
         {
+            //Get search input
             string inputText = searchInput.Text;
             Utility.WriteLog("searching for input: " + inputText);
 
             if (inputText == "")
             {
+                //Repopulate Listbox if the search input is blank
                 PopulateMessageTemplatesListBox();
             }
             else
             {
-                List<MessageTemplate> templates = DatabaseManager.Instance.GetMessagesContainingText(inputText);
+                //Get all messagetemplates where the title contains the search input
+                List<MessageTemplate> templates = DatabaseManager.Instance.GetMessagesTitleContainsText(inputText);
 
                 Dictionary<string,string> listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(templates);
 

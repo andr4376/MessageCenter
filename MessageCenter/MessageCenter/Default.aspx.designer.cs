@@ -40,6 +40,15 @@ namespace MessageCenter {
         protected global::System.Web.UI.WebControls.Image logo;
         
         /// <summary>
+        /// UPListbox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel UPListbox;
+        
+        /// <summary>
         /// listBoxMessageTemplates control.
         /// </summary>
         /// <remarks>

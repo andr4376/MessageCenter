@@ -12,11 +12,20 @@ namespace MessageCenter.Code
 
     public static class Utility
     {
-        public static void WriteWarningMessage(string message)
+        /// <summary>
+        /// Calls the JS function "alert" and prints the input text to the userinterface in a message box
+        /// </summary>
+        /// <param name="message">The warning message to be printed</param>
+        public static void PrintWarningMessage(string message)
         {
             System.Web.HttpContext.Current.Response.Write("<SCRIPT LANGUAGE=\"\"JavaScript\"\">alert(\"" + message + "\")</SCRIPT>");           
         }
 
+        /// <summary>
+        /// Converts a list of MessageTemplates into a Dictionary containing "ID" and "Title"
+        /// </summary>
+        /// <param name="list">The list of MessageTemplates to be converted</param>
+        /// <returns></returns>
         public static Dictionary<string,string> ConvertTemplateListToDictionary(List<MessageTemplate> list)
         {
             Dictionary<string, string> messagesDictionary = new Dictionary<string, string>();
@@ -28,6 +37,7 @@ namespace MessageCenter.Code
             }
             return messagesDictionary;
         }
+
 
         public static void WriteLog(string textToLog)
         {

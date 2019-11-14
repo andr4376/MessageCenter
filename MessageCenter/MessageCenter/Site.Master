@@ -63,46 +63,50 @@
 
 
         <!--LOGIN MODAL (popup)-->
-        <asp:Panel runat="server" DefaultButton="btn_login">
-        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+        <asp:Panel runat="server" DefaultButton="btn_login" CssClass="sparkron-modal">
+            <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
 
-                <div class="modal-content sparkron-modal">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <div class="modal-content">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-
-                        <!-- LOGIN -->
-                        <div class="login-box container">
-                                                        <div class="row">
-                                <asp:TextBox ID="loginTuserInput" runat="server" placeholder="TUser"></asp:TextBox>
-                                <asp:RequiredFieldValidator runat="server" ID="rfvTUserInput" ControlToValidate="loginTuserInput"
-                                    ErrorMessage="Skal udfyldes*" Display="Dynamic"></asp:RequiredFieldValidator>
-                            </div>
-
-                            <div class="row">
-                                <asp:TextBox ID="loginPasswordInput" runat="server" placeholder="Kodeord"></asp:TextBox>
-                                <asp:RequiredFieldValidator runat="server" ID="rfvLoginPassword" ControlToValidate="loginPasswordInput"
-                                    ErrorMessage="Skal udfyldes*" Display="Dynamic"></asp:RequiredFieldValidator>
-                            </div>
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        <div class="modal-header">
+                            <h2 class="modal-title" id="exampleModalLabel">Login</h2>
+                            
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <asp:Literal ID="loginStatusText" runat="server"></asp:Literal>
-                        <asp:Button ID="btn_login" Text="Login" runat="server" OnClick="btn_login_Click" CssClass="sparkron-submit-btn" />
+                        <div class="modal-body">
+
+                            <!-- LOGIN -->
+                            <asp:Panel runat="server" DefaultButton="btn_login">
+                                <div class="login-box container">
+                                    <div class="row">
+                                        <asp:TextBox ID="loginTuserInput" runat="server" placeholder="TUser"></asp:TextBox>
+                                        <asp:RequiredFieldValidator runat="server" ID="rfvTUserInput" ControlToValidate="loginTuserInput"
+                                            ErrorMessage="Skal udfyldes*" Display="Dynamic"></asp:RequiredFieldValidator>
+                                    </div>
+
+                                    <div class="row">
+                                        <asp:TextBox ID="loginPasswordInput" runat="server" placeholder="Kodeord" TextMode="Password"></asp:TextBox>
+                                        <asp:RequiredFieldValidator runat="server" ID="rfvLoginPassword" ControlToValidate="loginPasswordInput"
+                                            ErrorMessage="Skal udfyldes*" Display="Dynamic"></asp:RequiredFieldValidator>
+                                    </div>
+                                </div>
+                            </asp:Panel>
+                            <asp:Literal ID="loginStatusText" runat="server"></asp:Literal>
+
+                        </div>
+                        <div class="modal-footer">
+                            <asp:Button ID="btn_login" Text="Login" runat="server" OnClick="btn_login_Click" CssClass="sparkron-submit-btn" />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <script type="text/javascript">
-            function openModal() {
-                $('#loginModal').modal({ show: true });
-            }
-        </script>
+            <script type="text/javascript">
+                function openModal() {
+                    $('#loginModal').modal({ show: true });
+                }
+            </script>
         </asp:Panel>
         <!--LOGIN MODAL (popup) END-->
 

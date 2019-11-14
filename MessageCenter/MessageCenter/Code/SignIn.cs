@@ -62,7 +62,7 @@ namespace MessageCenter.Code
             }
             catch (Exception)
             {
-                Utility.WriteWarningMessage("Api Exception! kunne lave kald for at finde loginbruger");                
+                Utility.PrintWarningMessage("Api Exception! kunne lave kald for at finde loginbruger");                
             }            
 
             

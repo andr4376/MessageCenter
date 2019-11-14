@@ -12,7 +12,19 @@ namespace MessageCenter.Code
 
         public string appDataPath;
 
-        public string dbFile;
+        /// <summary>
+        /// A
+        /// </summary>
+        private string dbFile;
+
+        public string DbFile
+        {
+            get
+            {
+                return dbFile;
+            }
+        }
+
 
         public static AppDataManager Instance
         {
