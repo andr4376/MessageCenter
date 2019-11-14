@@ -11,7 +11,6 @@ namespace MessageCenter
 {
     public partial class _Default : Page
     {
-        private static Dictionary<string, string> listBoxMessageDictionary;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -65,14 +64,14 @@ namespace MessageCenter
 
         private ReturnCode PopulateMessageTemplatesListBox()
         {
-            listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(DatabaseManager.Instance.GetMessageTemplates());
+           Dictionary<string,string> listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(DatabaseManager.Instance.GetMessageTemplates());
 
             if (listBoxMessageDictionary == null)
             {
                 return ReturnCode.ERROR;
             }
 
-            UpdateListBox();
+            UpdateListBox(listBoxMessageDictionary);
 
             return ReturnCode.OK;
         }
@@ -103,16 +102,16 @@ namespace MessageCenter
             {
                 List<MessageTemplate> templates = DatabaseManager.Instance.GetMessagesContainingText(inputText);
 
-                listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(templates);
+                Dictionary<string,string> listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(templates);
 
-                UpdateListBox();
+                UpdateListBox(listBoxMessageDictionary);
 
             }
 
 
         }
 
-        private void UpdateListBox()
+        private void UpdateListBox(Dictionary<string,string> newMessagesInput)
         {
 
             if (listBoxMessageTemplates.Items.Count > 0)
@@ -120,7 +119,7 @@ namespace MessageCenter
                 listBoxMessageTemplates.Items.Clear();
             }
 
-            listBoxMessageTemplates.DataSource = listBoxMessageDictionary;
+            listBoxMessageTemplates.DataSource = newMessagesInput;
             listBoxMessageTemplates.DataTextField = "Value";
             listBoxMessageTemplates.DataValueField = "Key";
             listBoxMessageTemplates.DataBind();
@@ -129,11 +128,13 @@ namespace MessageCenter
         }
         private void GoToMessagePage()
         {
+            //Proceed if the user has picked a message item
             if (listBoxMessageTemplates.SelectedItem == null)
             {
                 return;
             }
 
+            //proceed if the has signed in, else, show user the login modal
             if (SignIn.Instance.User == null)
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
@@ -147,11 +148,9 @@ namespace MessageCenter
 
             }
             */
-            Utility.WriteLog("proceeding to message page");
-            Utility.WriteLog(listBoxMessageTemplates.SelectedItem.Value);
-            Utility.WriteLog(listBoxMessageTemplates.SelectedItem.Text);
+            Utility.WriteLog("proceeding to message page for message Id: "+listBoxMessageTemplates.SelectedItem.Value);
 
-            Session["Page"] = listBoxMessageTemplates.SelectedItem.Value;
+            Session["MessageTemplateId"] = listBoxMessageTemplates.SelectedItem.Value;
             Response.Redirect("Messages.aspx");
 
         }

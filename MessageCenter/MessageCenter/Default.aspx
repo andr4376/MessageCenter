@@ -6,18 +6,16 @@
 
     <!--række til søge input og listbox med beskeder -->
     <div class="row">
-        <asp:Panel runat="server" DefaultButton="searchBtn">
-            <!-- Input til søgning START-->
-            <div class="container col-md-2 search-group">
-                <div>
+        <!-- Input til søgning START-->
+        <div class="container col-md-2 search-group">
+            <div>
 
-                    <asp:TextBox ID="searchInput" runat="server" defaultButton="searchBtn" placeholder="Søg efter besked..." CssClass="sparkron-search-input" />
-                    <asp:Button ID="searchBtn" runat="server" OnClick="searchBtn_Click" Text="Søg" CssClass="sparkron-search-btn" CausesValidation="False" />
-
-                </div>
+                <asp:TextBox ID="searchInput" runat="server" defaultButton="searchBtn" placeholder="Søg efter besked..." CssClass="sparkron-search-input" />
+                <asp:Button ID="searchBtn" runat="server" OnClick="searchBtn_Click" Text="Søg" CssClass="sparkron-search-btn" CausesValidation="False" />
 
             </div>
-        </asp:Panel>
+
+        </div>
         <!-- Input til søgning SLUT-->
 
         <!-- ListBox som indeholder Besked Skabeloner START-->
@@ -26,19 +24,25 @@
                 <asp:Image ID="logo" runat="server" ImageUrl="~/Images/envelope.png" CssClass="mini-logo" />
                 Besked skabeloner</h2>
 
+            
+
             <asp:ListBox
                 ID="listBoxMessageTemplates" runat="server"
-                CssClass="template-msg-listbox sparkron-box"
-                ></asp:ListBox>
+                CssClass="template-msg-listbox sparkron-box"></asp:ListBox>
 
             <!--fortsæt knap-->
             <asp:Button ID="btn_proceedToMessagePage" Text="Fortsæt" runat="server" OnClick="btn_proceedToMessagePage_Click" CssClass="sparkron-submit-btn" />
+
+
+
+
+
         </div>
         <!-- ListBox som indeholder Besked Skabeloner SLUT-->
-
-
-
     </div>
+
+
+
     <!--filler-->
     <div class="row">
         <div class="col-md-4">

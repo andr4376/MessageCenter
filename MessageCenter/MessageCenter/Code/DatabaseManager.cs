@@ -47,15 +47,59 @@ namespace MessageCenter.Code
                 return;
             }
             //TODO: load pages - see ConsoleEntries project - read from DB
-            LoadMessageTemplates();
+            LoadAllMessageTemplates();
 
         }
+        private MessageTemplate ExtractMessageTemplateData(SQLiteDataReader dataReader)
+        {
+            MessageTemplate tmpMessage = new MessageTemplate(
+                dataReader.GetInt32(0),//id
+                dataReader.GetString(1),//title
+                dataReader.GetString(2),//text
+                dataReader.GetInt32(3)//messagetype
+                );
 
-        private ReturnCode LoadMessageTemplates()
+            return tmpMessage;
+        }
+
+        private ReturnCode LoadAllMessageTemplates()
         {
             ReturnCode returnCode = ReturnCode.OK;
 
-            //TODO: db get all messages
+
+            List<MessageTemplate> listOfMessages = new List<MessageTemplate>();
+            MessageTemplate tmpMessage = null;
+
+            DBConnect.Open();
+            SQLiteCommand Command = new SQLiteCommand("select * from " + messageTemplatesTableName + ";", DBConnect);
+
+            try
+            {
+                using (SQLiteDataReader dataReader = Command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+
+
+                        tmpMessage = ExtractMessageTemplateData(dataReader);
+
+                        listOfMessages.Add(tmpMessage);
+
+
+                    }
+                }
+            }
+            catch (Exception)
+            {
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af alle beskedskabeloner!");
+                throw;
+#endif
+            }
+
+            DBConnect.Close();
+            messages = listOfMessages;
+
 
             return returnCode;
         }
@@ -137,12 +181,25 @@ namespace MessageCenter.Code
 
         private ReturnCode PopulateDb()
         {
+            Random rnd = new Random();
 
-            MessageTemplate testMessage = new MessageTemplate("Besked om økonomiske vanskligheder","blablabla du skylder penge", 0);
+            ReturnCode status = ReturnCode.OK;
 
-            ReturnCode returnCode = AddMessageTemplate(testMessage);
+            for (int i = 0; i < 25; i++)
+            {
+                MessageTemplate testMessage = new MessageTemplate("Besked om økonomiske vanskligheder"+i, "blablabla, du skylder penge fister"+i, rnd.Next(0,1+1));
 
-            return returnCode;
+              status= AddMessageTemplate(testMessage);
+
+                if (status != ReturnCode.OK)
+                {
+                    break;
+                }
+
+
+            }
+
+            return status;
         }
 
         /// <summary>
@@ -153,10 +210,10 @@ namespace MessageCenter.Code
         private ReturnCode AddMessageTemplate(MessageTemplate message)
         {
             string cmd = "insert into " + messageTemplatesTableName + " values (null," +
-              "'" + message.Title + "',"+
+              "'" + message.Title + "'," +
               "'" + message.Text + "', " +
               +message.MessageTypeId + ")";
-            
+
             ReturnCode returnCode = ExecuteSQLiteNonQuery(cmd);
 
             if (returnCode != ReturnCode.OK)
@@ -289,17 +346,96 @@ namespace MessageCenter.Code
 
         public List<MessageTemplate> GetMessagesContainingText(string text)
         {
-            GetAllMessagesFromDB();
-            List<MessageTemplate> tmp = messages;
+            List<MessageTemplate> messagesContainingString = DBQueryTitleContains(text);
+
+            if (messagesContainingString != null)
+            {
+                Utility.WriteLog(messagesContainingString.Count + " messages found containing '" + text + "'");
+
+            }
+
+            return messagesContainingString;
+        }
+
+        private List<MessageTemplate> DBQueryTitleContains(string textToContain)
+        {
+
+            List<MessageTemplate> listOfMessages = new List<MessageTemplate>();
+            MessageTemplate tmpMessage = null;
+
+            DBConnect.Open();
+
+            SQLiteCommand Command = new SQLiteCommand("select * from "
+            + messageTemplatesTableName +
+            " WHERE title LIKE '%" + textToContain + "%';", DBConnect);
+
+            try
+            {
+                using (SQLiteDataReader dataReader = Command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        tmpMessage = ExtractMessageTemplateData(dataReader);
+
+                        listOfMessages.Add(tmpMessage);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af alle beskedskabeloner!");
+                throw;
+#endif
+            }
+
+            DBConnect.Close();
+
+            return listOfMessages;
+        }
+        private MessageTemplate DBQueryMessageId(int id)
+        {
+
+            MessageTemplate tmpMessage = null;
+
+            DBConnect.Open();
+
+            SQLiteCommand command = new SQLiteCommand("select * from "
+            + messageTemplatesTableName +
+            " WHERE id = " + id + " " +
+            "LIMIT 1;", DBConnect);
 
 
-            return tmp = messages.Where(x =>
-            x.Title.ToUpper().
-            Contains(text.ToUpper()))
-            .ToList();
+            try
+            {
+                using (SQLiteDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        tmpMessage = ExtractMessageTemplateData(dataReader);
+
+                        if (tmpMessage != null)
+                        {
+                            break;
+                        }
+
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af beskedskabelon med id " + id.ToString() + "!" +
+                    "\n SQL kommando: " + command);
+#if DEBUG
+                throw;
+#endif
+            }
+
+            DBConnect.Close();
+
+            return tmpMessage;
         }
     }
-
 
 }
 

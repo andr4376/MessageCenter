@@ -86,26 +86,19 @@ namespace MessageCenter.Code
             }
         }
 
-        public MessageTemplate(string title, int messageType)
+        public MessageTemplate(string title, string text, int messageType)
         {
             this.Title = title;
+            this.Text = text;
             this.MessageTypeId = messageType;
 
         }
-        public MessageTemplate(string title, MessageType messageType)
-        {
-            this.Title = title;
-            this.MessageType = messageType;
-
-        }
-        public MessageTemplate(int id, string title, int messageType) : this(title,messageType)
+        public MessageTemplate(int id, string title, string text, int messageType):this(title,text,messageType)
         {
             this.Id = id;
-                    }
-        public MessageTemplate( string title,string text, int messageType) : this(title, messageType)
-        {
-            this.Text = text;
+
         }
+
 
     }
 }
