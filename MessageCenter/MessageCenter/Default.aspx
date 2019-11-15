@@ -11,7 +11,7 @@
             <div>
                 <!-- Panel, så Enter kan bruges til at søge-->
                 <asp:Panel runat="server" DefaultButton="searchBtn">
-                    <asp:TextBox ID="searchInput" runat="server" placeholder="Søg efter besked..." CssClass="sparkron-search-input" />
+                    <asp:TextBox ID="searchInput" runat="server" placeholder="Søg efter besked..." CssClass="sparkron-search-input"  autocomplete="off"/>
                     <asp:Button ID="searchBtn" runat="server" OnClick="searchBtn_Click" Text="Søg" CssClass="sparkron-search-btn" CausesValidation="False" />
                 </asp:Panel>
             </div>

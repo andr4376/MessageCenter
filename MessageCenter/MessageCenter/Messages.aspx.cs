@@ -129,6 +129,19 @@ namespace MessageCenter
 
         protected void searchBtnCustomer_Click(object sender, EventArgs e)
         {
+            string searchInput = customerCprInput.Text;
+
+            List<Customer> customers = SignIn.Instance.MyCustomers;
+
+            if (searchInput != "")
+            {
+                UpdateCustomersListbox(
+                 customers.Where(x => x.Cpr.Contains(searchInput)).ToList<Customer>());
+            }
+            else
+            {
+                UpdateCustomersListbox(customers);
+            }
 
         }
     }

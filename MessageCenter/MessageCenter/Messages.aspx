@@ -16,12 +16,13 @@
                 <div class="modal-body">
 
                     <!-- CPR input -->
-                    <asp:Panel runat="server" DefaultButton="btn_Submit_User">
                         <div class="login-box container">
                             <div class="row">
-                                <asp:TextBox ID="customerCprInput" runat="server" placeholder="CPR" CssClass="sparkron-search-input"></asp:TextBox>
+                                <asp:Panel runat="server" DefaultButton="searchBtnCustomer">
+                                <asp:TextBox ID="customerCprInput" runat="server" placeholder="CPR" CssClass="sparkron-search-input" autocomplete="off"></asp:TextBox>
                                 <asp:Button ID="searchBtnCustomer" runat="server" OnClick="searchBtnCustomer_Click"
                                     Text="Søg" CssClass="sparkron-search-btn" CausesValidation="False" />
+                                    </asp:Panel>
                             </div>
                             <div class="row">
                                 <!-- UpdatePanel tillader at indholdet kan opdateres uden PostBack uden at skulle bruge AJAX -->
@@ -34,13 +35,12 @@
                                     </ContentTemplate>
 
                                     <Triggers>
-                                        <asp:AsyncPostBackTrigger ControlID="btn_Submit_User" EventName="Click" />
+                                        <asp:AsyncPostBackTrigger ControlID="searchBtnCustomer" EventName="Click" />
                                     </Triggers>
                                 </asp:UpdatePanel>
                             </div>
 
                         </div>
-                    </asp:Panel>
 
 
                 </div>
