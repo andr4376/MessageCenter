@@ -13,9 +13,23 @@ namespace MessageCenter.Code
 
         private  Employee user;
 
+       
+
         public Employee User
         {
             get { return user; }
+        }
+
+        public List<Customer> MyCustomers
+        {
+            get
+            {
+                if (IsLoggedIn)
+                {
+                    return ApiManager.Instance.MakeRestCall<Customer>(ApiManager.getCustomerFromAdvisor + user.Tuser);
+                }
+                return null;
+            }
         }
 
         public static SignIn Instance
@@ -38,9 +52,9 @@ namespace MessageCenter.Code
             }
         }
 
-        public ReturnCode LogIn(string tUser, string passWord)
+        public StatusCode LogIn(string tUser, string passWord)
         {
-            ReturnCode returnCode = ReturnCode.ERROR;
+            StatusCode returnCode = StatusCode.ERROR;
 
             try
             {
@@ -51,13 +65,13 @@ namespace MessageCenter.Code
 
                 if (User == null)
                 {
-                    returnCode = ReturnCode.FORHINDRING;
+                    returnCode = StatusCode.FORHINDRING;
                     Utility.WriteLog("Ingen medarbejder fundet med disse login oplysninger!");
                 }
                 else
                 {
                     Utility.WriteLog("login: " + user.Tuser + " - " + user.FirstName + " " + user.LastName);
-                    returnCode = ReturnCode.OK;
+                    returnCode = StatusCode.OK;
                 }
             }
             catch (Exception)

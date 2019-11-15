@@ -21,7 +21,7 @@ namespace MessageCenter.Code
 
         private SQLiteConnection DBConnect;
 
-        private readonly string supportEmail = "andr4376@gmail.com";
+        public static readonly string supportEmail = "andr4376@gmail.com";
 
 
 
@@ -40,7 +40,7 @@ namespace MessageCenter.Code
 
         private DatabaseManager()
         {
-            if (Initialize() == ReturnCode.ERROR)
+            if (Initialize() == StatusCode.ERROR)
             {
                 Utility.WriteLog("Failed to initialize DatabaseManager");
 
@@ -62,9 +62,9 @@ namespace MessageCenter.Code
             return tmpMessage;
         }
 
-        private ReturnCode LoadAllMessageTemplates()
+        private StatusCode LoadAllMessageTemplates()
         {
-            ReturnCode returnCode = ReturnCode.OK;
+            StatusCode returnCode = StatusCode.OK;
 
 
             List<MessageTemplate> listOfMessages = new List<MessageTemplate>();
@@ -104,7 +104,7 @@ namespace MessageCenter.Code
             return returnCode;
         }
 
-        private ReturnCode Initialize()
+        private StatusCode Initialize()
         {
 
             System.Diagnostics.Debug.WriteLine("Initializing DatabaseManager");
@@ -115,24 +115,24 @@ namespace MessageCenter.Code
 
             //Setup Database file - if it goes well, Create the table if needed, else return error.
 
-            ReturnCode code = CreateDbFileIfNotExists();
+            StatusCode code = CreateDbFileIfNotExists();
             switch (code)
             {
                 //Ingen db fil fundet - ny er oprettet
-                case ReturnCode.OK:
-                    if (CreateTables() != ReturnCode.OK)
+                case StatusCode.OK:
+                    if (CreateTables() != StatusCode.OK)
                     {
-                        return ReturnCode.ERROR;
+                        return StatusCode.ERROR;
                     }
 
                     break;
 
                 //DB fil findes i forvejen
-                case ReturnCode.FORHINDRING:
+                case StatusCode.FORHINDRING:
                     break;
 
                 //fejl ved oprettelse / identificering af db fil
-                case ReturnCode.ERROR:
+                case StatusCode.ERROR:
                     break;
 
             }
@@ -143,7 +143,7 @@ namespace MessageCenter.Code
 
 
 
-        private ReturnCode CreateDbFileIfNotExists()
+        private StatusCode CreateDbFileIfNotExists()
         {
             try
             {
@@ -158,7 +158,7 @@ namespace MessageCenter.Code
                 else
                 {
                     Utility.WriteLog("Db file found @" + AppDataManager.Instance.DbFile);
-                    return ReturnCode.FORHINDRING;
+                    return StatusCode.FORHINDRING;
                 }
             }
             catch (System.Exception e)
@@ -171,22 +171,22 @@ namespace MessageCenter.Code
 
 
 
-                return ReturnCode.ERROR;
+                return StatusCode.ERROR;
             }
 
-            return ReturnCode.OK;
+            return StatusCode.OK;
         }
 
         /// <summary>
         /// Populates the DB with test MessageTemplates if the solution is running in debug mode.
         /// </summary>
         /// <returns>status</returns>
-        private ReturnCode PopulateDb()
+        private StatusCode PopulateDb()
         {
 
             Random rnd = new Random();
 
-            ReturnCode status = ReturnCode.OK;
+            StatusCode status = StatusCode.OK;
 
 #if DEBUG
             for (int i = 0; i < 25; i++)
@@ -195,7 +195,7 @@ namespace MessageCenter.Code
 
                 status = AddMessageTemplate(testMessage);
 
-                if (status != ReturnCode.OK)
+                if (status != StatusCode.OK)
                 {
                     break;
                 }
@@ -209,16 +209,16 @@ namespace MessageCenter.Code
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        private ReturnCode AddMessageTemplate(MessageTemplate message)
+        private StatusCode AddMessageTemplate(MessageTemplate message)
         {
             string cmd = "insert into " + messageTemplatesTableName + " values (null," +
               "'" + message.Title + "'," +
               "'" + message.Text + "', " +
               +message.MessageTypeId + ")";
 
-            ReturnCode returnCode = ExecuteSQLiteNonQuery(cmd);
+            StatusCode returnCode = ExecuteSQLiteNonQuery(cmd);
 
-            if (returnCode != ReturnCode.OK)
+            if (returnCode != StatusCode.OK)
             {
                 Utility.WriteLog("SQLite Error: " + cmd);
                 Utility.PrintWarningMessage("Fejl ved tilføjelse af test beskeder");
@@ -227,14 +227,14 @@ namespace MessageCenter.Code
             return returnCode;
         }
 
-        private ReturnCode CreateTables()
+        private StatusCode CreateTables()
         {
 
             string cmd = "DROP TABLE IF EXISTS " + messageTemplatesTableName;
 
-            ReturnCode returnCode = ExecuteSQLiteNonQuery(cmd);
+            StatusCode returnCode = ExecuteSQLiteNonQuery(cmd);
 
-            if (returnCode != ReturnCode.OK)
+            if (returnCode != StatusCode.OK)
             {
                 Utility.WriteLog("SQLite Error: " + cmd);
                 Utility.PrintWarningMessage("Fejl ved oprettelse af database - kontakt venligt it support");
@@ -249,14 +249,14 @@ namespace MessageCenter.Code
 
             returnCode = ExecuteSQLiteNonQuery(cmd);
 
-            if (returnCode == ReturnCode.OK)
+            if (returnCode == StatusCode.OK)
             {
                 Utility.WriteLog("Table '" + messageTemplatesTableName + "' has been created!");
 
 #if DEBUG
-                if (PopulateDb() != ReturnCode.OK)
+                if (PopulateDb() != StatusCode.OK)
                 {
-                    returnCode = ReturnCode.ERROR;
+                    returnCode = StatusCode.ERROR;
                 }
 
 #endif
@@ -273,9 +273,9 @@ namespace MessageCenter.Code
 
         }
 
-        public ReturnCode ExecuteSQLiteNonQuery(string command)
+        public StatusCode ExecuteSQLiteNonQuery(string command)
         {
-            ReturnCode returnCode = ReturnCode.OK;
+            StatusCode returnCode = StatusCode.OK;
 
             DBConnect.Open();
             SQLiteCommand Command = new SQLiteCommand(command, DBConnect);
@@ -289,7 +289,7 @@ namespace MessageCenter.Code
                 Utility.WriteLog("Error in executing SQLiteNonQuery! Error messages: \n" + e.Message);
                 Utility.WriteLog("SQLite command: " + command);
 
-                returnCode = ReturnCode.ERROR;
+                returnCode = StatusCode.ERROR;
             }
             DBConnect.Close();
 
@@ -334,7 +334,6 @@ namespace MessageCenter.Code
             DBConnect.Close();
 
             return listOfMessages;
-            return messages;
         }
 /*
         public Dictionary<string, string> GetMessageTemplatesDictionaryTitleId()
@@ -361,13 +360,13 @@ namespace MessageCenter.Code
             return messagesDictionary;
         }
         */
-        private ReturnCode GetAllMessagesFromDB()
+        private StatusCode GetAllMessagesFromDB()
         {
             //TODO: get messages from db instead! DELETE THIS
             messages = new List<MessageTemplate>();
             //
 
-            return ReturnCode.OK;
+            return StatusCode.OK;
         }
 
 
@@ -421,7 +420,7 @@ namespace MessageCenter.Code
 
             return listOfMessages;
         }
-        private MessageTemplate DBQueryMessageId(int id)
+        public MessageTemplate GetMessageTemplateFromId(int id)
         {
 
             MessageTemplate tmpMessage = null;

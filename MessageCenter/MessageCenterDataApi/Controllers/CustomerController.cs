@@ -28,5 +28,13 @@ namespace MessageCenterDataApi.Controllers
             return tmpCustomer;
         }
 
+        [Route("api/Customers/advisor/{tuser}")]
+        [HttpGet]
+        public List<Customer> GetCustomersFromAdvisor(string tuser)
+        {
+
+            return Database.Instance.GetCustomersFromAdvisor(tuser);
+        }
+
     }
 }

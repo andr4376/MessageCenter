@@ -29,13 +29,13 @@ namespace MessageCenter
                 return;
             }
 
-            ReturnCode loginStatus = SignIn.Instance.LogIn(loginTuserInput.Text, loginPasswordInput.Text);
+            StatusCode loginStatus = SignIn.Instance.LogIn(loginTuserInput.Text, loginPasswordInput.Text);
 
             loginLink.Visible = SignIn.Instance.User == null ? true : false;
 
             switch (loginStatus)
             {
-                case ReturnCode.OK:
+                case StatusCode.OK:
                     loginStatusText.Text = "Velkommen " + SignIn.Instance.ToString();
                     loginPasswordInput.Visible = false;
                     loginTuserInput.Visible = false;
@@ -44,10 +44,10 @@ namespace MessageCenter
                     Utility.WriteLog("Login success");
 
                     break;
-                case ReturnCode.FORHINDRING:
+                case StatusCode.FORHINDRING:
                     loginStatusText.Text = "Forkert TUser eller kode!";
                     break;
-                case ReturnCode.ERROR:
+                case StatusCode.ERROR:
                     loginStatusText.Text = "Fejl ved hentning af login info, kontakt venligst it-support!";
                     break;                
             }           

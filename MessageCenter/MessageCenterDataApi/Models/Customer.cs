@@ -43,13 +43,12 @@ namespace MessageCenterDataApi.Models
                 LastName = "Kirkegaard Jensen",
                 Birthday = "26/01/1994",
                 Cpr = "2601941751",
-                Advisor = customersAdvisor.Tuser,
+                Advisor = "T210672",
                 Department = customersAdvisor.Department,
                 Email = "andr4376@gmail.com",
                 PhoneNumber = "40965001"
             });
 
-            customersAdvisor = Employee.GetRandomTUser();
 
             tmpCustomers.Add(new Customer()
             {
@@ -57,7 +56,7 @@ namespace MessageCenterDataApi.Models
                 LastName = "Larsen",
                 Birthday = "21/02/1992",
                 Cpr = "2102921346",
-                Advisor = customersAdvisor.Tuser,
+                Advisor = "T210672",
                 Department = customersAdvisor.Department,
                 Email = "Louisemusen123@gmail.com",
                 PhoneNumber = "23458978"

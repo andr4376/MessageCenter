@@ -44,7 +44,7 @@ namespace MessageCenter
         /// </summary>
         private void SetupListBox()
         {
-            if (PopulateMessageTemplatesListBox() != ReturnCode.OK)
+            if (PopulateMessageTemplatesListBox() != StatusCode.OK)
             {
                 //ERROR
                 Utility.WriteLog("Error in initializing front page - could not populate ListBox");
@@ -64,18 +64,18 @@ namespace MessageCenter
             }
         }
 
-        private ReturnCode PopulateMessageTemplatesListBox()
+        private StatusCode PopulateMessageTemplatesListBox()
         {
            Dictionary<string,string> listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(DatabaseManager.Instance.GetAllMessageTemplates());
 
             if (listBoxMessageDictionary == null)
             {
-                return ReturnCode.ERROR;
+                return StatusCode.ERROR;
             }
 
             UpdateListBox(listBoxMessageDictionary);
 
-            return ReturnCode.OK;
+            return StatusCode.OK;
         }
 
         protected void listBoxMessageTemplates_SelectedIndexChanged(object sender, EventArgs e)

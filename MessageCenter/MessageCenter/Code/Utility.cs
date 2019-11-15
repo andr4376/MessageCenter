@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MessageCenter.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,7 +9,7 @@ namespace MessageCenter.Code
     /// <summary>
     /// Returkoder, som returneres af mange metoder for at beskrive om metoden fuldførte sit job. 
     /// </summary>
-    public enum ReturnCode {OK,FORHINDRING,ERROR};
+    public enum StatusCode {OK,FORHINDRING,ERROR};
 
     public static class Utility
     {
@@ -33,6 +34,23 @@ namespace MessageCenter.Code
             foreach (MessageTemplate message in list)
             {
                 messagesDictionary.Add(message.Id.ToString(), message.Title);
+
+            }
+            return messagesDictionary;
+        }
+
+        /// <summary>
+        /// Converts a list of customers into a dictionary to be displayed in a listbox
+        /// </summary>
+        /// <param name="list">the list of customers to convert.</param>
+        /// <returns></returns>
+        public static Dictionary<string, string> ConvertCustomerListToDictionary(List<Customer> list)
+        {
+            Dictionary<string, string> messagesDictionary = new Dictionary<string, string>();
+
+            foreach (Customer customer in list)
+            {
+                messagesDictionary.Add(customer.Cpr, customer.Cpr+" - "+customer.FirstName+" "+customer.LastName);
 
             }
             return messagesDictionary;

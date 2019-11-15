@@ -18,6 +18,10 @@ namespace MessageCenter.Code
         public static readonly string getEmployeeFromTUserParameters = "employees/tuser/";
         public static readonly string getCustomerFromCprParameters = "customers/cpr/";
         public static readonly string getEmployeeFromCredentials = "employees/login/";
+        public static readonly string getCustomerFromAdvisor = "customers/advisor/";
+
+
+
 
 
         private HttpClient httpClient;
@@ -47,6 +51,15 @@ namespace MessageCenter.Code
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
+        private List<Customer> GetTusersCustomers(string tuser)
+        {
+            //Gets all customers with a relation the input t user
+            List<Customer> customers = ApiManager.Instance.MakeRestCall<Customer>(
+                ApiManager.getCustomerFromAdvisor + tuser);
+
+            return customers;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -57,22 +70,22 @@ namespace MessageCenter.Code
         {
             // List data response.
             // Blocking call! Program will wait here until a response is received or a timeout occurs.
-            HttpResponseMessage response = httpClient.GetAsync(apiUrl+urlParameters).Result;  
+            HttpResponseMessage response = httpClient.GetAsync(apiUrl + urlParameters).Result;
 
             List<T> returnElements = new List<T>();
 
             if (response.IsSuccessStatusCode)
             {
                 // parse response 
-                returnElements = (List<T>) response.Content.ReadAsAsync<IEnumerable<T>>().Result;  //Make sure to add a reference to System.Net.Http.Formatting.dll
-                
+                returnElements = (List<T>)response.Content.ReadAsAsync<IEnumerable<T>>().Result;  //Make sure to add a reference to System.Net.Http.Formatting.dll
+
             }
             else
             {
                 Utility.WriteLog(String.Format("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase));
             }
-            
-            
+
+
 
             return returnElements;
         }

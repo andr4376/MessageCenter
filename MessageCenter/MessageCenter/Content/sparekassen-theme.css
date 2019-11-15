@@ -93,6 +93,16 @@ select:focus {
 	width: 100%;
 	box-shadow: 10px 10px 8px 0px rgba(0,0,0,0.22);
 }
+.sparkron-customer-box {
+	margin-top:15px;
+	background-color: white;
+	border-bottom-left-radius: 25px;
+	border-bottom-right-radius: 5px;
+	border: 3px solid #747474;
+	height: 300px !important;
+	width: 575px;
+	box-shadow: 10px 10px 8px 0px rgba(0,0,0,0.22);
+}
 
 .mini-logo {
 	max-height: 5%;
@@ -114,6 +124,8 @@ select:focus {
 	--webkit-tranistion: background-color 0.25s ease-in; /*for Safari and Chrome*/
 	transition: background-color 0.25s ease-in; /*for IE*/
 	--moz-transition: background-color 0.25s ease-in; /* for Mozilla Firefox*/
+
+	width:100%;
 }
 
 	.sparkron-submit-btn:hover {
@@ -123,7 +135,7 @@ select:focus {
 
 .sparkron-search-btn {
 	font-family: 'Titillium Web', sans-serif;
-	font-size: 26px;
+	font-size: 20px;
 	background-color: white;
 	color: #D11A24;
 	border: 2px solid darkgrey;
@@ -136,6 +148,7 @@ select:focus {
 	--webkit-tranistion: background-color 0.25s ease-in; /*for Safari and Chrome*/
 	transition: background-color 0.25s ease-in; /*for IE*/
 	--moz-transition: background-color 0.25s ease-in; /* for Mozilla Firefox*/
+	width:100%;
 }
 
 	.sparkron-search-btn:hover {
@@ -148,7 +161,8 @@ select:focus {
 	font-size: 20px;
 	background-color: white;
 	color: grey;
-	margin-bottom: 5%;
+	margin-bottom:5px;
+	width: 100%;
 }
 
 .sparkron-modal {
@@ -157,5 +171,13 @@ select:focus {
 	background-color: white;
 	color: grey;
 	width:50%;
+}
+
+
+.message-template-section {
+	font-family: 'Titillium Web', sans-serif;
+	background-color: white;
+	box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.22);
+	border-radius: 5px;
 }
 

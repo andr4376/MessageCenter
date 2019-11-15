@@ -215,7 +215,7 @@ namespace MessageCenterDataApi.Code
             Customer tmpCustomer = null;
 
             DBConnect.Open();
-            SQLiteCommand Command = new SQLiteCommand("select * from " + customerTableName + " where Cpr = " + cpr + " LIMIT 1;", DBConnect);
+            SQLiteCommand Command = new SQLiteCommand("select * from " + customerTableName + " where Cpr = '" + cpr + "' LIMIT 1;", DBConnect);
 
 
             using (SQLiteDataReader dataReader = Command.ExecuteReader())
@@ -241,6 +241,41 @@ namespace MessageCenterDataApi.Code
 
             DBConnect.Close();
             return tmpCustomer;
+        }
+        public List<Customer> GetCustomersFromAdvisor(string tuser)
+        {
+
+            List<Customer> listOfCustomers = new List<Customer>();
+            Customer tmpCustomer = null;
+
+            DBConnect.Open();
+            SQLiteCommand Command = new SQLiteCommand("select * from " + customerTableName + " where Advisor = '" + tuser.ToUpper() + "'" +
+                "ORDER BY firstName ASC, lastName ASC;", DBConnect);
+
+
+            using (SQLiteDataReader dataReader = Command.ExecuteReader())
+            {
+                while (dataReader.Read())
+                {
+                    try
+                    {
+                        tmpCustomer = ExtractCustomerData(dataReader);
+                        listOfCustomers.Add(tmpCustomer);
+                    }
+                    catch (Exception)
+                    {
+#if DEBUG
+                        System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af kunder med rådgiveren: " + tuser);
+                        throw;
+#endif
+                    }
+
+                }
+            }
+
+
+            DBConnect.Close();
+            return listOfCustomers;
         }
         public Employee GetEmployee(string tuser)
         {

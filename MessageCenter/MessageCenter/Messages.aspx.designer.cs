@@ -13,12 +13,48 @@ namespace MessageCenter {
     public partial class Messages {
         
         /// <summary>
-        /// textBox control.
+        /// customerCprInput control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal textBox;
+        protected global::System.Web.UI.WebControls.TextBox customerCprInput;
+        
+        /// <summary>
+        /// searchBtnCustomer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button searchBtnCustomer;
+        
+        /// <summary>
+        /// UPCustomersListbox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel UPCustomersListbox;
+        
+        /// <summary>
+        /// listBoxCustomers control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListBox listBoxCustomers;
+        
+        /// <summary>
+        /// btn_Submit_User control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btn_Submit_User;
     }
 }
