@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MessageCenterDataApi.Code;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -41,7 +42,7 @@ namespace MessageCenterDataApi.Models
             {
                 FirstName = "Andreas",
                 LastName = "Kirkegaard Jensen",
-                Birthday = "26/01/1994",
+                Birthday = "26-01-1994",
                 Cpr = "2601941751",
                 Advisor = "T210672",
                 Department = customersAdvisor.Department,
@@ -54,7 +55,7 @@ namespace MessageCenterDataApi.Models
             {
                 FirstName = "Louise",
                 LastName = "Larsen",
-                Birthday = "21/02/1992",
+                Birthday = "21-02-1992",
                 Cpr = "2102921346",
                 Advisor = "T210672",
                 Department = customersAdvisor.Department,
@@ -67,7 +68,7 @@ namespace MessageCenterDataApi.Models
             {
                 FirstName = "Hansi",
                 LastName = "Hinterseer",
-                Birthday = "13/06/1954",
+                Birthday = "13-06-1954",
                 Cpr = "1306541349",
                 Advisor = customersAdvisor.Tuser,
                 Department = customersAdvisor.Department,
@@ -80,7 +81,7 @@ namespace MessageCenterDataApi.Models
             {
                 FirstName = "Test",
                 LastName = "Testesen",
-                Birthday = "02/02/1922",
+                Birthday = "02-02-1922",
                 Cpr = "02022202",
                 Advisor = customersAdvisor.Tuser,
                 Department = customersAdvisor.Department,
@@ -88,13 +89,32 @@ namespace MessageCenterDataApi.Models
                 PhoneNumber = "87651232"
             });
 
+            for (int i = 0; i < 150; i++)
+            {
+                customersAdvisor = Employee.GetRandomTUser();
+
+                string[] names = PersonGenerator.GetName();
+                string[] bDayAndCpr = PersonGenerator.GetRandomBirthdayAndCpr();
+                tmpCustomers.Add(new Customer()
+                {
+                    FirstName = names[0],
+                    LastName = names[1]+" "+ names[2],
+                    Birthday = bDayAndCpr[0],
+                    Cpr = bDayAndCpr[1],
+                    Advisor = customersAdvisor.Tuser,
+                    Department = customersAdvisor.Department,
+                    Email = "andr4376@gmail.com",
+                    PhoneNumber = "40965001"
+                });
+            }
+
             customers = tmpCustomers;
         }
 
         public static string GenerateCreateTableCommand(string tableName)
         {
             string command =
-                        "Create table "+ tableName + " " +
+                        "Create table " + tableName + " " +
                       "(Id integer primary key," +
                       "FirstName varchar," +
                       "LastName varchar," +

@@ -120,11 +120,28 @@ namespace MessageCenter
 
         private void DisplayMessageData()
         {
+            //TODO:
+            //activate elements
+            //Fill with data
+            //replace text with customer name / employee name ect.
         }
 
         protected void btn_Submit_User_Click(object sender, EventArgs e)
         {
 
+            this.customer = SignIn.Instance.MyCustomers.Where(
+                customer => customer.Cpr ==
+                listBoxCustomers.SelectedValue.ToString())
+                .ToList()[0];
+
+            if (this.customer == null)
+            {
+                Utility.PrintWarningMessage("Teknisk fejl ved udhentning af data for den valgte kunde - kontakt venligst teknisk support: "
+                    + DatabaseManager.supportEmail);
+                return;
+            }
+
+            DisplayMessageData();
         }
 
         protected void searchBtnCustomer_Click(object sender, EventArgs e)
