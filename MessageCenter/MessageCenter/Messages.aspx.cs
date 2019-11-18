@@ -13,16 +13,19 @@ namespace MessageCenter
     {
         private int messageTemplateIdInput;
 
-        private static MessageHandler messageHandler;
 
 
 
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
+            if (!Page.IsPostBack)
             {
-                Initialize();
+                if (!MessageHandler.Instance.IsReady)
+                {
+                    Initialize();
+
+                }
 
             }
             else
@@ -31,15 +34,24 @@ namespace MessageCenter
                 {
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "closePickUserModal();", true);
                 }
+
+
             }
 
 
 
         }
 
-        private void Initialize()
+        protected void Page_PreRender(object sender, EventArgs e)
         {
 
+            messageBody.Visible = MessageHandler.Instance.IsReady;
+
+        }
+
+        private void Initialize()
+        {
+            //
 
 
             //Add double click event to listbox, so user can double click instead of using the button
@@ -66,8 +78,13 @@ namespace MessageCenter
                     Response.Redirect("Default.aspx");
                     return;
                 }
+                if (status == StatusCode.OK)
+                {
+                    SetupCustomerPicker();
 
-                SetupCustomerPicker();
+                }
+
+
 
             }
             else
@@ -75,23 +92,28 @@ namespace MessageCenter
                 //User did not navigate to this page using the user interface, so we send them back
                 Response.Redirect("Default.aspx");
                 Utility.WriteLog("redirecting to Default page");
-
+                return;
 
             }
+
 
 
         }
 
         private StatusCode SetupMessageHandler()
         {
-            //
+            //If messagehandler is already setup
+            if (MessageHandler.Instance.IsReady == true)
+            {
+                return StatusCode.FORHINDRING;
+            }
 
 
-            messageHandler = new MessageHandler();
-            messageHandler.Sender = SignIn.Instance.User;
-            messageHandler.Message = DatabaseManager.Instance.GetMessageTemplateFromId(messageTemplateIdInput);
 
-            if (messageHandler.Message == null || messageHandler.Sender== null)
+            MessageHandler.Instance.Sender = SignIn.Instance.User;
+            MessageHandler.Instance.Message = DatabaseManager.Instance.GetMessageTemplateFromId(messageTemplateIdInput);
+
+            if (MessageHandler.Instance.Message == null || MessageHandler.Instance.Sender == null)
             {
 
                 return StatusCode.ERROR;
@@ -125,7 +147,11 @@ namespace MessageCenter
             //Check if doubleClick event on listbox
             if (Request["__EVENTARGUMENT"] != null && Request["__EVENTARGUMENT"] == "doubleClick")
             {
-                GetSelectedCustomer();
+                if (GetSelectedCustomer() == StatusCode.OK)
+                {
+                    DisplayMessageData();
+
+                }
                 return true;
             }
             return false;
@@ -163,19 +189,22 @@ namespace MessageCenter
             //Fill with data
             //replace text with customer name / employee name ect.
 
-            Utility.WriteLog(messageHandler.ToString());
+            Utility.WriteLog(MessageHandler.Instance.ToString());
 
-
-
+            Response.Redirect(Request.RawUrl);
         }
 
         protected void btn_Submit_User_Click(object sender, EventArgs e)
         {
-            GetSelectedCustomer();
+            if (GetSelectedCustomer() == StatusCode.OK)
+            {
+                DisplayMessageData();
+
+            }
 
         }
 
-        private void GetSelectedCustomer()
+        private StatusCode GetSelectedCustomer()
         {
 
 
@@ -184,16 +213,16 @@ namespace MessageCenter
                 listBoxCustomers.SelectedValue.ToString())
                 .ToList()[0];
 
-            messageHandler.Receiver = customer;
+            MessageHandler.Instance.Receiver = customer;
 
             if (customer == null)
             {
                 Utility.PrintWarningMessage("Teknisk fejl ved udhentning af data for den valgte kunde - kontakt venligst teknisk support: "
                     + DatabaseManager.supportEmail);
-                return;
+                return StatusCode.ERROR;
             }
-            
-            DisplayMessageData();
+
+            return StatusCode.OK;
         }
 
         protected void searchBtnCustomer_Click(object sender, EventArgs e)

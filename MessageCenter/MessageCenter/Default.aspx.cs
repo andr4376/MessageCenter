@@ -21,6 +21,7 @@ namespace MessageCenter
 
                 Initialize();
 
+              
             }
             CheckIfListboxDoubleClick();
 
@@ -32,6 +33,9 @@ namespace MessageCenter
         private void Initialize()
         {
             Utility.WriteLog("Initializing Front Page");
+
+            MessageHandler.Reset();
+
             SetupListBox();
 
             listBoxMessageTemplates.Attributes.Add("ondblclick", ClientScript.GetPostBackEventReference(listBoxMessageTemplates, "doubleClick"));

@@ -61,5 +61,13 @@
     </script>
     <!--Pick user Modal END-->
 
+    <!--Message Page Body-->        
+    <div runat="server" ID ="messageBody" class="sparkron-message-body" visible="false">
+        <h3>BLABLA</h3>
+        <p>asldkjaslkdasd</p>
+        <p>aslfjhslakfhkajshfkjsahkfsfasf</p>
+    </div>
+    <!--Message Page Body END-->
+
 
 </asp:Content>

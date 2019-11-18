@@ -17,6 +17,23 @@ namespace MessageCenter.Code
 
         private MessageTemplate message;
 
+        private static MessageHandler instance;
+
+        public static MessageHandler Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new MessageHandler();
+                }
+                return instance;
+            }
+        }
+
+       
+
+
         public MessageTemplate Message
         {
             get { return message; }
@@ -37,6 +54,11 @@ namespace MessageCenter.Code
 
         }
 
+        public bool IsReady
+        {
+            get { return (sender != null && receiver != null && message != null); }
+        }
+
         public MessageHandler(Customer _receiver, Employee _sender, MessageTemplate _message)
         {
             this.receiver = _receiver;
@@ -50,6 +72,8 @@ namespace MessageCenter.Code
 
 
         }
+
+        
 
         public override string ToString()
         {
@@ -72,7 +96,10 @@ namespace MessageCenter.Code
 
 
 
-
+        public static void Reset()
+        {
+            instance = null;
+        }
 
     }
 }

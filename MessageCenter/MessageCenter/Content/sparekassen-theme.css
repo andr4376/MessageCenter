@@ -181,3 +181,8 @@ select:focus {
 	border-radius: 5px;
 }
 
+.sparkron-message-body {
+	font-family: 'Titillium Web', sans-serif;
+	background-color:white;
+}
+
