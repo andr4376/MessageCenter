@@ -13,17 +13,9 @@ namespace MessageCenter
     {
         private int messageTemplateIdInput;
 
-        /// <summary>
-        /// The message that is to be sent to the customer
-        /// </summary>
-        private MessageTemplate messageTemplate;
+        private static MessageHandler messageHandler;
 
-        /// <summary>
-        /// The receiver of the message
-        /// </summary>
-        private Customer customer;
 
-      
 
 
         protected void Page_Load(object sender, EventArgs e)
@@ -33,12 +25,26 @@ namespace MessageCenter
                 Initialize();
 
             }
-           
+            else
+            {
+                if (CheckIfDoubleClickListBox())
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "closePickUserModal();", true);
+                }
+            }
+
+
 
         }
 
         private void Initialize()
         {
+
+
+
+            //Add double click event to listbox, so user can double click instead of using the button
+            listBoxCustomers.Attributes.Add("ondblclick", ClientScript.GetPostBackEventReference(listBoxCustomers, "doubleClick"));
+
             //if user is logged in and has selected a message item
             if (Session["MessageTemplateId"] != null
                 && Int32.TryParse(
@@ -48,20 +54,20 @@ namespace MessageCenter
             {
                 Utility.WriteLog("Message page was opened with the message template id:" + messageTemplateIdInput);
 
-                messageTemplate = DatabaseManager.Instance.GetMessageTemplateFromId(messageTemplateIdInput);
 
-                if (messageTemplate == null)
+                //Setup messageHandlers's Sender and messagetype. Receiver is added later in "GetSelectedCustomer()"
+                StatusCode status = SetupMessageHandler();
+
+                // If message and or sender is NULL
+                if (status == StatusCode.ERROR)
                 {
                     Utility.WriteLog("MessageTemplate with id " + messageTemplateIdInput + " wan not found in the database");
                     Utility.PrintWarningMessage("Teknisk fejl - den valgte besked kunne ikke findes i databasen. Kontakt venligst teknisk support: " + DatabaseManager.supportEmail);
                     Response.Redirect("Default.aspx");
                     return;
                 }
+
                 SetupCustomerPicker();
-
-
-
-
 
             }
             else
@@ -73,7 +79,25 @@ namespace MessageCenter
 
             }
 
-            
+
+        }
+
+        private StatusCode SetupMessageHandler()
+        {
+            //
+
+
+            messageHandler = new MessageHandler();
+            messageHandler.Sender = SignIn.Instance.User;
+            messageHandler.Message = DatabaseManager.Instance.GetMessageTemplateFromId(messageTemplateIdInput);
+
+            if (messageHandler.Message == null || messageHandler.Sender== null)
+            {
+
+                return StatusCode.ERROR;
+            }
+
+            return StatusCode.OK;
         }
 
         private void SetupCustomerPicker()
@@ -93,14 +117,28 @@ namespace MessageCenter
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        private bool CheckIfDoubleClickListBox()
+        {
+            //Check if doubleClick event on listbox
+            if (Request["__EVENTARGUMENT"] != null && Request["__EVENTARGUMENT"] == "doubleClick")
+            {
+                GetSelectedCustomer();
+                return true;
+            }
+            return false;
+        }
+
         private StatusCode UpdateCustomersListbox(List<Customer> customersToShow)
         {
             StatusCode status = StatusCode.OK;
 
-            if (!(customersToShow.Count>0))
+            if (!(customersToShow.Count > 0))
             {
                 status = StatusCode.FORHINDRING;
-                               
+
             }
 
             Dictionary<string, string> dictionaryVersionOfList =
@@ -110,13 +148,13 @@ namespace MessageCenter
             listBoxCustomers.DataTextField = "Value";
             listBoxCustomers.DataValueField = "Key";
             listBoxCustomers.DataBind();
-            
+
 
             return status;
 
         }
 
-        
+
 
         private void DisplayMessageData()
         {
@@ -124,23 +162,37 @@ namespace MessageCenter
             //activate elements
             //Fill with data
             //replace text with customer name / employee name ect.
+
+            Utility.WriteLog(messageHandler.ToString());
+
+
+
         }
 
         protected void btn_Submit_User_Click(object sender, EventArgs e)
         {
+            GetSelectedCustomer();
 
-            this.customer = SignIn.Instance.MyCustomers.Where(
-                customer => customer.Cpr ==
+        }
+
+        private void GetSelectedCustomer()
+        {
+
+
+            Customer customer = SignIn.Instance.MyCustomers.Where(
+                c => c.Cpr ==
                 listBoxCustomers.SelectedValue.ToString())
                 .ToList()[0];
 
-            if (this.customer == null)
+            messageHandler.Receiver = customer;
+
+            if (customer == null)
             {
                 Utility.PrintWarningMessage("Teknisk fejl ved udhentning af data for den valgte kunde - kontakt venligst teknisk support: "
                     + DatabaseManager.supportEmail);
                 return;
             }
-
+            
             DisplayMessageData();
         }
 

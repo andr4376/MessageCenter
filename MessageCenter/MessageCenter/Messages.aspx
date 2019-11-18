@@ -10,7 +10,7 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h2 class="modal-title" id="userModal">Login</h2>
+                    <h2 class="modal-title">Vælg beskedmodtager</h2>
 
                 </div>
                 <div class="modal-body">
@@ -32,6 +32,7 @@
                                         <asp:ListBox
                                             ID="listBoxCustomers" runat="server"
                                             CssClass="template-msg-listbox sparkron-customer-box"></asp:ListBox>
+                                        <asp:RequiredFieldValidator runat="server" ControlToValidate="listBoxCustomers" ></asp:RequiredFieldValidator>
                                     </ContentTemplate>
 
                                     <Triggers>
@@ -53,6 +54,9 @@
     <script type="text/javascript">
         function openPickUserModal() {
             $('#pickUserModal').modal({ show: true });
+        }
+         function closePickUserModal() {
+             $('#pickUserModal').modal('hide');
         }
     </script>
     <!--Pick user Modal END-->

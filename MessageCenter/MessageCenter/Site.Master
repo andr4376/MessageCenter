@@ -79,7 +79,7 @@
 
                             <!-- LOGIN -->
                             <asp:Panel runat="server" DefaultButton="btn_login">
-                                <div class="login-box container">
+                                <div class="container">
                                     <div class="row">
                                         <asp:TextBox ID="loginTuserInput" runat="server" placeholder="TUser"></asp:TextBox>
                                         <asp:RequiredFieldValidator runat="server" ID="rfvTUserInput" ControlToValidate="loginTuserInput"
