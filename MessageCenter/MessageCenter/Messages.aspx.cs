@@ -13,8 +13,31 @@ namespace MessageCenter
     {
         private int messageTemplateIdInput;
 
-        public static string title = "";
-        public static string text = "";
+       
+
+        public string GetTitle
+        {
+            get
+            {
+                if (MessageHandler.Instance.Message != null)
+                {
+                    return MessageHandler.Instance.Message.Title;
+                }
+                return "";
+            }
+        }
+
+        public string GetText
+        {
+            get
+            {
+                if (MessageHandler.Instance.Message != null)
+                {
+                    return MessageHandler.Instance.Message.Text;
+                }
+                return "";
+            }
+        }
 
         public MessageHandler dataBindMessageHandler
         {
@@ -202,9 +225,7 @@ namespace MessageCenter
 
             Utility.WriteLog(MessageHandler.Instance.ToString());
 
-            //TODO:
-            title = MessageHandler.Instance.Message.Title;
-            text = MessageHandler.Instance.Message.Text;
+            
 
             Response.Redirect(Request.RawUrl);
         }

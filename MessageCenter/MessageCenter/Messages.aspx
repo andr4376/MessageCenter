@@ -69,11 +69,12 @@
             <div class="message-template-section row">
                 <asp:TextBox CssClass="sparkron-input-title message-text-input" runat="server"
                     ID="titleTextBox" BorderStyle="None" TextMode="MultiLine"
-                    text="<%# title %>">></asp:TextBox>
+                    text="<%# this.GetTitle %>">></asp:TextBox>
             </div>
             <div class="message-template-section row">
-                <asp:TextBox CssClass="message-text-input sparkron-input-maintext" runat="server" ID="messageTextTextBox" BorderStyle="None" TextMode="MultiLine"
-                    text="<%# text %>"></asp:TextBox>
+                <asp:TextBox CssClass="message-text-input sparkron-input-maintext" runat="server" 
+                    ID="messageTextTextBox" BorderStyle="None" TextMode="MultiLine"
+                    text="<%# this.GetText %>"></asp:TextBox>
             </div>
 
         </div>
