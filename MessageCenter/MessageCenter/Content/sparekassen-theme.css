@@ -200,3 +200,8 @@ select:focus {
 .message-text-input {
 	min-width: 100%;
 }
+
+.profile-img {
+
+margin-left:15%;
+}

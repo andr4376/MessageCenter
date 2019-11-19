@@ -1,24 +1,49 @@
 ﻿<%@ Page Title="Contact" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Contact.aspx.cs" Inherits="MessageCenter.Contact" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <h2><%: Title %>.</h2>
-    <h3>Your contact page.</h3>
-    <address>
-        One Microsoft Way<br />
-        Redmond, WA 98052-6399<br />
-        <abbr title="Phone">P:</abbr>
-        425.555.0100
-    </address>
 
-    <address>
-        <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-        <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-    </address>
 
-       <!-- Input til søgning -->
-        <div>
-             <h3>CPR</h3>
-            <asp:TextBox ID="cprInput" runat="server" />
-            <asp:RequiredFieldValidator runat ="server" ID="rfvCprInput" ControlToValidate="cprInput" ErrorMessage="Skal udfyldes*" Display="Dynamic"></asp:RequiredFieldValidator>
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 message-template-section" style="max-width:400px;">
+                <div style="padding-left: 50px;">
+                    <asp:Image ID="logo" runat="server" ImageUrl="~/Images/andreas.jpg" CssClass="profile-img" />
+
+                    <h2>Andreas Kirkegaard Jensen</h2>
+                    <h3>Udvikler / IT-support</h3>
+                    <address>
+                        Datamatikerstuderende<br />
+                        Erhvervsakademi Dania, Grenaa<br />
+                    </address>
+
+                    <address>
+                        <strong>Mail:</strong>   <a href="mailto:andr4376@gmail.com">andr4376@gmail.com</a><br />
+                        <strong>Telefon:</strong> 40 96 50 01
+                    </address>
+                </div>
+            </div>
+
+
+            <div class="col-md-4 message-template-section" style="max-width:400px;">
+                <div style="padding-left: 50px;">
+                    <asp:Image ID="Image1" runat="server" ImageUrl="~/Images/shh.jpg" CssClass="profile-img" />
+
+                    <h2>Søren Høholt</h2>
+                    <h3>Forretningsansvarlig</h3>
+                    <address>
+                        Afdelingsdirektør 
+                        <br />
+                        Processer & Effektivisering<br />
+                    </address>
+
+                    <address>
+                        <strong>Mail:</strong>   <a href="mailto:test@sparkron.dk">testmail@sparkron.dk</a><br />
+                        <strong>Telefon:</strong> xx xx xx xx
+                    </address>
+                </div>
+            </div>
         </div>
+    </div>
+
 </asp:Content>

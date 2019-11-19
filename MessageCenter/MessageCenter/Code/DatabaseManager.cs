@@ -191,7 +191,7 @@ namespace MessageCenter.Code
 #if DEBUG
             for (int i = 0; i < 25; i++)
             {
-                MessageTemplate testMessage = new MessageTemplate("Besked om økonomiske vanskligheder" + i, "Kære "
+                MessageTemplate testMessage = new MessageTemplate("Besked om økonomiske vanskligheder nr." + i, "Kære "
                     + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_FULLNAME) + ",\n" +
                     "Jeg må desværre informere dig om at du befinder dig i en afsindigt ulækker økonomisk situation - Hvis jeg var dig, ville jeg " +
                     "stikke af til Mexico, før vi kommer og tager dine knæskalder. blablabla, her er dit Cpr nummer, " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_CPR) + "" +

@@ -68,7 +68,7 @@
 
             <div class="message-template-section row">
                 <asp:TextBox CssClass="sparkron-input-title message-text-input" runat="server"
-                    ID="titleTextBox" BorderStyle="None" TextMode="MultiLine"
+                    ID="titleTextBox" BorderStyle="None" TextMode="SingleLine"
                     text="<%# this.GetTitle %>">></asp:TextBox>
             </div>
             <div class="message-template-section row">
