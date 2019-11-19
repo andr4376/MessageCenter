@@ -19,6 +19,8 @@ namespace MessageCenter.Code
 
         private static MessageHandler instance;
 
+        
+
         public static MessageHandler Instance
         {
             get
@@ -59,12 +61,6 @@ namespace MessageCenter.Code
             get { return (sender != null && receiver != null && message != null); }
         }
 
-        public MessageHandler(Customer _receiver, Employee _sender, MessageTemplate _message)
-        {
-            this.receiver = _receiver;
-            this.sender = _sender;
-            this.message = _message;
-        }
 
         public MessageHandler()
         {

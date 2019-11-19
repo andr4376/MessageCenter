@@ -93,8 +93,9 @@ select:focus {
 	width: 100%;
 	box-shadow: 10px 10px 8px 0px rgba(0,0,0,0.22);
 }
+
 .sparkron-customer-box {
-	margin-top:15px;
+	margin-top: 15px;
 	background-color: white;
 	border-bottom-left-radius: 25px;
 	border-bottom-right-radius: 5px;
@@ -124,8 +125,7 @@ select:focus {
 	--webkit-tranistion: background-color 0.25s ease-in; /*for Safari and Chrome*/
 	transition: background-color 0.25s ease-in; /*for IE*/
 	--moz-transition: background-color 0.25s ease-in; /* for Mozilla Firefox*/
-
-	width:100%;
+	width: 100%;
 }
 
 	.sparkron-submit-btn:hover {
@@ -148,7 +148,7 @@ select:focus {
 	--webkit-tranistion: background-color 0.25s ease-in; /*for Safari and Chrome*/
 	transition: background-color 0.25s ease-in; /*for IE*/
 	--moz-transition: background-color 0.25s ease-in; /* for Mozilla Firefox*/
-	width:100%;
+	width: 100%;
 }
 
 	.sparkron-search-btn:hover {
@@ -161,7 +161,7 @@ select:focus {
 	font-size: 20px;
 	background-color: white;
 	color: grey;
-	margin-bottom:5px;
+	margin-bottom: 5px;
 	width: 100%;
 }
 
@@ -170,19 +170,33 @@ select:focus {
 	font-size: 20px;
 	background-color: white;
 	color: grey;
-	width:50%;
+	width: 50%;
 }
 
 
 .message-template-section {
-	font-family: 'Titillium Web', sans-serif;
 	background-color: white;
 	box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.22);
 	border-radius: 5px;
+	margin: 25px;
+	padding-left: 25px;
+	padding-right: 25px;
 }
 
 .sparkron-message-body {
+	margin-top: 50px;
 	font-family: 'Titillium Web', sans-serif;
-	background-color:white;
+	background-color: #D8D0C0;
 }
 
+.sparkron-input-title {
+	font-size: 26px;
+}
+
+.sparkron-input-maintext {
+	height: 500px;
+}
+
+.message-text-input {
+	min-width: 100%;
+}

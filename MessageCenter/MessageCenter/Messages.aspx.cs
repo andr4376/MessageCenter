@@ -13,7 +13,16 @@ namespace MessageCenter
     {
         private int messageTemplateIdInput;
 
+        public static string title = "";
+        public static string text = "";
 
+        public MessageHandler dataBindMessageHandler
+        {
+            get
+            {
+                return MessageHandler.Instance;
+            }
+        }
 
 
 
@@ -113,6 +122,8 @@ namespace MessageCenter
             MessageHandler.Instance.Sender = SignIn.Instance.User;
             MessageHandler.Instance.Message = DatabaseManager.Instance.GetMessageTemplateFromId(messageTemplateIdInput);
 
+
+
             if (MessageHandler.Instance.Message == null || MessageHandler.Instance.Sender == null)
             {
 
@@ -191,7 +202,15 @@ namespace MessageCenter
 
             Utility.WriteLog(MessageHandler.Instance.ToString());
 
+            //TODO:
+            title = MessageHandler.Instance.Message.Title;
+            text = MessageHandler.Instance.Message.Text;
+
             Response.Redirect(Request.RawUrl);
+        }
+        protected void Page_Init(object sender, EventArgs e)
+        {
+            Page.DataBind();
         }
 
         protected void btn_Submit_User_Click(object sender, EventArgs e)
