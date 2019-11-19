@@ -225,7 +225,7 @@ namespace MessageCenter
 
             Utility.WriteLog(MessageHandler.Instance.ToString());
 
-            
+            MessageHandler.Instance.FillMessageWithData();
 
             Response.Redirect(Request.RawUrl);
         }

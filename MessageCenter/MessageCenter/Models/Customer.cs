@@ -17,6 +17,16 @@ namespace MessageCenter.Models
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
 
+        public int Age
+        {
+            get
+            {
+                DateTime birthDate = Convert.ToDateTime(Birthday);
+
+                return (int)(DateTime.Now - birthDate).TotalDays / 365;                   
+            }
+        }
+
 
         public string FullName
         {

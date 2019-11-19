@@ -26,7 +26,7 @@ namespace MessageCenter.Code
         public string Text
         {
             get;
-            private set;
+            set;
         }
 
         public MessageType MessageType

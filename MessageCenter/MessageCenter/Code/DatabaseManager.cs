@@ -47,7 +47,7 @@ namespace MessageCenter.Code
                 return;
             }
 
-           // LoadAllMessageTemplates();
+            // LoadAllMessageTemplates();
 
         }
         private MessageTemplate ExtractMessageTemplateData(SQLiteDataReader dataReader)
@@ -153,7 +153,7 @@ namespace MessageCenter.Code
                     Utility.PrintWarningMessage("Programmet opretter en ny database - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + AppDataManager.Instance.DbFile + "." +
                     "\nKontakt venligst teknisk support på følgende mail: " + supportEmail);
                     Utility.WriteLog("Db file created @" + AppDataManager.Instance.DbFile);
-                                       
+
                 }
                 else
                 {
@@ -191,7 +191,16 @@ namespace MessageCenter.Code
 #if DEBUG
             for (int i = 0; i < 25; i++)
             {
-                MessageTemplate testMessage = new MessageTemplate("Besked om økonomiske vanskligheder" + i, "blablabla, du skylder penge fister" + i, rnd.Next(0, 1 + 1));
+                MessageTemplate testMessage = new MessageTemplate("Besked om økonomiske vanskligheder" + i, "Kære "
+                    + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_FULLNAME) + ",\n" +
+                    "Jeg må desværre informere dig om at du befinder dig i en afsindigt ulækker økonomisk situation - Hvis jeg var dig, ville jeg " +
+                    "stikke af til Mexico, før vi kommer og tager dine knæskalder. blablabla, her er dit Cpr nummer, " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_CPR) + "" +
+                    ", dit fornavn: " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_FIRSTNAME) + "...\n"
+                    + "Vi kan se at dit telefon nummer er "+ MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_PHONENUMBER)+", din email er "
+                    + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_EMAIL)+", og vi ved du er "+ MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_AGE) + "!\n" +
+                    "Tag og pas på du,\n" +
+                    "Mvh, "+MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.EMPLOYEE_FULLNAME)+"\n Sparekassen Kronjylland -" + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.DEPARTMENT)+" afdelingen"
+                    , rnd.Next(0, 1 + 1));
 
                 status = AddMessageTemplate(testMessage);
 
@@ -309,7 +318,7 @@ namespace MessageCenter.Code
             DBConnect.Open();
 
             SQLiteCommand Command = new SQLiteCommand("select * from "
-            + messageTemplatesTableName +";", DBConnect);
+            + messageTemplatesTableName + ";", DBConnect);
 
             try
             {
@@ -335,31 +344,31 @@ namespace MessageCenter.Code
 
             return listOfMessages;
         }
-/*
-        public Dictionary<string, string> GetMessageTemplatesDictionaryTitleId()
-        {
+        /*
+                public Dictionary<string, string> GetMessageTemplatesDictionaryTitleId()
+                {
 
-            if (GetAllMessagesFromDB() == ReturnCode.ERROR)
-            {
-                return null;
-            }
+                    if (GetAllMessagesFromDB() == ReturnCode.ERROR)
+                    {
+                        return null;
+                    }
 
 
-            if (messages == null || messages.Count == 0)
-            {
-                return null;
-            }
+                    if (messages == null || messages.Count == 0)
+                    {
+                        return null;
+                    }
 
-            Dictionary<string, string> messagesDictionary = new Dictionary<string, string>();
+                    Dictionary<string, string> messagesDictionary = new Dictionary<string, string>();
 
-            foreach (MessageTemplate message in messages)
-            {
-                messagesDictionary.Add(message.Id.ToString(), message.Title);
+                    foreach (MessageTemplate message in messages)
+                    {
+                        messagesDictionary.Add(message.Id.ToString(), message.Title);
 
-            }
-            return messagesDictionary;
-        }
-        */
+                    }
+                    return messagesDictionary;
+                }
+                */
         private StatusCode GetAllMessagesFromDB()
         {
             //TODO: get messages from db instead! DELETE THIS
