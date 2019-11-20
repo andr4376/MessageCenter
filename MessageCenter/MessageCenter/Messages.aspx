@@ -76,6 +76,7 @@
                 <asp:TextBox CssClass="message-text-input sparkron-input-maintext" runat="server" 
                     ID="messageTextTextBox" BorderStyle="None" TextMode="MultiLine"
                     text="<%# this.GetText %>"></asp:TextBox>
+                
             </div>
                     <asp:Button ID="sendMailBtn" Text="Send" runat="server" OnClick="sendMailBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false"/>
             

@@ -18,7 +18,9 @@ namespace MessageCenter.Code
             mailMessage.To.Add(to);
             mailMessage.Subject = title;
             mailMessage.Body = text;
-            mailMessage.IsBodyHtml = true; //TODO: sikre at de ikke giver problemer
+
+            //TODO: man kan lave rich text, men \n bliver ikke til linjeskift...
+           // mailMessage.IsBodyHtml = true; 
 
             smtpClient.Port = 587;
             smtpClient.Credentials = new System.Net.NetworkCredential("sparkronmessagecenter@gmail.com", "sparkronmc");
