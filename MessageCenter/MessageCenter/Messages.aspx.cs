@@ -25,6 +25,7 @@ namespace MessageCenter
                 }
                 return "";
             }
+            set { MessageHandler.Instance.Message.Title = value; }
         }
 
         public string GetText
@@ -281,6 +282,11 @@ namespace MessageCenter
                 UpdateCustomersListbox(customers);
             }
 
+        }
+
+        protected void sendMailBtn_Click(object sender, EventArgs e)
+        {
+            MessageHandler.Instance.SendMessage();
         }
     }
 }

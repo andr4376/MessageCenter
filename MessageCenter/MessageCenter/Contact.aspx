@@ -6,7 +6,7 @@
     <div class="container">
         <div class="row">
 
-            <div class="col-md-4 message-template-section" style="max-width:400px;">
+            <div class="col-md-4 message-template-section" style="max-width:400px; padding:25px; margin-top:50px;">
                 <div style="padding-left: 50px;">
                     <asp:Image ID="logo" runat="server" ImageUrl="~/Images/andreas.jpg" CssClass="profile-img" />
 
@@ -25,7 +25,7 @@
             </div>
 
 
-            <div class="col-md-4 message-template-section" style="max-width:400px;">
+            <div class="col-md-4 message-template-section" style="max-width:400px; margin-top:50px; padding:25px;">
                 <div style="padding-left: 50px;">
                     <asp:Image ID="Image1" runat="server" ImageUrl="~/Images/shh.jpg" CssClass="profile-img" />
 

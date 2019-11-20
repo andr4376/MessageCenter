@@ -183,6 +183,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Code\ApiManager.cs" />
     <Compile Include="Code\AppDataManager.cs" />
+    <Compile Include="Code\Mail.cs" />
+    <Compile Include="Code\Message.cs" />
     <Compile Include="Code\MessageHandler.cs" />
     <Compile Include="Code\MessageTemplate.cs" />
     <Compile Include="Code\DatabaseManager.cs" />

@@ -20,7 +20,7 @@ namespace MessageCenter.Code
         public string Title
         {
             get;
-            private set;
+             set;
         }
 
         public string Text

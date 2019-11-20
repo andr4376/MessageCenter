@@ -98,7 +98,6 @@ namespace MessageCenter.Code
         {
 
 
-
         }
 
         private static void SetupMessageVariables()
@@ -223,7 +222,15 @@ namespace MessageCenter.Code
             }
         }
 
+        public void SendMessage()
+        {
+            new Mail(
+                sender.Email,
+                receiver.Email,
+                message.Title,
+                message.Text).
+                Send();
 
-
+        }
     }
 }
