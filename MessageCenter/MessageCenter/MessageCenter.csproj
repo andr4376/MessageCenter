@@ -189,6 +189,7 @@
     <Compile Include="Code\MessageTemplate.cs" />
     <Compile Include="Code\DatabaseManager.cs" />
     <Compile Include="Code\SignIn.cs" />
+    <Compile Include="Code\Sms.cs" />
     <Compile Include="Code\Utility.cs" />
     <Compile Include="Contact.aspx.cs">
       <DependentUpon>Contact.aspx</DependentUpon>

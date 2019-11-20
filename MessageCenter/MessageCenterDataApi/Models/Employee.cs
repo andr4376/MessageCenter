@@ -67,8 +67,8 @@ namespace MessageCenterDataApi.Models
                     Birthday = "26-06-1965",
                     Cpr = "2606651245",
                     Department = "Randers",
-                    Email = "kna@sparkron.dk",
-                    PhoneNumber = "26564578",
+                    Email = "sparkronmessagecenter@gmail.com",
+                    PhoneNumber = "40965001",
                     PassWord = "yFjFQqyHJbMmAYIsH5rZ4Y3S_6vpMyFLfWLnZEcv1J0a"
 
                 });
@@ -81,8 +81,8 @@ namespace MessageCenterDataApi.Models
                     Birthday = "26-06-1987",
                     Cpr = "2606871245",
                     Department = "Spentrup",
-                    Email = "Seh@sparkron.dk",
-                    PhoneNumber = "20516498",
+                    Email = "sparkronmessagecenter@gmail.com",
+                    PhoneNumber = "40965001",
                     PassWord = "yFjFQqyHJbMmAYIsH5rZ4Y3S_6vpMyFLfWLnZEcv1J0a"
 
 
@@ -96,8 +96,8 @@ namespace MessageCenterDataApi.Models
                    Birthday = "22-12-1983",
                    Cpr = "2212831346",
                    Department = "Tronholmen",
-                   Email = "Bhm@sparkron.dk",
-                   PhoneNumber = "4051463125",
+                   Email = "sparkronmessagecenter@gmail.com",
+                   PhoneNumber = "40965001",
                    PassWord = "yFjFQqyHJbMmAYIsH5rZ4Y3S_6vpMyFLfWLnZEcv1J0a"
 
 
@@ -112,8 +112,8 @@ namespace MessageCenterDataApi.Models
                   Birthday = "22-12-1976",
                   Cpr = "2212763164",
                   Department = "Processer & Effektivisering",
-                  Email = "Bori@sparkron.dk",
-                  PhoneNumber = "55443187",
+                  Email = "sparkronmessagecenter@gmail.com",
+                  PhoneNumber = "40965001",
                   PassWord = "yFjFQqyHJbMmAYIsH5rZ4Y3S_6vpMyFLfWLnZEcv1J0a"
 
 

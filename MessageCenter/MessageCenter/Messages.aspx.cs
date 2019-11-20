@@ -13,41 +13,31 @@ namespace MessageCenter
     {
         private int messageTemplateIdInput;
 
-       
+
 
         public string GetTitle
         {
             get
             {
-                if (MessageHandler.Instance.Message != null)
+                if (MessageHandler.Instance.MsgTemplate != null)
                 {
-                    return MessageHandler.Instance.Message.Title;
+                    return MessageHandler.Instance.MsgTemplate.Title;
                 }
                 return "";
             }
-            set { MessageHandler.Instance.Message.Title = value; }
         }
 
         public string GetText
         {
             get
             {
-                if (MessageHandler.Instance.Message != null)
+                if (MessageHandler.Instance.MsgTemplate != null)
                 {
-                    return MessageHandler.Instance.Message.Text;
+                    return MessageHandler.Instance.MsgTemplate.Text;
                 }
                 return "";
             }
         }
-
-        public MessageHandler dataBindMessageHandler
-        {
-            get
-            {
-                return MessageHandler.Instance;
-            }
-        }
-
 
 
         protected void Page_Load(object sender, EventArgs e)
@@ -141,14 +131,12 @@ namespace MessageCenter
                 return StatusCode.FORHINDRING;
             }
 
-
-
             MessageHandler.Instance.Sender = SignIn.Instance.User;
-            MessageHandler.Instance.Message = DatabaseManager.Instance.GetMessageTemplateFromId(messageTemplateIdInput);
+            MessageHandler.Instance.MsgTemplate = DatabaseManager.Instance.GetMessageTemplateFromId(messageTemplateIdInput);
 
 
 
-            if (MessageHandler.Instance.Message == null || MessageHandler.Instance.Sender == null)
+            if (MessageHandler.Instance.MsgTemplate == null || MessageHandler.Instance.Sender == null)
             {
 
                 return StatusCode.ERROR;
@@ -286,7 +274,19 @@ namespace MessageCenter
 
         protected void sendMailBtn_Click(object sender, EventArgs e)
         {
+
+            //Update message title and text with the new, edited text
+            MessageHandler.Instance.MsgTemplate.Title = titleTextBox.Text;
+            MessageHandler.Instance.MsgTemplate.Text = messageTextTextBox.Text;
+
+            MessageHandler.Instance.SetupMessage();
+            //
+            //add ATTACHMENTS
+            //
             MessageHandler.Instance.SendMessage();
+
+
+
         }
     }
 }

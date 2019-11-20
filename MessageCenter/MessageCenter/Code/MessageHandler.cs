@@ -33,11 +33,13 @@ namespace MessageCenter.Code
 
         private Employee sender;
 
-        private MessageTemplate message;
+        private MessageTemplate msgTemplate;
 
         private static MessageHandler instance;
 
         private static Dictionary<MESSAGE_VARIABLES, string> messageVariables;
+
+        private Message message;
 
         public static string GetMessageVariable(MESSAGE_VARIABLES variable)
         {
@@ -68,10 +70,10 @@ namespace MessageCenter.Code
 
 
 
-        public MessageTemplate Message
+        public MessageTemplate MsgTemplate
         {
-            get { return message; }
-            set { message = value; }
+            get { return msgTemplate; }
+            set { msgTemplate = value; }
         }
 
         public Employee Sender
@@ -90,7 +92,7 @@ namespace MessageCenter.Code
 
         public bool IsReady
         {
-            get { return (sender != null && receiver != null && message != null); }
+            get { return (sender != null && receiver != null && msgTemplate != null); }
         }
 
 
@@ -136,7 +138,7 @@ namespace MessageCenter.Code
 
                 + "\n" +
                 "Message id: " +
-                (message == null ? "NULL" : message.Id.ToString());
+                (msgTemplate == null ? "NULL" : msgTemplate.Id.ToString());
 
             return txt;
         }
@@ -216,21 +218,45 @@ namespace MessageCenter.Code
                         break;
                 }
 
-                message.Text = message.Text.Replace(
+                msgTemplate.Text = msgTemplate.Text.Replace(
                     GetMessageVariable(variable.Key), tmpText);
 
             }
         }
 
+        public void SetupMessage()
+        {
+
+
+            switch (msgTemplate.MessageType)
+            {
+                case MessageType.MAIL:
+                    this.message = new Mail(
+                 sender.Email,
+                 receiver.Email,
+                 msgTemplate.Title,
+                 msgTemplate.Text);
+                    break;
+
+                    //TODO:
+                case MessageType.SMS:
+                    Utility.PrintWarningMessage("sms ikke implementeret, prøv anden besked skabelon :)");
+                    throw new Exception();
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        public void AddAttachments()
+        {
+            //TODO:
+        }
+
         public void SendMessage()
         {
-            new Mail(
-                sender.Email,
-                receiver.Email,
-                message.Title,
-                message.Text).
-                Send();
-
+            this.message.Send();
         }
     }
 }
