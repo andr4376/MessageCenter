@@ -111,7 +111,7 @@ namespace MessageCenter.Code
 
 
 
-            DBConnect = new SQLiteConnection("Data source = " + AppDataManager.Instance.DbFile + "; Version = 3; ");
+            DBConnect = new SQLiteConnection("Data source = " + FileManager.Instance.DbFile + "; Version = 3; ");
 
             //Setup Database file - if it goes well, Create the table if needed, else return error.
 
@@ -147,17 +147,17 @@ namespace MessageCenter.Code
         {
             try
             {
-                if (!(File.Exists(AppDataManager.Instance.DbFile)))
+                if (!(File.Exists(FileManager.Instance.DbFile)))
                 {
-                    SQLiteConnection.CreateFile(AppDataManager.Instance.DbFile);
-                    Utility.PrintWarningMessage("Programmet opretter en ny database - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + AppDataManager.Instance.DbFile + "." +
+                    SQLiteConnection.CreateFile(FileManager.Instance.DbFile);
+                    Utility.PrintWarningMessage("Programmet opretter en ny database - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + FileManager.Instance.DbFile + "." +
                     "\nKontakt venligst teknisk support på følgende mail: " + supportEmail);
-                    Utility.WriteLog("Db file created @" + AppDataManager.Instance.DbFile);
+                    Utility.WriteLog("Db file created @" + FileManager.Instance.DbFile);
 
                 }
                 else
                 {
-                    Utility.WriteLog("Db file found @" + AppDataManager.Instance.DbFile);
+                    Utility.WriteLog("Db file found @" + FileManager.Instance.DbFile);
                     return StatusCode.FORHINDRING;
                 }
             }
@@ -166,7 +166,7 @@ namespace MessageCenter.Code
 
                 Utility.WriteLog(e.Message);
 
-                Utility.PrintWarningMessage("Oops! Programmet kunne ikke oprette database filen - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + AppDataManager.Instance.DbFile + "." +
+                Utility.PrintWarningMessage("Oops! Programmet kunne ikke oprette database filen - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + FileManager.Instance.DbFile + "." +
                     "\nKontakt venligst teknisk support på følgende mail: " + supportEmail);
 
 

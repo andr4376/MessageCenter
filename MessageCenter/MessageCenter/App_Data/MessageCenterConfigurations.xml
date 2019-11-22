@@ -1,0 +1,7 @@
+﻿<configurations>
+  <supportEmail>andr4376@gmail.com</supportEmail>
+  <dbFileName>database.db</dbFileName>
+  <messageTemplateTableName>MessageTemplates</messageTemplateTableName>
+  <attachmentsTableName>Attachments</attachmentsTableName>
+  <apiUrl>http://localhost:58616/api/</apiUrl>
+</configurations>

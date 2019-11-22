@@ -17,14 +17,24 @@ namespace MessageCenter.Code
 
             mailMessage.To.Add(to);
             mailMessage.Subject = title;
-            mailMessage.Body = text;
+            mailMessage.Body = ConvertTextToHtml(text);
 
             //TODO: man kan lave rich text, men \n bliver ikke til linjeskift...
-           // mailMessage.IsBodyHtml = true; 
+          // mailMessage.IsBodyHtml = true;
 
             smtpClient.Port = 587;
             smtpClient.Credentials = new System.Net.NetworkCredential("sparkronmessagecenter@gmail.com", "sparkronmc");
             smtpClient.EnableSsl = true;
+        }
+
+        /// <summary>
+        /// TODO:
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        private string ConvertTextToHtml(string text)
+        {
+            return text.Replace("\n", "<br>");
         }
 
         public override void Send()

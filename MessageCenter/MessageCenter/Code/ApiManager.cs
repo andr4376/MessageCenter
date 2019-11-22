@@ -11,7 +11,7 @@ namespace MessageCenter.Code
     {
         private static ApiManager instance;
 
-        private readonly string apiUrl = "http://localhost:58616/api/";
+        private string apiUrl;
 
         public static readonly string getAllEmployeesParameters = "employees/";
         public static readonly string getAllCustomerParameters = "customers/";
@@ -45,6 +45,8 @@ namespace MessageCenter.Code
 
         private void Intitialize()
         {
+            apiUrl = Configurations.GetConfigurationsValue(CONFIGURATION_NAME.API_URL);
+
             //Setup Api manager
             httpClient = new HttpClient();
 

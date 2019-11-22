@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Messages.aspx.cs" Inherits="MessageCenter.Messages" 
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Messages.aspx.cs" Inherits="MessageCenter.Messages"
     ValidateRequest="false" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
@@ -70,16 +70,15 @@
             <div class="message-template-section row">
                 <asp:TextBox CssClass="sparkron-input-title message-text-input" runat="server"
                     ID="titleTextBox" BorderStyle="None" TextMode="SingleLine"
-                    text="<%# this.GetTitle %>">></asp:TextBox>
+                    Text="<%# this.GetTitle %>">></asp:TextBox>
             </div>
+
             <div class="message-template-section row">
-                <asp:TextBox CssClass="message-text-input sparkron-input-maintext" runat="server" 
+                <asp:TextBox CssClass="message-text-input sparkron-input-maintext" runat="server"
                     ID="messageTextTextBox" BorderStyle="None" TextMode="MultiLine"
-                    text="<%# this.GetText %>"></asp:TextBox>
-                
+                    Text="<%# this.GetText %>"></asp:TextBox>
             </div>
-                    <asp:Button ID="sendMailBtn" Text="Send" runat="server" OnClick="sendMailBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false"/>
-            
+            <asp:Button ID="sendMailBtn" Text="Send" runat="server" OnClick="sendMailBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false" />
         </div>
     </div>
     <!--Message Page Body END-->
