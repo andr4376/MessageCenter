@@ -15,15 +15,22 @@ namespace MessageCenter.Code
 
         public List<MessageTemplate> messages;
 
-        public static readonly string dbFileName = "Database.db";
-
-        private static string messageTemplatesTableName = "MessageTemplates";
-
         private SQLiteConnection DBConnect;
+        public static string supportEmail;
+        private string messageTemplatesTableName;
+        private string MessageTemplatesTableName
+        {
+             get
+            {
+                if (messageTemplatesTableName == null)
+                {
+                    messageTemplatesTableName =
+                        Configurations.GetConfigurationsValue(CONFIGURATION_NAME.MESSAGE_TEMPLATE_TABLE_NAME);
+                }
 
-        public static readonly string supportEmail = "andr4376@gmail.com";
-
-
+                return messageTemplatesTableName;
+            }
+        }
 
         public static DatabaseManager Instance
         {
@@ -71,7 +78,10 @@ namespace MessageCenter.Code
             MessageTemplate tmpMessage = null;
 
             DBConnect.Open();
-            SQLiteCommand Command = new SQLiteCommand("select * from " + messageTemplatesTableName + ";", DBConnect);
+
+
+
+            SQLiteCommand Command = new SQLiteCommand("select * from " + MessageTemplatesTableName + ";", DBConnect);
 
             try
             {
@@ -109,7 +119,7 @@ namespace MessageCenter.Code
 
             System.Diagnostics.Debug.WriteLine("Initializing DatabaseManager");
 
-
+            supportEmail = Configurations.GetConfigurationsValue(CONFIGURATION_NAME.SUPPORT_EMAIL);
 
             DBConnect = new SQLiteConnection("Data source = " + FileManager.Instance.DbFile + "; Version = 3; ");
 
@@ -196,10 +206,10 @@ namespace MessageCenter.Code
                     "Jeg må desværre informere dig om at du befinder dig i en afsindigt ulækker økonomisk situation - Hvis jeg var dig, ville jeg " +
                     "stikke af til Mexico, før vi kommer og tager dine knæskalder. blablabla, her er dit Cpr nummer, " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_CPR) + "" +
                     ", dit fornavn: " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_FIRSTNAME) + "...\n"
-                    + "Vi kan se at dit telefon nummer er "+ MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_PHONENUMBER)+", din email er "
-                    + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_EMAIL)+", og vi ved du er "+ MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_AGE) + "!\n" +
+                    + "Vi kan se at dit telefon nummer er " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_PHONENUMBER) + ", din email er "
+                    + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_EMAIL) + ", og vi ved du er " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_AGE) + "!\n" +
                     "Tag og pas på du,\n" +
-                    "Mvh, "+MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.EMPLOYEE_FULLNAME)+"\n Sparekassen Kronjylland -" + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.DEPARTMENT)+" afdelingen"
+                    "Mvh, " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.EMPLOYEE_FULLNAME) + "\n Sparekassen Kronjylland -" + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.DEPARTMENT) + " afdelingen"
                     , rnd.Next(0, 1 + 1));
 
                 status = AddMessageTemplate(testMessage);
@@ -220,7 +230,7 @@ namespace MessageCenter.Code
         /// <returns></returns>
         private StatusCode AddMessageTemplate(MessageTemplate message)
         {
-            string cmd = "insert into " + messageTemplatesTableName + " values (null," +
+            string cmd = "insert into " + MessageTemplatesTableName + " values (null," +
               "'" + message.Title + "'," +
               "'" + message.Text + "', " +
               +message.MessageTypeId + ")";
@@ -239,7 +249,7 @@ namespace MessageCenter.Code
         private StatusCode CreateTables()
         {
 
-            string cmd = "DROP TABLE IF EXISTS " + messageTemplatesTableName;
+            string cmd = "DROP TABLE IF EXISTS " + MessageTemplatesTableName;
 
             StatusCode returnCode = ExecuteSQLiteNonQuery(cmd);
 
@@ -250,7 +260,7 @@ namespace MessageCenter.Code
                 return returnCode;
             }
 
-            cmd = "Create table " + messageTemplatesTableName + "" +
+            cmd = "Create table " + MessageTemplatesTableName + "" +
             "(id integer primary key, " +
             "title varchar, " +
             "text varchar, " +
@@ -260,7 +270,7 @@ namespace MessageCenter.Code
 
             if (returnCode == StatusCode.OK)
             {
-                Utility.WriteLog("Table '" + messageTemplatesTableName + "' has been created!");
+                Utility.WriteLog("Table '" + MessageTemplatesTableName + "' has been created!");
 
 #if DEBUG
                 if (PopulateDb() != StatusCode.OK)
@@ -273,7 +283,7 @@ namespace MessageCenter.Code
             }
             else
             {
-                Utility.WriteLog("ERROR: Could not create table '" + messageTemplatesTableName + "'!");
+                Utility.WriteLog("ERROR: Could not create table '" + MessageTemplatesTableName + "'!");
                 Utility.PrintWarningMessage("Fejl ved oprettelse af database - kontakt venligt it support");
 
             }
@@ -318,7 +328,7 @@ namespace MessageCenter.Code
             DBConnect.Open();
 
             SQLiteCommand Command = new SQLiteCommand("select * from "
-            + messageTemplatesTableName + ";", DBConnect);
+            + MessageTemplatesTableName + ";", DBConnect);
 
             try
             {
@@ -402,7 +412,7 @@ namespace MessageCenter.Code
             DBConnect.Open();
 
             SQLiteCommand Command = new SQLiteCommand("select * from "
-            + messageTemplatesTableName +
+            + MessageTemplatesTableName +
             " WHERE title LIKE '%" + textToContain + "%';", DBConnect);
 
             try
@@ -437,7 +447,7 @@ namespace MessageCenter.Code
             DBConnect.Open();
 
             SQLiteCommand command = new SQLiteCommand("select * from "
-            + messageTemplatesTableName +
+            + MessageTemplatesTableName +
             " WHERE id = " + id + " " +
             "LIMIT 1;", DBConnect);
 

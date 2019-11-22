@@ -17,7 +17,9 @@ namespace MessageCenter.Code
 
             mailMessage.To.Add(to);
             mailMessage.Subject = title;
-            mailMessage.Body = ConvertTextToHtml(text);
+
+            //TODO: add rich text editing
+         //   mailMessage.Body = ConvertTextToHtml(text);
 
             //TODO: man kan lave rich text, men \n bliver ikke til linjeskift...
           // mailMessage.IsBodyHtml = true;
