@@ -1,6 +1,6 @@
 ﻿namespace MessageCenter.Models
 {
-    public class Employee
+    public class Employee : IModel
     {
         public string Tuser { get; set; }
         public string FirstName { get; set; }

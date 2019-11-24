@@ -9,10 +9,18 @@ namespace MessageCenter.Code
         private MailMessage mailMessage = new MailMessage();
         private SmtpClient smtpClient;
 
+
+        //Prototype: Jeg bruger Gmail, og en google konto til at sende mails 
+        private readonly string smtpHost = "smtp.gmail.com";
+        private readonly string mailCredentialUsername = "sparkronmessagecenter@gmail.com";
+        private readonly string mailCredentialPassword = "sparkronmc";
+        private readonly int smtpPort = 587;
+        //
+
         public Mail(string from, string to, string title, string text)
         {
             mailMessage = new MailMessage();
-            smtpClient = new SmtpClient("smtp.gmail.com");
+            smtpClient = new SmtpClient(smtpHost);
             mailMessage.From = new MailAddress(from);
 
             mailMessage.To.Add(to);
@@ -24,8 +32,8 @@ namespace MessageCenter.Code
             //TODO: man kan lave rich text, men \n bliver ikke til linjeskift...
           // mailMessage.IsBodyHtml = true;
 
-            smtpClient.Port = 587;
-            smtpClient.Credentials = new System.Net.NetworkCredential("sparkronmessagecenter@gmail.com", "sparkronmc");
+            smtpClient.Port = smtpPort;
+            smtpClient.Credentials = new System.Net.NetworkCredential(mailCredentialUsername, mailCredentialPassword);
             smtpClient.EnableSsl = true;
         }
 
@@ -47,8 +55,8 @@ namespace MessageCenter.Code
             }
             catch (Exception exception)
             {
-                Utility.WriteLog(exception.ToString());
-                Utility.PrintWarningMessage(exception.ToString());
+                Utility.WriteLog("Der opstod fejl ved at sende email: "+exception.ToString());
+                Utility.PrintWarningMessage("Der opstod fejl ved at sende email: " + exception.ToString()+" - kontakt venligt teknisk support");
             }
         }
     }

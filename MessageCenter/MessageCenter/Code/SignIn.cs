@@ -26,7 +26,9 @@ namespace MessageCenter.Code
             {
                 if (IsLoggedIn)
                 {
-                    return ApiManager.Instance.MakeRestCall<Customer>(ApiManager.getCustomerFromAdvisor + user.Tuser);
+                    return ApiManager.Instance.MakeRestCall<Customer>(
+                        Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.GET_CUSTOMER_FROM_ADVISOR_TUSER_API_PARAMETERS)
+                        + user.Tuser);
                 }
                 return null;
             }
@@ -59,7 +61,7 @@ namespace MessageCenter.Code
             try
             {
                 this.user = ApiManager.Instance.MakeRestCall<Employee>
-                (ApiManager.getEmployeeFromCredentials
+                (Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.GET_EMPLOYEE_FROM_CREDENTIALS_API_PARAMETERS)
                 + tUser.ToUpper() + "/"
                 + EncryptPassword(passWord))[0];
 

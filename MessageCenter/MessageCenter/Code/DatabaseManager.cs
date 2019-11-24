@@ -25,7 +25,7 @@ namespace MessageCenter.Code
                 if (messageTemplatesTableName == null)
                 {
                     messageTemplatesTableName =
-                        Configurations.GetConfigurationsValue(CONFIGURATION_NAME.MESSAGE_TEMPLATE_TABLE_NAME);
+                        Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.MESSAGE_TEMPLATE_TABLE_NAME);
                 }
 
                 return messageTemplatesTableName;
@@ -50,6 +50,7 @@ namespace MessageCenter.Code
             if (Initialize() == StatusCode.ERROR)
             {
                 Utility.WriteLog("Failed to initialize DatabaseManager");
+                Utility.PrintWarningMessage("Der kunne ikke oprettes forbindelse til databasen - kontakt venligst teknisk support");
 
                 return;
             }
@@ -68,7 +69,7 @@ namespace MessageCenter.Code
 
             return tmpMessage;
         }
-
+        /*
         private StatusCode LoadAllMessageTemplates()
         {
             StatusCode returnCode = StatusCode.OK;
@@ -89,13 +90,9 @@ namespace MessageCenter.Code
                 {
                     while (dataReader.Read())
                     {
-
-
                         tmpMessage = ExtractMessageTemplateData(dataReader);
 
-                        listOfMessages.Add(tmpMessage);
-
-
+                        listOfMessages.Add(tmpMessage);                        
                     }
                 }
             }
@@ -113,19 +110,20 @@ namespace MessageCenter.Code
 
             return returnCode;
         }
-
+        */
         private StatusCode Initialize()
         {
 
             System.Diagnostics.Debug.WriteLine("Initializing DatabaseManager");
 
-            supportEmail = Configurations.GetConfigurationsValue(CONFIGURATION_NAME.SUPPORT_EMAIL);
+            supportEmail = Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL);
 
             DBConnect = new SQLiteConnection("Data source = " + FileManager.Instance.DbFile + "; Version = 3; ");
 
             //Setup Database file - if it goes well, Create the table if needed, else return error.
 
             StatusCode code = CreateDbFileIfNotExists();
+
             switch (code)
             {
                 //Ingen db fil fundet - ny er oprettet
@@ -143,6 +141,7 @@ namespace MessageCenter.Code
 
                 //fejl ved oprettelse / identificering af db fil
                 case StatusCode.ERROR:
+                    //Fejlhåndteres i constructor
                     break;
 
             }

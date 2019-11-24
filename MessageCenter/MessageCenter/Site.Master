@@ -46,8 +46,8 @@
             <div class="container">
 
                 <ul class="nav navbar-nav">
-                    <li>
-                        <asp:Image ID="logo" runat="server" ImageUrl="~/Images/logo-sparekassen-kronjylland.png" CssClass="logo-img " />
+                    <li>                        
+                        <asp:Image ID="logo" runat="server" ImageUrl="~/Images/logo-sparekassen-kronjylland.png" CssClass="logo-img"/>
                     </li>
                     <li><a runat="server" href="~/" class="nav-link">Hjem</a></li>
                     <li><a runat="server" href="~/About" class="nav-link">Om siden</a></li>

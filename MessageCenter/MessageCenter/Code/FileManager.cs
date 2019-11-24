@@ -7,6 +7,9 @@ using System.Xml;
 
 namespace MessageCenter.Code
 {
+    /// <summary>
+    /// A singleton class that handles files and directories
+    /// </summary>
     public  class FileManager
     {
         private static FileManager instance;
@@ -19,14 +22,16 @@ namespace MessageCenter.Code
         /// </summary>
         private string dbFile = string.Empty;
 
+        /// <summary>
+        /// Returns the path to the database file
+        /// </summary>
         public string DbFile
         {
             get
             {
                 if (dbFile==string.Empty)
                 {
-                    dbFile = GetFilePath(Configurations.GetConfigurationsValue(CONFIGURATION_NAME.DB_FILE_NAME));
-                    
+                    dbFile = GetFilePath(Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.DB_FILE_NAME));                    
                 }
 
                 return dbFile;
@@ -46,6 +51,7 @@ namespace MessageCenter.Code
             }
         }
 
+
         private FileManager()
         {
             Initialize();
@@ -58,6 +64,11 @@ namespace MessageCenter.Code
 
         }
 
+        /// <summary>
+        /// Returns the full file path relative to the App_Data folder
+        /// </summary>
+        /// <param name="filename">The file you wish to get the full path from - ex. 'database.db'</param>
+        /// <returns></returns>
         public string GetFilePath(string filename)
         {
             return appDataPath + "\\" + filename;

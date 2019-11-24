@@ -5,7 +5,7 @@ using System.Web;
 
 namespace MessageCenter.Models
 {
-    public class Customer
+    public class Customer : IModel
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
