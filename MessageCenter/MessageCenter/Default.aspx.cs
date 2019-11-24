@@ -70,7 +70,8 @@ namespace MessageCenter
 
         private StatusCode PopulateMessageTemplatesListBox()
         {
-           Dictionary<string,string> listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(DatabaseManager.Instance.GetAllMessageTemplates());
+           Dictionary<string,string> listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(
+               DatabaseManager.Instance.GetAllMessageTemplates());
 
             if (listBoxMessageDictionary == null)
             {
@@ -128,7 +129,7 @@ namespace MessageCenter
 
         }
 
-        private void UpdateListBox(Dictionary<string,string> newMessagesInput)
+        private void UpdateListBox(Dictionary<string,string> messageTemplateDictionary)
         {
 
             if (listBoxMessageTemplates.Items.Count > 0)
@@ -136,7 +137,7 @@ namespace MessageCenter
                 listBoxMessageTemplates.Items.Clear();
             }
 
-            listBoxMessageTemplates.DataSource = newMessagesInput;
+            listBoxMessageTemplates.DataSource = messageTemplateDictionary;
             listBoxMessageTemplates.DataTextField = "Value";
             listBoxMessageTemplates.DataValueField = "Key";
             listBoxMessageTemplates.DataBind();
@@ -157,17 +158,13 @@ namespace MessageCenter
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
                 return;
             }
-
-            //TODO: continue if element exists in db
-            /*
-            if (DatabaseManager.Instance.get)
-            {
-
-            }
-            */
+            
             Utility.WriteLog("proceeding to message page for message Id: "+listBoxMessageTemplates.SelectedItem.Value);
 
+            //Stores the Id of the selected messagetemplate
             Session["MessageTemplateId"] = listBoxMessageTemplates.SelectedItem.Value;
+
+            //Opens the Messages page
             Response.Redirect("Messages.aspx");
 
         }

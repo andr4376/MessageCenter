@@ -67,7 +67,6 @@ namespace MessageCenter
 
         protected void Page_PreRender(object sender, EventArgs e)
         {
-
             messageBody.Visible = MessageHandler.Instance.IsReady;
 
         }
@@ -97,7 +96,8 @@ namespace MessageCenter
                 if (status == StatusCode.ERROR)
                 {
                     Utility.WriteLog("MessageTemplate with id " + messageTemplateIdInput + " wan not found in the database");
-                    Utility.PrintWarningMessage("Teknisk fejl - den valgte besked kunne ikke findes i databasen. Kontakt venligst teknisk support: " + DatabaseManager.supportEmail);
+                    Utility.PrintWarningMessage("Teknisk fejl - den valgte besked kunne ikke findes i databasen. Kontakt venligst teknisk support: "
+                        + Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
                     Response.Redirect("Default.aspx");
                     return;
                 }
@@ -158,7 +158,8 @@ namespace MessageCenter
             else
             {
                 Utility.PrintWarningMessage(
-                   "Der blev ikke fundet nogle kunder tilknyttet dit TUser - hvis dette er en fejl, kontakt support: " + DatabaseManager.supportEmail);
+                   "Der blev ikke fundet nogle kunder tilknyttet dit TUser - hvis dette er en fejl, kontakt support: " +
+                   Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
             }
         }
 
@@ -247,7 +248,7 @@ namespace MessageCenter
             if (customer == null)
             {
                 Utility.PrintWarningMessage("Teknisk fejl ved udhentning af data for den valgte kunde - kontakt venligst teknisk support: "
-                    + DatabaseManager.supportEmail);
+                    +Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
                 return StatusCode.ERROR;
             }
 

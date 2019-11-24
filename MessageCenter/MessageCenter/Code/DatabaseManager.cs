@@ -16,7 +16,7 @@ namespace MessageCenter.Code
         public List<MessageTemplate> messages;
 
         private SQLiteConnection DBConnect;
-        public static string supportEmail;
+       
         private string messageTemplatesTableName;
         private string MessageTemplatesTableName
         {
@@ -116,7 +116,7 @@ namespace MessageCenter.Code
 
             System.Diagnostics.Debug.WriteLine("Initializing DatabaseManager");
 
-            supportEmail = Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL);
+            
 
             DBConnect = new SQLiteConnection("Data source = " + FileManager.Instance.DbFile + "; Version = 3; ");
 
@@ -160,7 +160,8 @@ namespace MessageCenter.Code
                 {
                     SQLiteConnection.CreateFile(FileManager.Instance.DbFile);
                     Utility.PrintWarningMessage("Programmet opretter en ny database - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + FileManager.Instance.DbFile + "." +
-                    "\nKontakt venligst teknisk support på følgende mail: " + supportEmail);
+                    "\nKontakt venligst teknisk support på følgende mail: " +
+                    Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
                     Utility.WriteLog("Db file created @" + FileManager.Instance.DbFile);
 
                 }
@@ -176,7 +177,8 @@ namespace MessageCenter.Code
                 Utility.WriteLog(e.Message);
 
                 Utility.PrintWarningMessage("Oops! Programmet kunne ikke oprette database filen - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + FileManager.Instance.DbFile + "." +
-                    "\nKontakt venligst teknisk support på følgende mail: " + supportEmail);
+                    "\nKontakt venligst teknisk support på følgende mail: " +
+                    Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
 
 
 
