@@ -271,16 +271,20 @@ private StatusCode LoadAllMessageTemplates()
         
         public StatusCode AddAttachmentTemplate(Attachment attachment, int messageTemplateId)
         {
+            StatusCode status = StatusCode.OK;
 
             SQLiteCommand cmd = new SQLiteCommand(
-                "insert into " + MessageTemplatesTableName + " values (null," +
+                "insert into " + AttachmentsTableName + " values (null," +
               messageTemplateId +
-              " '" + attachment.FileName + "', @fileData)"
+              ", '" + attachment.FileName + "', @fileData)"
               ,DBConnect);
             
-            cmd.Parameters.Add("@fileData", System.Data.DbType.Byte, 20).Value = attachment.FileData;
+            //Create @fileData parameter that converts 
+            SQLiteParameter parameter = new SQLiteParameter("@fileData", System.Data.DbType.Binary);
+            parameter.Value = attachment.FileData;
+            cmd.Parameters.Add(parameter);
 
-
+            DBConnect.Open();
             try
             {
                 cmd.ExecuteNonQuery();
@@ -288,11 +292,13 @@ private StatusCode LoadAllMessageTemplates()
             catch (System.Exception e)
             {
                 Utility.WriteLog("Error in executing SQLiteNonQuery! Error messages: \n" + e.Message);
-
+                status= StatusCode.ERROR;
             }
-            DBConnect.Close();
+            
+                DBConnect.Close();
 
-            return StatusCode.OK;
+
+            return status;
         }
 
         private StatusCode CreateTables()
