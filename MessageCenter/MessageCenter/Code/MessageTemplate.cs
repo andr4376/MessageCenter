@@ -11,6 +11,9 @@ namespace MessageCenter.Code
     public class MessageTemplate
     {
 
+
+        public List<Attachment> attachments;
+
         public int? Id
         {
             get;
@@ -20,7 +23,7 @@ namespace MessageCenter.Code
         public string Title
         {
             get;
-             set;
+            set;
         }
 
         public string Text
@@ -79,12 +82,13 @@ namespace MessageCenter.Code
 
                 foreach (char forbiddenChar in System.IO.Path.GetInvalidFileNameChars())
                 {
-                   fileName= fileName.Replace(forbiddenChar, '_');
+                    fileName = fileName.Replace(forbiddenChar, '_');
                 }
 
                 return fileName;
             }
         }
+
 
         public MessageTemplate(string title, string text, int messageType)
         {
@@ -93,12 +97,20 @@ namespace MessageCenter.Code
             this.MessageTypeId = messageType;
 
         }
-        public MessageTemplate(int id, string title, string text, int messageType):this(title,text,messageType)
+        public MessageTemplate(int id, string title, string text, int messageType) : this(title, text, messageType)
         {
             this.Id = id;
 
         }
 
+        public List<Attachment> GetAttachments()
+        {
+            if (this.attachments == null)
+            {
+                this.attachments = DatabaseManager.Instance.GetAllAttachmentsFromMessageTemplateId(this.Id);
+            }
+            return attachments;
+        }
 
     }
 }

@@ -72,9 +72,7 @@ namespace MessageCenter
         }
 
         private void Initialize()
-        {
-            //
-
+        {         
 
             //Add double click event to listbox, so user can double click instead of using the button
             listBoxCustomers.Attributes.Add("ondblclick", ClientScript.GetPostBackEventReference(listBoxCustomers, "doubleClick"));

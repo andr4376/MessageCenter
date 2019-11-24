@@ -32,6 +32,21 @@ namespace MessageCenter.Code
             }
         }
 
+        private string attachmentsTableName;
+        private string AttachmentsTableName
+        {
+            get
+            {
+                if (attachmentsTableName == null)
+                {
+                    attachmentsTableName =
+                        Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.ATTACHMENTS_TABLE_NAME);
+                }
+
+                return attachmentsTableName;
+            }
+        }
+
         public static DatabaseManager Instance
         {
             get
@@ -69,48 +84,54 @@ namespace MessageCenter.Code
 
             return tmpMessage;
         }
-        /*
-        private StatusCode LoadAllMessageTemplates()
+
+        public List<Attachment> GetAllAttachmentsFromMessageTemplateId(int? id)
         {
-            StatusCode returnCode = StatusCode.OK;
-
-
-            List<MessageTemplate> listOfMessages = new List<MessageTemplate>();
-            MessageTemplate tmpMessage = null;
-
-            DBConnect.Open();
-
-
-
-            SQLiteCommand Command = new SQLiteCommand("select * from " + MessageTemplatesTableName + ";", DBConnect);
-
-            try
-            {
-                using (SQLiteDataReader dataReader = Command.ExecuteReader())
-                {
-                    while (dataReader.Read())
-                    {
-                        tmpMessage = ExtractMessageTemplateData(dataReader);
-
-                        listOfMessages.Add(tmpMessage);                        
-                    }
-                }
-            }
-            catch (Exception)
-            {
-#if DEBUG
-                System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af alle beskedskabeloner!");
-                throw;
-#endif
-            }
-
-            DBConnect.Close();
-            messages = listOfMessages;
-
-
-            return returnCode;
+            throw new NotImplementedException();
         }
-        */
+
+        /*
+private StatusCode LoadAllMessageTemplates()
+{
+   StatusCode returnCode = StatusCode.OK;
+
+
+   List<MessageTemplate> listOfMessages = new List<MessageTemplate>();
+   MessageTemplate tmpMessage = null;
+
+   DBConnect.Open();
+
+
+
+   SQLiteCommand Command = new SQLiteCommand("select * from " + MessageTemplatesTableName + ";", DBConnect);
+
+   try
+   {
+       using (SQLiteDataReader dataReader = Command.ExecuteReader())
+       {
+           while (dataReader.Read())
+           {
+               tmpMessage = ExtractMessageTemplateData(dataReader);
+
+               listOfMessages.Add(tmpMessage);                        
+           }
+       }
+   }
+   catch (Exception)
+   {
+#if DEBUG
+       System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af alle beskedskabeloner!");
+       throw;
+#endif
+   }
+
+   DBConnect.Close();
+   messages = listOfMessages;
+
+
+   return returnCode;
+}
+*/
         private StatusCode Initialize()
         {
 
@@ -247,8 +268,36 @@ namespace MessageCenter.Code
             return returnCode;
         }
 
+        
+        public StatusCode AddAttachmentTemplate(Attachment attachment, int messageTemplateId)
+        {
+
+            SQLiteCommand cmd = new SQLiteCommand(
+                "insert into " + MessageTemplatesTableName + " values (null," +
+              messageTemplateId +
+              " '" + attachment.FileName + "', @fileData)"
+              ,DBConnect);
+            
+            cmd.Parameters.Add("@fileData", System.Data.DbType.Byte, 20).Value = attachment.FileData;
+
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (System.Exception e)
+            {
+                Utility.WriteLog("Error in executing SQLiteNonQuery! Error messages: \n" + e.Message);
+
+            }
+            DBConnect.Close();
+
+            return StatusCode.OK;
+        }
+
         private StatusCode CreateTables()
         {
+            //Create MessageTemplates table
 
             string cmd = "DROP TABLE IF EXISTS " + MessageTemplatesTableName;
 
@@ -257,7 +306,7 @@ namespace MessageCenter.Code
             if (returnCode != StatusCode.OK)
             {
                 Utility.WriteLog("SQLite Error: " + cmd);
-                Utility.PrintWarningMessage("Fejl ved oprettelse af database - kontakt venligt it support");
+           
                 return returnCode;
             }
 
@@ -278,20 +327,59 @@ namespace MessageCenter.Code
                 {
                     returnCode = StatusCode.ERROR;
                 }
+#endif
+            }
+            else
+            {
+                Utility.WriteLog("ERROR: Could not create table '" + MessageTemplatesTableName + "'!");
+                
+
+            }
+
+            //Create attachment table
+             cmd = "DROP TABLE IF EXISTS " + AttachmentsTableName;
+
+             returnCode = ExecuteSQLiteNonQuery(cmd);
+
+            if (returnCode != StatusCode.OK)
+            {
+                Utility.WriteLog("SQLite Error: " + cmd);
+               
+                return returnCode;
+            }
+
+            cmd = "Create table " + AttachmentsTableName + "" +
+            "(id integer primary key, " +
+            "messageId integer, " +
+            "fileName varchar, " +
+            "fileData BLOB)";
+
+            returnCode = ExecuteSQLiteNonQuery(cmd);
+
+            if (returnCode == StatusCode.OK)
+            {
+                Utility.WriteLog("Table '" + AttachmentsTableName + "' has been created!");
+
+#if DEBUG
+                if (PopulateDb() != StatusCode.OK)
+                {
+                    returnCode = StatusCode.ERROR;
+                }
 
 #endif
 
             }
             else
             {
-                Utility.WriteLog("ERROR: Could not create table '" + MessageTemplatesTableName + "'!");
-                Utility.PrintWarningMessage("Fejl ved oprettelse af database - kontakt venligt it support");
+                Utility.WriteLog("ERROR: Could not create table '" + AttachmentsTableName + "'!");
+
 
             }
 
             return returnCode;
 
         }
+        
 
         public StatusCode ExecuteSQLiteNonQuery(string command)
         {

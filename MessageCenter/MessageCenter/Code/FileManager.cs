@@ -74,6 +74,11 @@ namespace MessageCenter.Code
             return appDataPath + "\\" + filename;
         }
 
+        public string GetImageDirectory()
+        {
+            return Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "Images\\");
+        }
+
        
 
 

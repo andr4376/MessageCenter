@@ -185,6 +185,7 @@
     <Compile Include="Code\Configurations.cs" />
     <Compile Include="Code\FileManager.cs" />
     <Compile Include="Code\Mail.cs" />
+    <Compile Include="Code\Attachment.cs" />
     <Compile Include="Code\Message.cs" />
     <Compile Include="Code\MessageHandler.cs" />
     <Compile Include="Code\MessageTemplate.cs" />
@@ -243,7 +244,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="App_Data\Developement\" />
     <Folder Include="Dependencies\" />
   </ItemGroup>
   <ItemGroup>
