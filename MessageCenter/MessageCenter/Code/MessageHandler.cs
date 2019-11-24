@@ -1,6 +1,7 @@
 ﻿using MessageCenter.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -41,6 +42,9 @@ namespace MessageCenter.Code
 
         private Message message;
 
+        public List<MessageAttachment> attachments;
+
+
         public static string GetMessageVariable(MESSAGE_VARIABLES variable)
         {
 
@@ -73,7 +77,15 @@ namespace MessageCenter.Code
         public MessageTemplate MsgTemplate
         {
             get { return msgTemplate; }
-            set { msgTemplate = value; }
+            set
+            {
+                msgTemplate = value;
+
+                if (msgTemplate != null && msgTemplate.MessageType == MessageType.MAIL)
+                {
+                    GetAttachments();
+                }
+            }
         }
 
         public Employee Sender
@@ -147,6 +159,15 @@ namespace MessageCenter.Code
 
         public static void Reset()
         {
+            if (instance == null)
+            {
+                return;
+            }
+
+
+
+            FileManager.Instance.DeleteDirectory(instance.GetTempFilesPath());
+
             instance = null;
         }
 
@@ -238,7 +259,7 @@ namespace MessageCenter.Code
                  msgTemplate.Text);
                     break;
 
-                    //TODO:
+                //TODO:
                 case MessageType.SMS:
                     Utility.PrintWarningMessage("sms ikke implementeret, prøv anden besked skabelon :)");
                     throw new Exception();
@@ -251,12 +272,70 @@ namespace MessageCenter.Code
 
         public void AddAttachments()
         {
-            //TODO:
+            if (message is Mail)
+            {
+                foreach (MessageAttachment attachment in attachments)
+                {
+                    ((Mail)message).AttachFile(attachment);
+
+                }
+
+            }
         }
 
         public void SendMessage()
         {
-            this.message.Send();
+            if (this.MsgTemplate.MessageType == MessageType.MAIL)
+            {
+                AddAttachments();
+            }
+           
+              this.message.Send();
+
+            Reset();
+        }
+
+
+        public List<MessageAttachment> GetAttachments()
+        {
+            if (msgTemplate.Id == null)
+            {
+                return null;
+            }
+            Utility.WriteLog("Getting all attachments for messageTemplate id " + msgTemplate.Id);
+
+            this.attachments = DatabaseManager.Instance.GetAttachmentsFromMessageId(msgTemplate.Id);
+
+            if (attachments == null)
+            {
+                Utility.PrintWarningMessage("Der opstod fejl ved udhentning af beskedens vedhæftede filer fra databasen." +
+                    " Programmet kunne ikke identificere beskedskabelonen - kontakt venligt teknisk support:" +
+                    Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
+                return null;
+
+            }
+
+            Utility.WriteLog(attachments.Count + " attachments found for messageTemplate with id: " + msgTemplate.Id);
+
+
+            foreach (MessageAttachment attachment in attachments)
+            {
+                attachment.CreateTempFile();
+            }
+
+            return attachments;
+        }
+
+        public string GetTempFilesPath()
+        {
+            string path = string.Empty;
+
+            if (msgTemplate != null && sender != null)
+            {
+                path = FileManager.Instance.GetTempDirectory(msgTemplate, sender.Tuser);
+
+            }
+            return path;
         }
     }
 }

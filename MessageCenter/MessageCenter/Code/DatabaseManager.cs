@@ -76,19 +76,47 @@ namespace MessageCenter.Code
         private MessageTemplate ExtractMessageTemplateData(SQLiteDataReader dataReader)
         {
             MessageTemplate tmpMessage = new MessageTemplate(
-                dataReader.GetInt32(0),//id
-                dataReader.GetString(1),//title
-                dataReader.GetString(2),//text
-                dataReader.GetInt32(3)//messagetype
+                dataReader.GetInt32(dataReader.GetOrdinal("id")),
+                dataReader.GetString(dataReader.GetOrdinal("title")),
+                dataReader.GetString(dataReader.GetOrdinal("text")),
+                dataReader.GetInt32(dataReader.GetOrdinal("messagetype"))
                 );
 
             return tmpMessage;
         }
 
-        public List<Attachment> GetAllAttachmentsFromMessageTemplateId(int? id)
+        
+
+        private MessageAttachment ExtractAttachmentData(SQLiteDataReader dataReader)
         {
-            throw new NotImplementedException();
+
+            int id = dataReader.GetInt32(dataReader.GetOrdinal("id"));
+            int messageId = dataReader.GetInt32(dataReader.GetOrdinal("messageId"));
+            string fileName = dataReader.GetString(dataReader.GetOrdinal("fileName"));
+            byte[] fileData = null;
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                using (var fileDataStream = dataReader.GetStream(dataReader.GetOrdinal("fileData")))
+                {
+                    fileDataStream.CopyTo(memoryStream);
+                }
+                fileData = memoryStream.ToArray();
+            }
+
+
+
+            MessageAttachment attachment = new MessageAttachment(
+                id, messageId,fileName,fileData
+                );
+
+           
+                    
+
+                return attachment;
         }
+
+
 
         /*
 private StatusCode LoadAllMessageTemplates()
@@ -269,7 +297,7 @@ private StatusCode LoadAllMessageTemplates()
         }
 
         
-        public StatusCode AddAttachmentTemplate(Attachment attachment, int messageTemplateId)
+        public StatusCode AddAttachmentToDB(MessageAttachment attachment, int messageTemplateId)
         {
             StatusCode status = StatusCode.OK;
 
@@ -496,6 +524,52 @@ private StatusCode LoadAllMessageTemplates()
             }
 
             return messagesContainingString;
+        }
+
+        public List<MessageAttachment> GetAttachmentsFromMessageId(int? messageId)
+        {
+            if (messageId == null)
+            {
+                return null;
+            }
+
+            List<MessageAttachment> attachments = new List<MessageAttachment>();
+
+            DBConnect.Open();
+
+            SQLiteCommand command = new SQLiteCommand("select * from "
+            + AttachmentsTableName +
+            " WHERE messageId = " + messageId + ";", DBConnect);
+
+            MessageAttachment tmpAttachment = null;
+            try
+            {
+                using (SQLiteDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        tmpAttachment = ExtractAttachmentData(dataReader);
+
+                        if (tmpAttachment != null)
+                        {
+                            attachments.Add(tmpAttachment);
+                        }
+
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af vedhæftede filer for besked med id " + messageId.ToString() + "!" +
+                    "\n SQL kommando: " + command);
+#if DEBUG
+                throw;
+#endif
+            }
+
+            DBConnect.Close();
+
+            return attachments;
         }
 
         private List<MessageTemplate> DBQueryTitleContains(string textToContain)

@@ -132,6 +132,7 @@ namespace MessageCenter
             MessageHandler.Instance.Sender = SignIn.Instance.User;
             MessageHandler.Instance.MsgTemplate = DatabaseManager.Instance.GetMessageTemplateFromId(messageTemplateIdInput);
 
+            
 
 
             if (MessageHandler.Instance.MsgTemplate == null || MessageHandler.Instance.Sender == null)
@@ -281,6 +282,8 @@ namespace MessageCenter
             MessageHandler.Instance.SetupMessage();
             //
             //add ATTACHMENTS
+
+         
             //
             MessageHandler.Instance.SendMessage();
 

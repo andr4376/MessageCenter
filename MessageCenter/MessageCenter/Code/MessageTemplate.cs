@@ -12,7 +12,6 @@ namespace MessageCenter.Code
     {
 
 
-        public List<Attachment> attachments;
 
         public int? Id
         {
@@ -49,6 +48,8 @@ namespace MessageCenter.Code
             }
         }
 
+        private readonly string initialTitle;
+
         /// <summary>
         /// Returns a string that is safe for path naming
         /// </summary>
@@ -58,7 +59,7 @@ namespace MessageCenter.Code
             {
                 string pathName;
 
-                pathName = Title;
+                pathName = initialTitle;
 
                 foreach (char forbiddenChar in System.IO.Path.GetInvalidPathChars())
                 {
@@ -78,7 +79,7 @@ namespace MessageCenter.Code
             {
                 string fileName;
 
-                fileName = Title;
+                fileName = initialTitle;
 
                 foreach (char forbiddenChar in System.IO.Path.GetInvalidFileNameChars())
                 {
@@ -96,6 +97,8 @@ namespace MessageCenter.Code
             this.Text = text;
             this.MessageTypeId = messageType;
 
+            initialTitle = title;
+
         }
         public MessageTemplate(int id, string title, string text, int messageType) : this(title, text, messageType)
         {
@@ -103,14 +106,7 @@ namespace MessageCenter.Code
 
         }
 
-        public List<Attachment> GetAttachments()
-        {
-            if (this.attachments == null)
-            {
-                this.attachments = DatabaseManager.Instance.GetAllAttachmentsFromMessageTemplateId(this.Id);
-            }
-            return attachments;
-        }
+        
 
     }
 }

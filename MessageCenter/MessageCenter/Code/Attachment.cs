@@ -6,7 +6,7 @@ using System.Web;
 
 namespace MessageCenter.Code
 {
-    public class Attachment
+    public class MessageAttachment
     {
         public int Id
         {
@@ -33,8 +33,18 @@ namespace MessageCenter.Code
             private set;
         }
 
+        string filePath;
+        public string FilePath
+        {
+            get
+            {
+                return filePath = MessageHandler.Instance.GetTempFilesPath() + "\\" + FileName;
+               
+            }
 
-        public Attachment(int _id, int _messageTemplateId, string _fileName, byte[] _fileData)
+        }
+
+        public MessageAttachment(int _id, int _messageTemplateId, string _fileName, byte[] _fileData)
         {
             this.Id = _id;
             this.MessageTemplateId = _messageTemplateId;
@@ -43,16 +53,25 @@ namespace MessageCenter.Code
 
         }
 
-        public Attachment(string filePath)
+        public void CreateTempFile()
+        {
+            FileManager.Instance.CreateDirectoryIfNotExists(MessageHandler.Instance.GetTempFilesPath());
+
+            Utility.WriteLog("Creating Temporary file for attachment with id:" + Id + " full filepath:" + FilePath);
+
+            FileManager.Instance.CreateFile(FilePath, FileData);
+        }
+
+        public MessageAttachment(string filePath)
         {
             //TODO: uploaded files to bytes
             FileData = File.ReadAllBytes(filePath);
 
         }
 
-        public static Attachment GetTestAttachment()
+        public static MessageAttachment GetTestAttachment()
         {
-            return new Attachment(1, 1, "testAttachment.jpg",
+            return new MessageAttachment(1, 1, "testAttachment.jpg",
                 System.IO.File.ReadAllBytes(FileManager.Instance.GetImageDirectory() + "andreas.jpg"));
         }
 

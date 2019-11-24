@@ -26,11 +26,13 @@ namespace MessageCenter.Code
             mailMessage.To.Add(to);
             mailMessage.Subject = title;
 
+
+            mailMessage.Body = text;
             //TODO: add rich text editing
-         //   mailMessage.Body = ConvertTextToHtml(text);
+            //   mailMessage.Body = ConvertTextToHtml(text);
 
             //TODO: man kan lave rich text, men \n bliver ikke til linjeskift...
-          // mailMessage.IsBodyHtml = true;
+            // mailMessage.IsBodyHtml = true;
 
             smtpClient.Port = smtpPort;
             smtpClient.Credentials = new System.Net.NetworkCredential(mailCredentialUsername, mailCredentialPassword);
@@ -58,6 +60,17 @@ namespace MessageCenter.Code
                 Utility.WriteLog("Der opstod fejl ved at sende email: "+exception.ToString());
                 Utility.PrintWarningMessage("Der opstod fejl ved at sende email: " + exception.ToString()+" - kontakt venligt teknisk support");
             }
+
+            mailMessage.Attachments.Clear();
+        }
+
+        public void AttachFile(MessageAttachment messageAttachment)
+        {
+            if (messageAttachment == null)
+            {
+                return;
+            }
+            this.mailMessage.Attachments.Add(new Attachment(messageAttachment.FilePath));
         }
     }
 }
