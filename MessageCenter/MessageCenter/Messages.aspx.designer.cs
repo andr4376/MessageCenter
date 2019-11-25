@@ -58,13 +58,13 @@ namespace MessageCenter {
         protected global::System.Web.UI.WebControls.Button btn_Submit_User;
         
         /// <summary>
-        /// messageBody control.
+        /// mailMessageBody control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl messageBody;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl mailMessageBody;
         
         /// <summary>
         /// customerMailInputText control.
@@ -110,5 +110,41 @@ namespace MessageCenter {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button sendMailBtn;
+        
+        /// <summary>
+        /// smsMessageBody control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl smsMessageBody;
+        
+        /// <summary>
+        /// smsPhoneNumber control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox smsPhoneNumber;
+        
+        /// <summary>
+        /// smsContent control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox smsContent;
+        
+        /// <summary>
+        /// Button1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button1;
     }
 }

@@ -7,9 +7,17 @@ namespace MessageCenter.Code
 {
     public class Sms : Message
     {
-        public Sms()
-        {
+        private string sender;
+        private string receiver;
 
+        private string text;
+
+
+        public Sms(string sender, string receiver, string text)
+        {
+            this.sender = sender;
+            this.receiver = receiver;
+            this.text = text;
         }
 
         public override void Send()

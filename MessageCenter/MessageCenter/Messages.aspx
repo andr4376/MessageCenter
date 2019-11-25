@@ -62,15 +62,15 @@
     </script>
     <!--Pick user Modal END-->
 
-    <!--Message Page Body-->
-    <div runat="server" id="messageBody" class="sparkron-message-body" visible="false">
+    <!--Mail Message Page Body-->
+    <div runat="server" id="mailMessageBody" class="sparkron-message-body" visible="false">
 
         <div class="container">
 
              <div class="message-template-section-adresse-input row col-md-6">
                 <asp:TextBox CssClass="message-text-input" runat="server" autocomplete="off"
                     ID="customerMailInputText" BorderStyle="None" TextMode="SingleLine" placeholder="Modtagers Email adresse" 
-                    Text="<%# this.GetMail %>"></asp:TextBox>
+                    Text="<%# this.GetReceiverAdresse %>"></asp:TextBox>
                  
             </div>
             <div class="message-template-section-adresse-input row col-md-6">                
@@ -81,13 +81,13 @@
             </div>
         <div class="container">
 
-            <div class="message-template-section row row">
+            <div class="message-template-section row">
                 <asp:TextBox CssClass="sparkron-input-title message-text-input" runat="server"
                     ID="titleTextBox" BorderStyle="None" TextMode="SingleLine" placeholder="Beskedens Title" autocomplete="off"
                     Text="<%# this.GetTitle %>">></asp:TextBox>
             </div>
 
-            <div class="message-template-section row row">
+            <div class="message-template-section row">
                 <asp:TextBox CssClass="message-text-input sparkron-input-maintext" runat="server"
                     ID="messageTextTextBox" BorderStyle="None" TextMode="MultiLine" autocomplete="off"
                     Text="<%# this.GetText %>"></asp:TextBox>
@@ -96,7 +96,29 @@
                 OnClientClick="this.disabled=true;" UseSubmitBehavior="false" />
         </div>
     </div>
-    <!--Message Page Body END-->
+    <!--Mail Message Page Body END-->
 
+    <!--SMS Message Page Body-->
+    <div runat="server" id="smsMessageBody" class="sparkron-message-body" visible="false">
+
+        <div class="container">
+
+             <div class="message-template-section-adresse-input row">
+                <asp:TextBox CssClass="message-text-input" runat="server" autocomplete="off"
+                    ID="smsPhoneNumber" BorderStyle="None" TextMode="SingleLine" placeholder="Modtagers Mobil Nr." 
+                    Text="<%# this.GetReceiverAdresse %>"></asp:TextBox>
+                 
+            </div>            
+          
+            <div class="message-template-section row">
+                <asp:TextBox CssClass="message-text-input sparkron-input-maintext" runat="server"
+                    ID="smsContent" BorderStyle="None" TextMode="MultiLine" autocomplete="off"
+                    Text="<%# this.GetText %>"></asp:TextBox>
+            </div>
+            <asp:Button ID="Button1" Text="Send" runat="server" OnClick="sendMailBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false" 
+                OnClientClick="this.disabled=true;" UseSubmitBehavior="false" />
+        </div>
+    </div>
+    <!--SMS Message Page Body END-->
 
 </asp:Content>

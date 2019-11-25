@@ -262,8 +262,10 @@ namespace MessageCenter.Code
 
                 //TODO:
                 case MessageType.SMS:
-                    Utility.PrintWarningMessage("sms ikke implementeret, prøv anden besked skabelon :)");
-                    throw new Exception();
+                    this.message = new Sms(
+                        sender.PhoneNumber,
+                        receiver.PhoneNumber,
+                        msgTemplate.Text);
                     break;
                 default:
                     break;

@@ -15,7 +15,7 @@ namespace MessageCenter
 
 
 
-        public string GetMail
+        public string GetReceiverAdresse
         {
             get
             {
@@ -23,7 +23,8 @@ namespace MessageCenter
                 {
                     if (MessageHandler.Instance.Receiver != null)
                     {
-                        return MessageHandler.Instance.Receiver.Email;
+                        return MessageHandler.Instance.MsgTemplate.MessageType == MessageType.MAIL ?
+                            MessageHandler.Instance.Receiver.Email : MessageHandler.Instance.Receiver.PhoneNumber;
                     }
 
                 }
@@ -82,7 +83,11 @@ namespace MessageCenter
 
         protected void Page_PreRender(object sender, EventArgs e)
         {
-            messageBody.Visible = MessageHandler.Instance.IsReady;
+            mailMessageBody.Visible = MessageHandler.Instance.IsReady &&
+                MessageHandler.Instance.MsgTemplate.MessageType == MessageType.MAIL;
+
+            smsMessageBody.Visible = MessageHandler.Instance.IsReady &&
+                MessageHandler.Instance.MsgTemplate.MessageType == MessageType.SMS;
 
         }
 
@@ -293,9 +298,27 @@ namespace MessageCenter
 
             //Update message title and text with the new, edited text
             MessageHandler.Instance.MsgTemplate.Title = titleTextBox.Text;
-            MessageHandler.Instance.MsgTemplate.Text = messageTextTextBox.Text;
-            MessageHandler.Instance.Receiver.Email = customerMailInputText.Text;
-            MessageHandler.Instance.cCAdress = ccAdressInput.Text;
+
+            switch (MessageHandler.Instance.MsgTemplate.MessageType)
+            {
+                case MessageType.MAIL:
+                    MessageHandler.Instance.MsgTemplate.Text = messageTextTextBox.Text;
+                    MessageHandler.Instance.Receiver.Email = customerMailInputText.Text;
+                    MessageHandler.Instance.cCAdress = ccAdressInput.Text;
+
+
+                    break;
+                case MessageType.SMS:
+                    MessageHandler.Instance.MsgTemplate.Text = smsContent.Text;
+                    MessageHandler.Instance.Receiver.PhoneNumber = smsPhoneNumber.Text;
+                    break;
+
+                default:
+                    Utility.WriteLog("ERROR! sendMailBtn_Click");
+                    MessageHandler.Instance.MsgTemplate.Text = string.Empty;
+                    break;
+            }
+
 
             try
             {
@@ -304,22 +327,22 @@ namespace MessageCenter
             }
             catch (Exception exception)
             {
-                Utility.WriteLog("Der opstod fejl ved at sende email - Fejlbesked: '" + exception.ToString()+"'");
+                Utility.WriteLog("Der opstod fejl ved at sende email - Fejlbesked: '" + exception.ToString() + "'");
 
                 if (exception is System.FormatException || exception is System.ArgumentException)
                 {
-                Utility.PrintWarningMessage("Email kunne ikke sendes! Valider venligt mail adresse information");
+                    Utility.PrintWarningMessage("Email kunne ikke sendes! Valider venligt mail adresse information");
                 }
                 else
                 {
-                    Utility.PrintWarningMessage("Der opstod en ukendt fejl - kontakt venligt teknisk support: "+
+                    Utility.PrintWarningMessage("Der opstod en ukendt fejl - kontakt venligt teknisk support: " +
                         Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
 
                 }
 
                 return;
             }
-         
+
             MessageHandler.Instance.SendMessage();
 
 
