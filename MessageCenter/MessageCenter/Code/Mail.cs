@@ -17,13 +17,20 @@ namespace MessageCenter.Code
         private readonly int smtpPort = 587;
         //
 
-        public Mail(string from, string to, string title, string text)
+        public Mail(string from, string to, string title, string text, string cc)
         {
             mailMessage = new MailMessage();
             smtpClient = new SmtpClient(smtpHost);
+
             mailMessage.From = new MailAddress(from);
 
             mailMessage.To.Add(to);
+
+            if (cc != string.Empty)
+            {
+                mailMessage.CC.Add(cc);
+            }
+
             mailMessage.Subject = title;
 
 
@@ -54,14 +61,17 @@ namespace MessageCenter.Code
             try
             {
                 smtpClient.Send(mailMessage);
+
+                mailMessage.Attachments.Dispose();
+
             }
             catch (Exception exception)
             {
-                Utility.WriteLog("Der opstod fejl ved at sende email: "+exception.ToString());
-                Utility.PrintWarningMessage("Der opstod fejl ved at sende email: " + exception.ToString()+" - kontakt venligt teknisk support");
+                Utility.WriteLog("Der opstod fejl ved at sende email: " + exception.ToString());
+                Utility.PrintWarningMessage("Der opstod fejl ved at sende email: " + exception.ToString() + " - kontakt venligt teknisk support");
             }
 
-            mailMessage.Attachments.Clear();
+            //Release all files from attachments, so we can delete the files.
         }
 
         public void AttachFile(MessageAttachment messageAttachment)

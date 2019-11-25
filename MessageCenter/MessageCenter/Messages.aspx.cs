@@ -15,6 +15,21 @@ namespace MessageCenter
 
 
 
+        public string GetMail
+        {
+            get
+            {
+                if (MessageHandler.Instance.MsgTemplate != null)
+                {
+                    if (MessageHandler.Instance.Receiver != null)
+                    {
+                        return MessageHandler.Instance.Receiver.Email;
+                    }
+
+                }
+                return "";
+            }
+        }
         public string GetTitle
         {
             get
@@ -72,7 +87,7 @@ namespace MessageCenter
         }
 
         private void Initialize()
-        {         
+        {
 
             //Add double click event to listbox, so user can double click instead of using the button
             listBoxCustomers.Attributes.Add("ondblclick", ClientScript.GetPostBackEventReference(listBoxCustomers, "doubleClick"));
@@ -132,7 +147,7 @@ namespace MessageCenter
             MessageHandler.Instance.Sender = SignIn.Instance.User;
             MessageHandler.Instance.MsgTemplate = DatabaseManager.Instance.GetMessageTemplateFromId(messageTemplateIdInput);
 
-            
+
 
 
             if (MessageHandler.Instance.MsgTemplate == null || MessageHandler.Instance.Sender == null)
@@ -216,6 +231,7 @@ namespace MessageCenter
 
             MessageHandler.Instance.FillMessageWithData();
 
+            //Refreshes page
             Response.Redirect(Request.RawUrl);
         }
         protected void Page_Init(object sender, EventArgs e)
@@ -247,7 +263,7 @@ namespace MessageCenter
             if (customer == null)
             {
                 Utility.PrintWarningMessage("Teknisk fejl ved udhentning af data for den valgte kunde - kontakt venligst teknisk support: "
-                    +Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
+                    + Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
                 return StatusCode.ERROR;
             }
 
@@ -278,13 +294,32 @@ namespace MessageCenter
             //Update message title and text with the new, edited text
             MessageHandler.Instance.MsgTemplate.Title = titleTextBox.Text;
             MessageHandler.Instance.MsgTemplate.Text = messageTextTextBox.Text;
+            MessageHandler.Instance.Receiver.Email = customerMailInputText.Text;
+            MessageHandler.Instance.cCAdress = ccAdressInput.Text;
 
-            MessageHandler.Instance.SetupMessage();
-            //
-            //add ATTACHMENTS
+            try
+            {
+                MessageHandler.Instance.SetupMessage();
 
+            }
+            catch (Exception exception)
+            {
+                Utility.WriteLog("Der opstod fejl ved at sende email - Fejlbesked: '" + exception.ToString()+"'");
+
+                if (exception is System.FormatException || exception is System.ArgumentException)
+                {
+                Utility.PrintWarningMessage("Email kunne ikke sendes! Valider venligt mail adresse information");
+                }
+                else
+                {
+                    Utility.PrintWarningMessage("Der opstod en ukendt fejl - kontakt venligt teknisk support: "+
+                        Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
+
+                }
+
+                return;
+            }
          
-            //
             MessageHandler.Instance.SendMessage();
 
 

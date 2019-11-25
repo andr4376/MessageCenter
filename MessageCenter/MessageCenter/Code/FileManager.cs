@@ -92,15 +92,13 @@ namespace MessageCenter.Code
 
         public void DeleteDirectory(string path)
         {
-            //TODO
-           
-            /*
+            
             if (Directory.Exists(path))
             {
                 Directory.Delete(path, true);
 
             }
-            */
+            
         }
 
        

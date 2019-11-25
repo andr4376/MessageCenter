@@ -178,11 +178,23 @@ select:focus {
 	background-color: white;
 	box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.22);
 	border-radius: 5px;
-	margin: 25px;
+	margin-top: 25px;
+	margin-left: 25px;
+	margin-right: 25px;
 	padding-left: 25px;
 	padding-right: 25px;
 }
-
+.message-template-section-adresse-input {
+	background-color: white;
+	box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.22);
+	border-radius: 5px;
+	margin-top: 25px;
+	margin-left: 25px;
+	margin-right: 25px;
+	padding-left: 25px;
+	padding-right: 25px;
+	max-width: 45%;
+}
 .sparkron-message-body {
 	margin-top: 50px;
 	font-family: 'Titillium Web', sans-serif;

@@ -44,6 +44,8 @@ namespace MessageCenter.Code
 
         public List<MessageAttachment> attachments;
 
+        public string cCAdress = string.Empty;
+
 
         public static string GetMessageVariable(MESSAGE_VARIABLES variable)
         {
@@ -163,9 +165,7 @@ namespace MessageCenter.Code
             {
                 return;
             }
-
-
-
+                       
             FileManager.Instance.DeleteDirectory(instance.GetTempFilesPath());
 
             instance = null;
@@ -256,7 +256,8 @@ namespace MessageCenter.Code
                  sender.Email,
                  receiver.Email,
                  msgTemplate.Title,
-                 msgTemplate.Text);
+                 msgTemplate.Text,
+                 cCAdress);
                     break;
 
                 //TODO:
@@ -302,6 +303,7 @@ namespace MessageCenter.Code
             {
                 return null;
             }
+
             Utility.WriteLog("Getting all attachments for messageTemplate id " + msgTemplate.Id);
 
             this.attachments = DatabaseManager.Instance.GetAttachmentsFromMessageId(msgTemplate.Id);
