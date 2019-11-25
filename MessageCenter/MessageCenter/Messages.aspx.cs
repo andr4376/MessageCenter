@@ -345,7 +345,7 @@ namespace MessageCenter
 
             MessageHandler.Instance.SendMessage();
 
-
+            Response.Redirect("Default.aspx");
 
         }
     }
