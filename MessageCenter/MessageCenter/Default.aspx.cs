@@ -17,8 +17,7 @@ namespace MessageCenter
             //Initializing
             if (!Page.IsPostBack)
             {
-                MessageAttachment tmp = DatabaseManager.Instance.GetAttachmentsFromMessageId(1)[0];   
-
+                //DatabaseManager.Instance.AddAttachmentToDB(MessageAttachment.GetTestAttachment(),1);
                 Initialize();
 
               

@@ -33,6 +33,19 @@ namespace MessageCenter.Code
             private set;
         }
 
+        /// <summary>
+        /// Returns the type of the file fx. 'docx', 'png', ect.
+        /// </summary>
+        public string FileType
+        {
+            get
+            {
+                return this.FileName.Split('.')[0];
+            }
+        }
+      
+
+
         string filePath;
         public string FilePath
         {
@@ -71,9 +84,32 @@ namespace MessageCenter.Code
 
         public static MessageAttachment GetTestAttachment()
         {
-            return new MessageAttachment(1, 1, "testAttachment.jpg",
-                System.IO.File.ReadAllBytes(FileManager.Instance.GetImageDirectory() + "andreas.jpg"));
+            return new MessageAttachment(2, 1, "testDocument.docx",
+                System.IO.File.ReadAllBytes(FileManager.Instance.GetFilePath("Developement\\testDocument.docx")));
         }
+
+        public void InsertData()
+        {
+            
+            switch (this.FileType)
+            {
+                case "docx":
+                    ReplaceWordDocText();
+                    break;
+                default:
+                    Utility.WriteLog("File type " + this.FileType + " is not supported for data insertion");
+                    break;
+            }
+
+        }
+
+        private void ReplaceWordDocText()
+        {
+
+
+
+        }
+
 
     }
 }

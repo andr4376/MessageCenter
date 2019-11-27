@@ -59,6 +59,13 @@ namespace MessageCenter.Code
 
         }
 
+        public static Dictionary<MESSAGE_VARIABLES, string> GetMessageVariables
+        {
+            get
+            {
+                return messageVariables;
+            }
+        }
 
 
         public static MessageHandler Instance
@@ -165,7 +172,7 @@ namespace MessageCenter.Code
             {
                 return;
             }
-                       
+
             FileManager.Instance.DeleteDirectory(instance.GetTempFilesPath());
 
             instance = null;
@@ -292,8 +299,8 @@ namespace MessageCenter.Code
             {
                 AddAttachments();
             }
-           
-              this.message.Send();
+
+            this.message.Send();
 
             Reset();
         }
@@ -325,6 +332,11 @@ namespace MessageCenter.Code
             foreach (MessageAttachment attachment in attachments)
             {
                 attachment.CreateTempFile();
+
+                //Try to insert customer / employee data
+                attachment.InsertData();
+
+
             }
 
             return attachments;
