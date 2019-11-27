@@ -186,6 +186,14 @@ namespace MessageCenter.Code
             }
 
             ReplaceMainText();
+
+            foreach (MessageAttachment attachment in attachments)
+            {
+            //Try to insert customer / employee data
+            attachment.InsertData();
+            }
+
+
         }
 
 
@@ -332,10 +340,6 @@ namespace MessageCenter.Code
             foreach (MessageAttachment attachment in attachments)
             {
                 attachment.CreateTempFile();
-
-                //Try to insert customer / employee data
-                attachment.InsertData();
-
 
             }
 

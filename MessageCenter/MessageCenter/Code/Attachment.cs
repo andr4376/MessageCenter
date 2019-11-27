@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 
+
 namespace MessageCenter.Code
 {
     public class MessageAttachment
@@ -40,7 +41,7 @@ namespace MessageCenter.Code
         {
             get
             {
-                return this.FileName.Split('.')[0];
+                return this.FileName.Split('.')[1];
             }
         }
       
@@ -106,7 +107,7 @@ namespace MessageCenter.Code
         private void ReplaceWordDocText()
         {
 
-
+          
 
         }
 
