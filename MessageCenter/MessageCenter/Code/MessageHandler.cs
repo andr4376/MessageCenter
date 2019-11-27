@@ -178,6 +178,64 @@ namespace MessageCenter.Code
             instance = null;
         }
 
+        public string GetValueFromMessageVariable(MESSAGE_VARIABLES variable)
+        {
+            string value = string.Empty;
+            switch (variable)
+            {
+                case MESSAGE_VARIABLES.CUSTOMER_FULLNAME:
+                    value = receiver.FullName;
+                    break;
+
+                case MESSAGE_VARIABLES.CUSTOMER_FIRSTNAME:
+                    value = receiver.FirstName;
+
+                    break;
+                case MESSAGE_VARIABLES.CUSTOMER_LASTNAME:
+                    value = receiver.LastName;
+                    break;
+                case MESSAGE_VARIABLES.CUSTOMER_BIRTHDAY:
+                    value = receiver.Birthday;
+                    break;
+                case MESSAGE_VARIABLES.CUSTOMER_PHONENUMBER:
+                    value = receiver.PhoneNumber;
+                    break;
+                case MESSAGE_VARIABLES.CUSTOMER_EMAIL:
+                    value = receiver.Email;
+                    break;
+                case MESSAGE_VARIABLES.CUSTOMER_AGE:
+                    value = receiver.Age.ToString();
+                    break;
+                case MESSAGE_VARIABLES.CUSTOMER_CPR:
+                    value = receiver.Cpr;
+                    break;
+
+                case MESSAGE_VARIABLES.DEPARTMENT:
+                    value = sender.Department;
+                    break;
+                case MESSAGE_VARIABLES.EMPLOYEE_FULLNAME:
+                    value = sender.FullName;
+                    break;
+                case MESSAGE_VARIABLES.EMPLOYEE_FIRSTNAME:
+                    value = sender.FirstName;
+                    break;
+                case MESSAGE_VARIABLES.EMPLOYEE_LASTNAME:
+                    value = sender.LastName;
+                    break;
+                case MESSAGE_VARIABLES.EMPLOYEE_PHONENUMBER:
+                    value = sender.PhoneNumber;
+                    break;
+                case MESSAGE_VARIABLES.EMPLOYEE_EMAIL:
+                    value = sender.Email;
+                    break;
+                default:
+                    break;
+            }
+
+            return value;
+
+        }
+
         public void FillMessageWithData()
         {
             if (messageVariables == null)
@@ -189,8 +247,8 @@ namespace MessageCenter.Code
 
             foreach (MessageAttachment attachment in attachments)
             {
-            //Try to insert customer / employee data
-            attachment.InsertData();
+                //Try to insert customer / employee data
+                attachment.InsertData();
             }
 
 
@@ -202,60 +260,15 @@ namespace MessageCenter.Code
 
             foreach (KeyValuePair<MESSAGE_VARIABLES, string> variable in messageVariables)
             {
-                string tmpText = "";
-                switch (variable.Key)
+                string value = GetValueFromMessageVariable(variable.Key);
+
+                if (value==string.Empty)
                 {
-                    case MESSAGE_VARIABLES.CUSTOMER_FULLNAME:
-                        tmpText = receiver.FullName;
-                        break;
-
-                    case MESSAGE_VARIABLES.CUSTOMER_FIRSTNAME:
-                        tmpText = receiver.FirstName;
-
-                        break;
-                    case MESSAGE_VARIABLES.CUSTOMER_LASTNAME:
-                        tmpText = receiver.LastName;
-                        break;
-                    case MESSAGE_VARIABLES.CUSTOMER_BIRTHDAY:
-                        tmpText = receiver.Birthday;
-                        break;
-                    case MESSAGE_VARIABLES.CUSTOMER_PHONENUMBER:
-                        tmpText = receiver.PhoneNumber;
-                        break;
-                    case MESSAGE_VARIABLES.CUSTOMER_EMAIL:
-                        tmpText = receiver.Email;
-                        break;
-                    case MESSAGE_VARIABLES.CUSTOMER_AGE:
-                        tmpText = receiver.Age.ToString();
-                        break;
-                    case MESSAGE_VARIABLES.CUSTOMER_CPR:
-                        tmpText = receiver.Cpr;
-                        break;
-
-                    case MESSAGE_VARIABLES.DEPARTMENT:
-                        tmpText = sender.Department;
-                        break;
-                    case MESSAGE_VARIABLES.EMPLOYEE_FULLNAME:
-                        tmpText = sender.FullName;
-                        break;
-                    case MESSAGE_VARIABLES.EMPLOYEE_FIRSTNAME:
-                        tmpText = sender.FirstName;
-                        break;
-                    case MESSAGE_VARIABLES.EMPLOYEE_LASTNAME:
-                        tmpText = sender.LastName;
-                        break;
-                    case MESSAGE_VARIABLES.EMPLOYEE_PHONENUMBER:
-                        tmpText = sender.PhoneNumber;
-                        break;
-                    case MESSAGE_VARIABLES.EMPLOYEE_EMAIL:
-                        tmpText = sender.Email;
-                        break;
-                    default:
-                        break;
+                    continue;
                 }
 
                 msgTemplate.Text = msgTemplate.Text.Replace(
-                    GetMessageVariable(variable.Key), tmpText);
+                    GetMessageVariable(variable.Key), value);
 
             }
         }

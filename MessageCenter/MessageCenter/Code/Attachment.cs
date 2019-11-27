@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using Microsoft.Office.Interop;
 
 
 namespace MessageCenter.Code
@@ -106,9 +107,60 @@ namespace MessageCenter.Code
 
         private void ReplaceWordDocText()
         {
+            //TODO:
+            //Create a new microsoft word file
 
-          
+            Microsoft.Office.Interop.Word.Application fileOpen = new Microsoft.Office.Interop.Word.Application();
 
+            //Open a already existing word file into the new document created
+            Microsoft.Office.Interop.Word.Document document = fileOpen.Documents.Open(FilePath, ReadOnly: false);
+
+           
+           //fileOpen.Visible = true;
+
+            document.Activate();
+
+            foreach (KeyValuePair<MESSAGE_VARIABLES, string> variable in MessageHandler.GetMessageVariables)
+            {
+                string value = MessageHandler.Instance.GetValueFromMessageVariable(variable.Key);
+
+                if (value == string.Empty)
+                {
+                    continue;
+                }
+               
+                FindAndReplace(fileOpen, MessageHandler.GetMessageVariable(variable.Key), value);
+
+            }
+
+
+            document.SaveAs(filePath);
+            //Close the file out
+            fileOpen.Quit();
+
+        }
+        //Method to find and replace the text in the word document. Replaces all instances of it
+        private void FindAndReplace(Microsoft.Office.Interop.Word.Application fileOpen, object findText, object replaceWithText)
+        {
+            object matchCase = false;
+            object matchWholeWord = true;
+            object matchWildCards = false;
+            object matchSoundsLike = false;
+            object matchAllWordForms = false;
+            object forward = true;
+            object format = false;
+            object matchKashida = false;
+            object matchDiacritics = false;
+            object matchAlefHamza = false;
+            object matchControl = false;
+            object read_only = false;
+            object visible = true;
+            object replace = 2;
+            object wrap = 1;
+            //execute find and replace
+            fileOpen.Selection.Find.Execute(ref findText, ref matchCase, ref matchWholeWord,
+                ref matchWildCards, ref matchSoundsLike, ref matchAllWordForms, ref forward, ref wrap, ref format, ref replaceWithText, ref replace,
+                ref matchKashida, ref matchDiacritics, ref matchAlefHamza, ref matchControl);
         }
 
 
