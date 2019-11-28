@@ -67,18 +67,17 @@
 
         <div class="container">
 
-             <div class="message-template-section-adresse-input row col-md-6">
+            <div class="message-template-section-adresse-input row col-md-6">
                 <asp:TextBox CssClass="message-text-input" runat="server" autocomplete="off"
-                    ID="customerMailInputText" BorderStyle="None" TextMode="SingleLine" placeholder="Modtagers Email adresse" 
+                    ID="customerMailInputText" BorderStyle="None" TextMode="SingleLine" placeholder="Modtagers Email adresse"
                     Text="<%# this.GetReceiverAdresse %>"></asp:TextBox>
-                 
+
             </div>
-            <div class="message-template-section-adresse-input row col-md-6">                
+            <div class="message-template-section-adresse-input row col-md-6">
                 <asp:TextBox CssClass="message-text-input" runat="server" autocomplete="off"
-                    ID="ccAdressInput" BorderStyle="None" TextMode="SingleLine" placeholder="CC"
-                 ></asp:TextBox>
-                </div>
+                    ID="ccAdressInput" BorderStyle="None" TextMode="SingleLine" placeholder="CC"></asp:TextBox>
             </div>
+        </div>
         <div class="container">
 
             <div class="message-template-section row">
@@ -92,8 +91,11 @@
                     ID="messageTextTextBox" BorderStyle="None" TextMode="MultiLine" autocomplete="off"
                     Text="<%# this.GetText %>"></asp:TextBox>
             </div>
-            <asp:Button ID="sendMailBtn" Text="Send" runat="server" OnClick="sendMailBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false" 
+            <asp:Button ID="sendMailBtn" Text="Send" runat="server" OnClick="sendMailBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false"
                 OnClientClick="this.disabled=true;" UseSubmitBehavior="false" />
+                      
+            <div runat="server" id ="attachmentsDiv"></div>
+          
         </div>
     </div>
     <!--Mail Message Page Body END-->
@@ -103,19 +105,19 @@
 
         <div class="container">
 
-             <div class="message-template-section-adresse-input row">
+            <div class="message-template-section-adresse-input row">
                 <asp:TextBox CssClass="message-text-input" runat="server" autocomplete="off"
-                    ID="smsPhoneNumber" BorderStyle="None" TextMode="SingleLine" placeholder="Modtagers Mobil Nr." 
+                    ID="smsPhoneNumber" BorderStyle="None" TextMode="SingleLine" placeholder="Modtagers Mobil Nr."
                     Text="<%# this.GetReceiverAdresse %>"></asp:TextBox>
-                 
-            </div>            
-          
+
+            </div>
+
             <div class="message-template-section row">
                 <asp:TextBox CssClass="message-text-input sparkron-input-maintext" runat="server"
                     ID="smsContent" BorderStyle="None" TextMode="MultiLine" autocomplete="off"
                     Text="<%# this.GetText %>"></asp:TextBox>
             </div>
-            <asp:Button ID="Button1" Text="Send" runat="server" OnClick="sendMailBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false" 
+            <asp:Button ID="Button1" Text="Send" runat="server" OnClick="sendMailBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false"
                 OnClientClick="this.disabled=true;" UseSubmitBehavior="false" />
         </div>
     </div>

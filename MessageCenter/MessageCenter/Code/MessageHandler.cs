@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Web;
 
 namespace MessageCenter.Code
@@ -243,15 +244,27 @@ namespace MessageCenter.Code
                 SetupMessageVariables();
             }
 
+            //Replace the message text's variables
             ReplaceMainText();
 
+
+            if (attachments != null)
+            {
+                //Edit the attachments asynchronously
+              new Thread(AttachmentsInsertData).Start();
+
+              
+            }
+
+        }
+
+        private void AttachmentsInsertData()
+        {
             foreach (MessageAttachment attachment in attachments)
             {
                 //Try to insert customer / employee data
                 attachment.InsertData();
             }
-
-
         }
 
 

@@ -14,15 +14,15 @@ namespace MessageCenter
 
         protected void Page_Load(object sender, EventArgs e)
         {
+
             //Initializing
             if (!Page.IsPostBack)
             {
-                //DatabaseManager.Instance.AddAttachmentToDB(MessageAttachment.GetTestAttachment(),1);
                 Initialize();
-
               
             }
             CheckIfListboxDoubleClick();
+
 
         }
 
@@ -150,16 +150,19 @@ namespace MessageCenter
             {
                 return;
             }
+           
 
             //proceed if the has signed in, else, show user the login modal
             if (SignIn.Instance.User == null)
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
+
                 return;
             }
             
             Utility.WriteLog("proceeding to message page for message Id: "+listBoxMessageTemplates.SelectedItem.Value);
 
+           
             //Stores the Id of the selected messagetemplate
             Session["MessageTemplateId"] = listBoxMessageTemplates.SelectedItem.Value;
 
@@ -167,6 +170,8 @@ namespace MessageCenter
             Response.Redirect("Messages.aspx");
 
         }
+
+       
     }
 }
 

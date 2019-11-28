@@ -13,8 +13,6 @@ namespace MessageCenter
     {
         private int messageTemplateIdInput;
 
-
-
         public string GetReceiverAdresse
         {
             get
@@ -58,6 +56,9 @@ namespace MessageCenter
 
         protected void Page_Load(object sender, EventArgs e)
         {
+                     
+            
+
             if (!Page.IsPostBack)
             {
                 if (!MessageHandler.Instance.IsReady)
@@ -88,6 +89,9 @@ namespace MessageCenter
 
             smsMessageBody.Visible = MessageHandler.Instance.IsReady &&
                 MessageHandler.Instance.MsgTemplate.MessageType == MessageType.SMS;
+
+                      
+          
 
         }
 
@@ -236,6 +240,7 @@ namespace MessageCenter
 
             MessageHandler.Instance.FillMessageWithData();
 
+
             //Refreshes page
             Response.Redirect(Request.RawUrl);
         }
@@ -346,6 +351,16 @@ namespace MessageCenter
             MessageHandler.Instance.SendMessage();
 
             Response.Redirect("Default.aspx");
+
+        }
+
+        public void ShowWordDocAsHtml(string html)
+        {
+            if (html==string.Empty)
+            {
+                return;
+            }
+            attachmentsDiv.InnerHtml = html;
 
         }
     }
