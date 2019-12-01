@@ -129,19 +129,100 @@ namespace MessageCenter.Code
             return StatusCode.OK;
         }
 
+        /// <summary>
+        /// Deletes the file with the given path
+        /// </summary>
+        /// <param name="filePath"></param>
         public void DeleteFile(string filePath)
+        {
+            //Alternate parameterized thread
+            Thread fileDeleteThread = new Thread(
+                () => DeleteFileWhenNotInUse(filePath)
+                );
+            fileDeleteThread.Start();
+
+        }
+
+        /// <summary>
+        /// Attempts to delete a file untill succesful or failed due to another process still using the file after repeated attempts
+        /// </summary>
+        /// <param name="filePath">File to be deleted</param>
+        private void DeleteFileWhenNotInUse(string filePath)
+        {
+            bool fileIsDeleted = false;
+
+            //Incremented every time the cycle the file is still in use
+            //or when File.Delete fails - (it hasn't failed yet, it's "just in case")
+            byte attemps = 0;
+            byte maxAttempts = 50;
+            int attemptIntervalMilliSeconds = 100;
+
+            Utility.WriteLog("Deleting file: " + filePath);
+
+            while (!fileIsDeleted || attemps>maxAttempts)
+            {
+                //If file is occupied by another process
+                if (FileIsInUse(new FileInfo(filePath)))
+                {
+                    //Wait and try again
+                    Thread.Sleep(attemptIntervalMilliSeconds);
+                    attemps++;
+                    continue;
+
+                }
+                //File is not occupied
+                try
+                {
+                    //Try to delete 
+                    File.Delete(filePath);
+
+                    Utility.WriteLog(filePath + " succesfully deleted after " + attemps + " attempts");
+
+                    //Escape while loop next cycle
+                    fileIsDeleted = true;
+                   
+                }
+                catch (Exception e)
+                {
+                    attemps++;
+                    Utility.WriteLog("ERROR at FileManager.DeleteFile: " + e.ToString());
+
+                }
+
+            }
+            if (attemps>maxAttempts)
+            {
+                Utility.WriteLog("ERROR at FileManager.DeleteFile. The file deleting thread gave up trying after "+attemps+" attempts!");
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Returns whether or not the given file is currently in use by another process
+        /// </summary>
+        /// <param name="file">the filepath</param>
+        /// <returns></returns>
+        protected virtual bool FileIsInUse(FileInfo file)
         {
             try
             {
-                File.Delete(filePath);
-
-                Utility.WriteLog("Deleting file: " + filePath);
+                //try opening the file
+                using (FileStream fileStream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    //Success
+                    fileStream.Close();
+                }
             }
-            catch (Exception e)
+            catch (IOException)
             {
-                Utility.WriteLog("ERROR at FileManager.DeleteFile: " + e.ToString());
-                
+                //File is in use
+                return true;
             }
+
+            //file is not in use
+            return false;
         }
+
+
     }
 }

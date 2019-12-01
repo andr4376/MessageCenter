@@ -47,6 +47,7 @@ namespace MessageCenter.Code
             }
         }
 
+       
 
 
         string filePath;
@@ -60,12 +61,18 @@ namespace MessageCenter.Code
 
         }
 
-        public MessageAttachment(int _id, int _messageTemplateId, string _fileName, byte[] _fileData)
+        public MessageAttachment(string _fileName, byte[] _fileData)
+        {
+            this.FileName = _fileName;
+            this.FileData = _fileData;
+
+
+        }
+        public MessageAttachment(int _id, int _messageTemplateId, string _fileName, byte[] _fileData) : this(_fileName,_fileData)
         {
             this.Id = _id;
             this.MessageTemplateId = _messageTemplateId;
-            this.FileName = _fileName;
-            this.FileData = _fileData;
+          
 
         }
 
@@ -80,12 +87,6 @@ namespace MessageCenter.Code
            return FileManager.Instance.CreateFile(FilePath, FileData);
         }
 
-        public MessageAttachment(string filePath)
-        {
-            //TODO: uploaded files to bytes
-            FileData = File.ReadAllBytes(filePath);
-
-        }
 
         public static MessageAttachment GetTestAttachment()
         {
@@ -95,7 +96,6 @@ namespace MessageCenter.Code
 
         public void InsertData()
         {
-
             switch (this.FileType)
             {
                 case "docx":
@@ -103,7 +103,6 @@ namespace MessageCenter.Code
                     break;
                 default:
                     Utility.WriteLog("File type " + this.FileType + " is not supported for data insertion");
-
                     break;
             }
 

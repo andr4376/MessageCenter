@@ -3,6 +3,7 @@ using MessageCenter.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -70,7 +71,7 @@ namespace MessageCenter
             }
             else
             {
-                if (CheckIfDoubleClickListBox())
+                if (CheckIfDoubleClickCustomerListBox())
                 {
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "closePickUserModal();", true);
                 }
@@ -91,10 +92,10 @@ namespace MessageCenter
                 MessageHandler.Instance.MsgTemplate.MessageType == MessageType.SMS;
 
             if (MessageHandler.Instance.IsReady &&
-                MessageHandler.Instance.attachments != null &&
-                MessageHandler.Instance.attachments.Count > 0)
+                MessageHandler.Instance.Attachments != null &&
+                MessageHandler.Instance.Attachments.Count > 0)
             {
-                UpdateAttachmentsListbox(MessageHandler.Instance.attachments);
+                UpdateAttachmentsListbox(MessageHandler.Instance.Attachments);
             }
 
 
@@ -130,7 +131,9 @@ namespace MessageCenter
         {
 
             //Add double click event to listbox, so user can double click instead of using the button
-            listBoxCustomers.Attributes.Add("ondblclick", ClientScript.GetPostBackEventReference(listBoxCustomers, "doubleClick"));
+            listBoxCustomers.Attributes.Add("ondblclick", ClientScript.GetPostBackEventReference(listBoxCustomers, "doubleClickCustomer"));
+
+
 
             //if user is logged in and has selected a message item
             if (Session["MessageTemplateId"] != null
@@ -220,17 +223,17 @@ namespace MessageCenter
         /// <summary>
         /// 
         /// </summary>
-        private bool CheckIfDoubleClickListBox()
+        private bool CheckIfDoubleClickCustomerListBox()
         {
             //Check if doubleClick event on listbox
-            if (Request["__EVENTARGUMENT"] != null && Request["__EVENTARGUMENT"] == "doubleClick")
+            if (Request["__EVENTARGUMENT"] != null && Request["__EVENTARGUMENT"] == "doubleClickCustomer")
             {
                 if (GetSelectedCustomer() == StatusCode.OK)
                 {
                     DisplayMessageData();
 
+                    return true;
                 }
-                return true;
             }
             return false;
         }
@@ -292,11 +295,17 @@ namespace MessageCenter
 
         private StatusCode GetSelectedCustomer()
         {
+            string selectedCustomer = listBoxCustomers.SelectedValue.ToString();
 
+            if (selectedCustomer == string.Empty)
+            {
+                //User has double clicked inside the listbox, but not on an item
+                return StatusCode.FORHINDRING;
+            }
 
             Customer customer = SignIn.Instance.MyCustomers.Where(
                 c => c.Cpr ==
-                listBoxCustomers.SelectedValue.ToString())
+               selectedCustomer)
                 .ToList()[0];
 
             MessageHandler.Instance.Receiver = customer;
@@ -397,7 +406,7 @@ namespace MessageCenter
 
         protected void DownloadAttachmentBtn_Click(object sender, EventArgs e)
         {
-
+            DownloadSelectedAttachment();
         }
 
         protected void RemoveAttachmentButton_Click(object sender, EventArgs e)
@@ -419,8 +428,10 @@ namespace MessageCenter
 
             MessageHandler.Instance.RemoveAttachment(messageIndex);
 
-            UpdateAttachmentsListbox(MessageHandler.Instance.attachments);
-            
+
+
+            UpdateAttachmentsListbox(MessageHandler.Instance.Attachments);
+
 
         }
 
@@ -433,9 +444,63 @@ namespace MessageCenter
         protected void UploadFileBtn_Click(object sender, EventArgs e)
         {
 
-            ///get file 
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "closeAttachmentModal();", true);
+            //get file 
+            MessageAttachment tmp;
+            if (AttachmentFileUpload.HasFile)
+            {
+
+                tmp = new MessageAttachment(
+                    AttachmentFileUpload.FileName, AttachmentFileUpload.FileBytes);
+
+                StatusCode createFileStatus = tmp.CreateTempFile();
+
+                if (createFileStatus == StatusCode.OK)
+                {
+                    lock (MessageHandler.attachmentsKey)
+                    {
+                        MessageHandler.Instance.Attachments.Add(tmp);
+
+                        UpdateAttachmentsListbox(MessageHandler.Instance.Attachments);
+                    }
+                }
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "closeAttachmentModal();", true);
+            }
+
+
 
         }
+
+        private void DownloadSelectedAttachment()
+        {
+
+            if (listBoxAttachments.SelectedItem == null)
+            {
+                return;
+            }
+
+            int messageIndex;
+
+            if (!Int32.TryParse(listBoxAttachments.SelectedValue, out messageIndex))
+            {
+                Utility.PrintWarningMessage("Noget gik galt ved identificering af den valgte fil - kontakt venligst teknisk support: " +
+                    Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
+
+                return;
+            }
+
+            Response.Clear();
+            Response.ContentType = "application/octet-stream";
+            Response.AppendHeader("content-disposition", "filename="
+            + MessageHandler.Instance.Attachments[messageIndex].FilePath);
+            Response.WriteFile(MessageHandler.Instance.Attachments[messageIndex].FilePath);
+            Response.Flush();
+            Response.End();
+        }
+
+
     }
 }
+
+//<asp:AsyncPostBackTrigger ControlID="UploadFileBtn" EventName="Click" />-
+

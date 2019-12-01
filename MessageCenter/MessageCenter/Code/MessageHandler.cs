@@ -43,10 +43,33 @@ namespace MessageCenter.Code
 
         private Message message;
 
-        public List<MessageAttachment> attachments;
+        private List<MessageAttachment> attachments;
 
         public string cCAdress = string.Empty;
 
+        /// <summary>
+        /// the "key" to accessing the attachments list
+        /// </summary>
+        public static readonly object attachmentsKey = new object();
+
+        /// <summary>
+        /// Returns the list of attachments that is locked so that only one thread can access it at a time
+        /// </summary>
+        public List<MessageAttachment> Attachments
+        {
+            get
+            {
+
+                return attachments;
+
+            }
+            set
+            {
+
+                attachments = value;
+
+            }
+        }
 
         public static string GetMessageVariable(MESSAGE_VARIABLES variable)
         {
@@ -248,22 +271,26 @@ namespace MessageCenter.Code
             ReplaceMainText();
 
 
-            if (attachments != null)
+            if (Attachments != null)
             {
                 //Edit the attachments asynchronously
-              new Thread(AttachmentsInsertData).Start();
+                new Thread(AttachmentsInsertData).Start();
 
-              
+
             }
 
         }
 
         private void AttachmentsInsertData()
         {
-            foreach (MessageAttachment attachment in attachments)
+            lock (attachmentsKey)
             {
-                //Try to insert customer / employee data
-                attachment.InsertData();
+                foreach (MessageAttachment attachment in Attachments)
+                {
+
+                    //Try to insert customer / employee data
+                    attachment.InsertData();
+                }
             }
         }
 
@@ -275,7 +302,7 @@ namespace MessageCenter.Code
             {
                 string value = GetValueFromMessageVariable(variable.Key);
 
-                if (value==string.Empty)
+                if (value == string.Empty)
                 {
                     continue;
                 }
@@ -318,7 +345,7 @@ namespace MessageCenter.Code
         {
             if (message is Mail)
             {
-                foreach (MessageAttachment attachment in attachments)
+                foreach (MessageAttachment attachment in Attachments)
                 {
                     ((Mail)message).AttachFile(attachment);
 
@@ -349,9 +376,9 @@ namespace MessageCenter.Code
 
             Utility.WriteLog("Getting all attachments for messageTemplate id " + msgTemplate.Id);
 
-            this.attachments = DatabaseManager.Instance.GetAttachmentsFromMessageId(msgTemplate.Id);
+            this.Attachments = DatabaseManager.Instance.GetAttachmentsFromMessageId(msgTemplate.Id);
 
-            if (attachments == null)
+            if (Attachments == null)
             {
                 Utility.PrintWarningMessage("Der opstod fejl ved udhentning af beskedens vedhæftede filer fra databasen." +
                     " Programmet kunne ikke identificere beskedskabelonen - kontakt venligt teknisk support:" +
@@ -360,21 +387,21 @@ namespace MessageCenter.Code
 
             }
 
-            Utility.WriteLog(attachments.Count + " attachments found for messageTemplate with id: " + msgTemplate.Id);
+            Utility.WriteLog(Attachments.Count + " attachments found for messageTemplate with id: " + msgTemplate.Id);
 
 
-            foreach (MessageAttachment attachment in attachments)
+            foreach (MessageAttachment attachment in Attachments)
             {
-                StatusCode createFilesStatus= attachment.CreateTempFile();
+                StatusCode createFilesStatus = attachment.CreateTempFile();
 
                 if (createFilesStatus == StatusCode.ERROR)
                 {
-                    
+
                     return null;
                 }
             }
 
-            return attachments;
+            return Attachments;
         }
 
         public string GetTempFilesPath()
@@ -391,8 +418,12 @@ namespace MessageCenter.Code
 
         public void RemoveAttachment(int index)
         {
-            attachments[index].RemoveTempFile();
-            attachments.Remove(attachments[index]);
+            lock (attachmentsKey)
+            {
+                Attachments[index].RemoveTempFile();
+                Attachments.Remove(Attachments[index]);
+            }
+
         }
     }
 }

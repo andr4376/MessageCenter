@@ -76,10 +76,11 @@
                 <div class="modal-body">
 
                     <asp:FileUpload ID="AttachmentFileUpload" runat="server" />
+                    <asp:RequiredFieldValidator ErrorMessage="Vælg en fil først" ControlToValidate="AttachmentFileUpload" runat="server" />
 
                 </div>
                 <div class="modal-footer">
-                    <asp:Button ID="UploadFileBtn" Text="Upload Fil" runat="server" CssClass="sparkron-submit-btn" />
+                    <asp:Button ID="UploadFileBtn" Text="Upload Fil" runat="server" OnClick="UploadFileBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false"/>
                 </div>
             </div>
         </div>
@@ -128,6 +129,7 @@
             <div id="AttachmentsSection" runat ="server">
                 <div class="message-template-section row">
                 <h2>Vedhæftede filer</h2>
+                    <asp:Panel runat="server" DefaultButton="DownloadAttachmentBtn">
                     <!-- UpdatePanel tillader at indholdet kan opdateres uden PostBack uden at skulle bruge AJAX -->
                     <asp:UpdatePanel ID="UPAttachments" runat="server">
 
@@ -141,10 +143,10 @@
 
                         <Triggers>
                             <asp:AsyncPostBackTrigger ControlID="RemoveAttachmentButton" EventName="Click" />
-                            <asp:AsyncPostBackTrigger ControlID="UploadFileBtn" EventName="Click" />
+                            
                         </Triggers>
                     </asp:UpdatePanel>
-
+                    </asp:Panel>
                 </div>
                 <asp:Button ID="DownloadAttachmentBtn" Text="Download" runat="server" OnClick="DownloadAttachmentBtn_Click" CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
                 <asp:Button ID="RemoveAttachmentButton" Text="Fjern" runat="server" OnClick="RemoveAttachmentButton_Click" CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
