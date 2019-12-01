@@ -92,16 +92,16 @@ namespace MessageCenter.Code
 
         public void DeleteDirectory(string path)
         {
-            
+
             if (Directory.Exists(path))
             {
                 Directory.Delete(path, true);
 
             }
-            
+
         }
 
-       
+
 
         public void CreateDirectoryIfNotExists(string path)
         {
@@ -112,12 +112,36 @@ namespace MessageCenter.Code
 
         }
 
-        public void CreateFile(string name, byte[] data)
+        public StatusCode CreateFile(string name, byte[] data)
         {
-            File.WriteAllBytes(name, data);
+            try
+            {
+                File.WriteAllBytes(name, data);
+            }
+            catch (Exception e)
+            {
+                Utility.WriteLog("ERROR in 'FileManager.CreateFile': " + e.ToString());
+                Utility.PrintWarningMessage("Der er opstået en fejl ved oprettelse af midlertidlige filer - kontakt venligst teknisk support: " +
+                    Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
+
+                return StatusCode.ERROR;
+            }
+            return StatusCode.OK;
         }
 
+        public void DeleteFile(string filePath)
+        {
+            try
+            {
+                File.Delete(filePath);
 
-
+                Utility.WriteLog("Deleting file: " + filePath);
+            }
+            catch (Exception e)
+            {
+                Utility.WriteLog("ERROR at FileManager.DeleteFile: " + e.ToString());
+                
+            }
+        }
     }
 }

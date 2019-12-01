@@ -56,8 +56,8 @@ namespace MessageCenter
 
         protected void Page_Load(object sender, EventArgs e)
         {
-                     
-            
+
+
 
             if (!Page.IsPostBack)
             {
@@ -90,9 +90,40 @@ namespace MessageCenter
             smsMessageBody.Visible = MessageHandler.Instance.IsReady &&
                 MessageHandler.Instance.MsgTemplate.MessageType == MessageType.SMS;
 
-                      
-          
+            if (MessageHandler.Instance.IsReady &&
+                MessageHandler.Instance.attachments != null &&
+                MessageHandler.Instance.attachments.Count > 0)
+            {
+                UpdateAttachmentsListbox(MessageHandler.Instance.attachments);
+            }
 
+
+
+
+        }
+
+        private void UpdateAttachmentsListbox(List<MessageAttachment> attachments)
+        {
+
+            if (listBoxAttachments.Items.Count > 0)
+            {
+                listBoxAttachments.Items.Clear();
+            }
+
+            for (int i = 0; i < attachments.Count; i++)
+            {
+                listBoxAttachments.Items.Add(
+                    new ListItem(
+                    attachments[i].FileName,
+                    i.ToString()));/*The list item value is the item index, because i cannot ensure that all attachments have ids*/
+            }
+
+            /*
+                        listBoxAttachments.DataSource = attachments;
+                        listBoxAttachments.DataTextField = "FileName";
+                        listBoxAttachments.DataValueField = "Id";
+                        listBoxAttachments.DataBind();
+                        */
         }
 
         private void Initialize()
@@ -356,11 +387,54 @@ namespace MessageCenter
 
         public void ShowWordDocAsHtml(string html)
         {
-            if (html==string.Empty)
+            if (html == string.Empty)
             {
                 return;
             }
-            attachmentsDiv.InnerHtml = html;
+            // attachmentsDiv.InnerHtml = html;
+
+        }
+
+        protected void DownloadAttachmentBtn_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void RemoveAttachmentButton_Click(object sender, EventArgs e)
+        {
+            if (listBoxAttachments.SelectedItem == null)
+            {
+                return;
+            }
+
+            int messageIndex;
+
+            if (!Int32.TryParse(listBoxAttachments.SelectedValue, out messageIndex))
+            {
+                Utility.PrintWarningMessage("Noget gik galt ved identificering af den valgte fil - kontakt venligst teknisk support: " +
+                    Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
+
+                return;
+            }
+
+            MessageHandler.Instance.RemoveAttachment(messageIndex);
+
+            UpdateAttachmentsListbox(MessageHandler.Instance.attachments);
+            
+
+        }
+
+        protected void openNewAttachmentModalBtn_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openAttachmentModal();", true);
+
+        }
+
+        protected void UploadFileBtn_Click(object sender, EventArgs e)
+        {
+
+            ///get file 
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "closeAttachmentModal();", true);
 
         }
     }

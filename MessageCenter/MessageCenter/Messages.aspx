@@ -62,6 +62,38 @@
     </script>
     <!--Pick user Modal END-->
 
+    <!--Add new attachment modal -->
+    <div class="modal fade" id="addAttachmentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+
+            <div class="modal-content">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="modal-header">
+                    <h2 class="modal-title">Vælg og Upload fil til vedhæftning</h2>
+                </div>
+                <div class="modal-body">
+
+                    <asp:FileUpload ID="AttachmentFileUpload" runat="server" />
+
+                </div>
+                <div class="modal-footer">
+                    <asp:Button ID="UploadFileBtn" Text="Upload Fil" runat="server" CssClass="sparkron-submit-btn" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function openAttachmentModal() {
+            $('#addAttachmentModal').modal({ show: true });
+        }
+        function closeAttachmentModal() {
+            $('#addAttachmentModal').modal('hide');
+        }
+    </script>
+    <!--Add new attachment modal END-->
+
     <!--Mail Message Page Body-->
     <div runat="server" id="mailMessageBody" class="sparkron-message-body" visible="false">
 
@@ -91,12 +123,40 @@
                     ID="messageTextTextBox" BorderStyle="None" TextMode="MultiLine" autocomplete="off"
                     Text="<%# this.GetText %>"></asp:TextBox>
             </div>
+
+            <!-- Attachment section -->
+            <div id="AttachmentsSection" runat ="server">
+                <div class="message-template-section row">
+                <h2>Vedhæftede filer</h2>
+                    <!-- UpdatePanel tillader at indholdet kan opdateres uden PostBack uden at skulle bruge AJAX -->
+                    <asp:UpdatePanel ID="UPAttachments" runat="server">
+
+                        <ContentTemplate>
+                            <asp:ListBox
+                                ID="listBoxAttachments" runat="server"
+                                CssClass="attachments-listbox"></asp:ListBox>
+
+
+                        </ContentTemplate>
+
+                        <Triggers>
+                            <asp:AsyncPostBackTrigger ControlID="RemoveAttachmentButton" EventName="Click" />
+                            <asp:AsyncPostBackTrigger ControlID="UploadFileBtn" EventName="Click" />
+                        </Triggers>
+                    </asp:UpdatePanel>
+
+                </div>
+                <asp:Button ID="DownloadAttachmentBtn" Text="Download" runat="server" OnClick="DownloadAttachmentBtn_Click" CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
+                <asp:Button ID="RemoveAttachmentButton" Text="Fjern" runat="server" OnClick="RemoveAttachmentButton_Click" CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
+                <asp:Button ID="openNewAttachmentModalBtn" Text="Tilføj Fil" runat="server" OnClick="openNewAttachmentModalBtn_Click" CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
+            </div>
+
             <asp:Button ID="sendMailBtn" Text="Send" runat="server" OnClick="sendMailBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false"
                 OnClientClick="this.disabled=true;" UseSubmitBehavior="false" />
-                      
-            <div runat="server" id ="attachmentsDiv"></div>
-          
         </div>
+
+
+
     </div>
     <!--Mail Message Page Body END-->
 

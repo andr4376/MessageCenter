@@ -127,11 +127,31 @@ select:focus {
 	--moz-transition: background-color 0.25s ease-in; /* for Mozilla Firefox*/
 	width: 100%;
 }
+.sparkron-submit-btn-sm {
+	font-family: 'Titillium Web', sans-serif;
+	font-size: 20px;
+	background-color: white;
+	color: #D11A24;
+	border: 2px solid darkgrey;
+	box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.22);
+	padding-right: 10px;
+	padding-bottom: 5px;
+	--webkit-tranistion: color 0.25s ease-in; /*for Safari and Chrome*/
+	transition: color 0.25s ease-in; /*for IE*/
+	--moz-transition: color 0.25s ease-in; /* for Mozilla Firefox*/
+	--webkit-tranistion: background-color 0.25s ease-in; /*for Safari and Chrome*/
+	transition: background-color 0.25s ease-in; /*for IE*/
+	--moz-transition: background-color 0.25s ease-in; /* for Mozilla Firefox*/
+}	
 
-	.sparkron-submit-btn:hover {
-		background-color: white;
-		color: #D11A24;
-	}
+.sparkron-submit-btn:hover {
+	background-color: white;
+	color: #D11A24;
+}
+.sparkron-submit-btn-sm:hover {
+	background-color: darkgrey;
+	color: white;
+}
 
 .sparkron-search-btn {
 	font-family: 'Titillium Web', sans-serif;
@@ -206,7 +226,7 @@ select:focus {
 }
 
 .sparkron-input-maintext {
-	height: 500px;
+	height: 300px;
 }
 
 .message-text-input {
@@ -216,4 +236,15 @@ select:focus {
 .profile-img {
 
 margin-left:15%;
+}
+
+.attachments-listbox {
+	font-size: 16px;
+	max-width: 100%;
+	min-width: 100%;
+	margin-bottom: 10px;
+	border: none;
+	background-color: inherit;
+	overflow-y: scroll;
+	word-break: break-all;
 }

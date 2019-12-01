@@ -58,6 +58,24 @@ namespace MessageCenter {
         protected global::System.Web.UI.WebControls.Button btn_Submit_User;
         
         /// <summary>
+        /// AttachmentFileUpload control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload AttachmentFileUpload;
+        
+        /// <summary>
+        /// UploadFileBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button UploadFileBtn;
+        
+        /// <summary>
         /// mailMessageBody control.
         /// </summary>
         /// <remarks>
@@ -103,6 +121,60 @@ namespace MessageCenter {
         protected global::System.Web.UI.WebControls.TextBox messageTextTextBox;
         
         /// <summary>
+        /// AttachmentsSection control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl AttachmentsSection;
+        
+        /// <summary>
+        /// UPAttachments control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel UPAttachments;
+        
+        /// <summary>
+        /// listBoxAttachments control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListBox listBoxAttachments;
+        
+        /// <summary>
+        /// DownloadAttachmentBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button DownloadAttachmentBtn;
+        
+        /// <summary>
+        /// RemoveAttachmentButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button RemoveAttachmentButton;
+        
+        /// <summary>
+        /// openNewAttachmentModalBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button openNewAttachmentModalBtn;
+        
+        /// <summary>
         /// sendMailBtn control.
         /// </summary>
         /// <remarks>
@@ -110,15 +182,6 @@ namespace MessageCenter {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button sendMailBtn;
-        
-        /// <summary>
-        /// attachmentsDiv control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl attachmentsDiv;
         
         /// <summary>
         /// smsMessageBody control.

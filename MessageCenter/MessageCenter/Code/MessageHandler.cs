@@ -365,8 +365,13 @@ namespace MessageCenter.Code
 
             foreach (MessageAttachment attachment in attachments)
             {
-                attachment.CreateTempFile();
+                StatusCode createFilesStatus= attachment.CreateTempFile();
 
+                if (createFilesStatus == StatusCode.ERROR)
+                {
+                    
+                    return null;
+                }
             }
 
             return attachments;
@@ -382,6 +387,12 @@ namespace MessageCenter.Code
 
             }
             return path;
+        }
+
+        public void RemoveAttachment(int index)
+        {
+            attachments[index].RemoveTempFile();
+            attachments.Remove(attachments[index]);
         }
     }
 }

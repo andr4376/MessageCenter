@@ -69,7 +69,7 @@ namespace MessageCenter.Code
 
         }
 
-        public void CreateTempFile()
+        public StatusCode CreateTempFile()
         {
             //Make sure temp folder exist
             FileManager.Instance.CreateDirectoryIfNotExists(MessageHandler.Instance.GetTempFilesPath());
@@ -77,7 +77,7 @@ namespace MessageCenter.Code
             Utility.WriteLog("Creating Temporary file for attachment with id:" + Id + " full filepath:" + FilePath);
 
             //Create a temporary file for this attachment
-            FileManager.Instance.CreateFile(FilePath, FileData);
+           return FileManager.Instance.CreateFile(FilePath, FileData);
         }
 
         public MessageAttachment(string filePath)
@@ -223,7 +223,10 @@ namespace MessageCenter.Code
                 ref matchKashida, ref matchDiacritics, ref matchAlefHamza, ref matchControl);
         }
 
-
+        public void RemoveTempFile()
+        {
+            FileManager.Instance.DeleteFile(FilePath);
+        }
     }
 }
 /*
