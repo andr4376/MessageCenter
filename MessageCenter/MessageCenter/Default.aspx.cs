@@ -183,7 +183,7 @@ namespace MessageCenter
 
         protected void addNewMessageBtn_Click(object sender, EventArgs e)
         {
-
+            Response.Redirect("NewMessage.aspx");
         }
     }
 }

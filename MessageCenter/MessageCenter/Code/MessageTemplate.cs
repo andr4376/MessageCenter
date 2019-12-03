@@ -106,7 +106,13 @@ namespace MessageCenter.Code
 
         }
 
-        
-
+        /// <summary>
+        /// Used for creating a new messageTemplate
+        /// </summary>
+        /// <param name="type"></param>
+        public MessageTemplate(int type):this(string.Empty,string.Empty, type)
+        {
+            initialTitle = "_NEW_MESSAGE_";
+        }
     }
 }

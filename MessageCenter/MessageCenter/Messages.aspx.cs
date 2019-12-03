@@ -444,7 +444,7 @@ namespace MessageCenter
         protected void UploadFileBtn_Click(object sender, EventArgs e)
         {
 
-            //get file 
+     
             MessageAttachment tmp;
             if (AttachmentFileUpload.HasFile)
             {
@@ -466,8 +466,6 @@ namespace MessageCenter
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "closeAttachmentModal();", true);
             }
-
-
 
         }
 

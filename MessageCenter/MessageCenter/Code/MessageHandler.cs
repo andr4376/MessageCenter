@@ -260,6 +260,14 @@ namespace MessageCenter.Code
 
         }
 
+        internal void SetBlankMessage(int type)
+        {
+            this.msgTemplate = new MessageTemplate(type);
+
+            Attachments = new List<MessageAttachment>();
+
+        }
+
         public void FillMessageWithData()
         {
             if (messageVariables == null)
@@ -417,11 +425,12 @@ namespace MessageCenter.Code
         {
             string path = string.Empty;
 
-            if (msgTemplate != null && sender != null)
+            if (msgTemplate != null && SignIn.Instance.User.Tuser != null)
             {
-                path = FileManager.Instance.GetTempDirectory(msgTemplate, sender.Tuser);
+                path = FileManager.Instance.GetTempDirectory(msgTemplate, SignIn.Instance.User.Tuser);
 
             }
+          
             return path;
         }
 

@@ -85,6 +85,8 @@ namespace MessageCenter.Code
 
         public string GetTempDirectory(MessageTemplate message, string employeeTUser)
         {
+                                
+
             string directoryPath = appDataPath + ("\\TempFiles\\" + message.PathName + "_" + employeeTUser);
 
             return directoryPath;
@@ -135,6 +137,11 @@ namespace MessageCenter.Code
         /// <param name="filePath"></param>
         public void DeleteFile(string filePath)
         {
+            if (!File.Exists(filePath))
+            {
+                return;
+            }
+
             //Alternate parameterized thread
             Thread fileDeleteThread = new Thread(
                 () => DeleteFileWhenNotInUse(filePath)
@@ -159,7 +166,7 @@ namespace MessageCenter.Code
 
             Utility.WriteLog("Deleting file: " + filePath);
 
-            while (!fileIsDeleted || attemps>maxAttempts)
+            while (!fileIsDeleted || attemps > maxAttempts)
             {
                 //If file is occupied by another process
                 if (FileIsInUse(new FileInfo(filePath)))
@@ -180,7 +187,7 @@ namespace MessageCenter.Code
 
                     //Escape while loop next cycle
                     fileIsDeleted = true;
-                   
+
                 }
                 catch (Exception e)
                 {
@@ -190,9 +197,9 @@ namespace MessageCenter.Code
                 }
 
             }
-            if (attemps>maxAttempts)
+            if (attemps > maxAttempts)
             {
-                Utility.WriteLog("ERROR at FileManager.DeleteFile. The file deleting thread gave up trying after "+attemps+" attempts!");
+                Utility.WriteLog("ERROR at FileManager.DeleteFile. The file deleting thread gave up trying after " + attemps + " attempts!");
                 return;
             }
         }
