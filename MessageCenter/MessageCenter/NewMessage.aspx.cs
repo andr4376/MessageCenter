@@ -25,7 +25,13 @@ namespace MessageCenter
         }
         protected void Page_Load(object sender, EventArgs e)
         {
-            Utility.WriteLog(IsMail.ToString());
+            if (!SignIn.Instance.IsLoggedIn ||
+                !SignIn.Instance.IsAdmin)
+            {
+                Response.Redirect("Default.aspx");
+
+            }
+
             if (!IsPostBack)
             {
                 Initialize();
@@ -158,6 +164,29 @@ namespace MessageCenter
 
         protected void CreateMessageBtn_Click(object sender, EventArgs e)
         {
+            MessageHandler.Instance.MsgTemplate.Title = titleTextBox.Text;
+            MessageHandler.Instance.MsgTemplate.Text = messageTextTextBox.Text;
+
+            if (MessageHandler.Instance.MsgTemplate.IsValid)
+            {
+                //Save the message template
+                int? id = DatabaseManager.Instance.AddMessageTemplate(MessageHandler.Instance.MsgTemplate);
+
+
+                if (id== null)
+                {
+                    //ERROR
+                    return;
+                }
+
+                //Save all attachments with a reference to the message template created above
+                foreach (MessageAttachment attachment in MessageHandler.Instance.Attachments)
+                {
+                    DatabaseManager.Instance.AddAttachmentToDB(attachment, ((int)id));
+                }
+
+            }
+
 
         }
 

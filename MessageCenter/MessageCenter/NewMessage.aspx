@@ -15,14 +15,15 @@
                 </div>
                 <div class="modal-body">
 
-                    <asp:DropDownList ID="selectMsgTypeDropDownList" runat="server">
+                    <asp:DropDownList ID="selectMsgTypeDropDownList" runat="server" CssClass="sparkron-dropdown">
                         <asp:ListItem Text="Mail" Value="0"/>
                         <asp:ListItem Text="Sms" Value="1" />
                     </asp:DropDownList>
 
                 </div>
                 <div class="modal-footer">
-                     <asp:Button ID="selectMsgTypeBtn" Text="Vælg Kunde" runat="server" OnClick="selectMsgTypeBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false"/>
+                     <asp:Button ID="selectMsgTypeBtn" Text="Godkend" runat="server" OnClick="selectMsgTypeBtn_Click"
+                         CssClass="sparkron-submit-btn" CausesValidation="false"/>
                 </div>
             </div>
         </div>
@@ -113,7 +114,7 @@
                 <asp:Button ID="openNewAttachmentModalBtn" Text="Tilføj Fil" runat="server" OnClick="openNewAttachmentModalBtn_Click"  CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
             </div>
 
-            <asp:Button ID="CreateMessageBtn" Text="Send" runat="server" OnClick="CreateMessageBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false"
+            <asp:Button ID="CreateMessageBtn" Text="Gem beskedskabelon" runat="server" OnClick="CreateMessageBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false"
                 OnClientClick="this.disabled=true;" UseSubmitBehavior="false" />
         </div>
 

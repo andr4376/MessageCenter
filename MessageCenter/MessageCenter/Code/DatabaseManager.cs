@@ -16,11 +16,11 @@ namespace MessageCenter.Code
         public List<MessageTemplate> messages;
 
         private SQLiteConnection DBConnect;
-       
+
         private string messageTemplatesTableName;
         private string MessageTemplatesTableName
         {
-             get
+            get
             {
                 if (messageTemplatesTableName == null)
                 {
@@ -85,7 +85,7 @@ namespace MessageCenter.Code
             return tmpMessage;
         }
 
-        
+
 
         private MessageAttachment ExtractAttachmentData(SQLiteDataReader dataReader)
         {
@@ -107,13 +107,13 @@ namespace MessageCenter.Code
 
 
             MessageAttachment attachment = new MessageAttachment(
-                id, messageId,fileName,fileData
+                id, messageId, fileName, fileData
                 );
 
-           
-                    
 
-                return attachment;
+
+
+            return attachment;
         }
 
 
@@ -165,7 +165,7 @@ private StatusCode LoadAllMessageTemplates()
 
             System.Diagnostics.Debug.WriteLine("Initializing DatabaseManager");
 
-            
+
 
             DBConnect = new SQLiteConnection("Data source = " + FileManager.Instance.DbFile + "; Version = 3; ");
 
@@ -262,7 +262,7 @@ private StatusCode LoadAllMessageTemplates()
                     "Mvh, " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.EMPLOYEE_FULLNAME) + "\n Sparekassen Kronjylland -" + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.DEPARTMENT) + " afdelingen"
                     , rnd.Next(0, 1 + 1));
 
-                status = AddMessageTemplate(testMessage);
+                status = AddMessageTemplate(testMessage) == null ? StatusCode.ERROR : StatusCode.OK;
 
                 if (status != StatusCode.OK)
                 {
@@ -278,9 +278,13 @@ private StatusCode LoadAllMessageTemplates()
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        private StatusCode AddMessageTemplate(MessageTemplate message)
+        public int? AddMessageTemplate(MessageTemplate message)
         {
-            string cmd = "insert into " + MessageTemplatesTableName + " values (null," +
+            int? id = GetNextId(MessageTemplatesTableName);
+
+            string idString = id == null ? "null" : id.ToString();
+
+            string cmd = "insert into " + MessageTemplatesTableName + " values (" + idString + "," +
               "'" + message.Title + "'," +
               "'" + message.Text + "', " +
               +message.MessageTypeId + ")";
@@ -293,10 +297,43 @@ private StatusCode LoadAllMessageTemplates()
                 Utility.PrintWarningMessage("Fejl ved tilføjelse af test beskeder");
 
             }
-            return returnCode;
+            return id;
+        }
+        public int? GetNextId(string tablename)
+        {
+            string cmdText = "SELECT MAX(id)+1 from " + tablename+";";
+
+            int? id = null;
+
+            DBConnect.Open();
+
+            SQLiteCommand sqliteCmd = new SQLiteCommand(cmdText, DBConnect);
+
+            try
+            {
+                using (SQLiteDataReader dataReader = sqliteCmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        id = dataReader.GetInt32(dataReader.GetOrdinal("MAX(id)+1"));                         
+
+                    }
+                }
+            }
+            catch (Exception)
+            {
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af alle beskedskabeloner!");
+                throw;
+#endif
+            }
+
+            DBConnect.Close();
+
+            return id;
         }
 
-        
+
         public StatusCode AddAttachmentToDB(MessageAttachment attachment, int messageTemplateId)
         {
             StatusCode status = StatusCode.OK;
@@ -305,8 +342,8 @@ private StatusCode LoadAllMessageTemplates()
                 "insert into " + AttachmentsTableName + " values (null," +
               messageTemplateId +
               ", '" + attachment.FileName + "', @fileData)"
-              ,DBConnect);
-            
+              , DBConnect);
+
             //Create @fileData parameter that converts 
             SQLiteParameter parameter = new SQLiteParameter("@fileData", System.Data.DbType.Binary);
             parameter.Value = attachment.FileData;
@@ -320,10 +357,10 @@ private StatusCode LoadAllMessageTemplates()
             catch (System.Exception e)
             {
                 Utility.WriteLog("Error in executing SQLiteNonQuery! Error messages: \n" + e.Message);
-                status= StatusCode.ERROR;
+                status = StatusCode.ERROR;
             }
-            
-                DBConnect.Close();
+
+            DBConnect.Close();
 
 
             return status;
@@ -340,7 +377,7 @@ private StatusCode LoadAllMessageTemplates()
             if (returnCode != StatusCode.OK)
             {
                 Utility.WriteLog("SQLite Error: " + cmd);
-           
+
                 return returnCode;
             }
 
@@ -366,19 +403,19 @@ private StatusCode LoadAllMessageTemplates()
             else
             {
                 Utility.WriteLog("ERROR: Could not create table '" + MessageTemplatesTableName + "'!");
-                
+
 
             }
 
             //Create attachment table
-             cmd = "DROP TABLE IF EXISTS " + AttachmentsTableName;
+            cmd = "DROP TABLE IF EXISTS " + AttachmentsTableName;
 
-             returnCode = ExecuteSQLiteNonQuery(cmd);
+            returnCode = ExecuteSQLiteNonQuery(cmd);
 
             if (returnCode != StatusCode.OK)
             {
                 Utility.WriteLog("SQLite Error: " + cmd);
-               
+
                 return returnCode;
             }
 
@@ -413,7 +450,7 @@ private StatusCode LoadAllMessageTemplates()
             return returnCode;
 
         }
-        
+
 
         public StatusCode ExecuteSQLiteNonQuery(string command)
         {

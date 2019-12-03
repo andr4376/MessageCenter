@@ -90,6 +90,12 @@ namespace MessageCenter.Code
             }
         }
 
+        public bool IsValid
+        { get
+            {
+                return (Title != string.Empty && Text != string.Empty);
+            }
+        }
 
         public MessageTemplate(string title, string text, int messageType)
         {
