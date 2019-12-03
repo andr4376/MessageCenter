@@ -13,11 +13,36 @@ namespace MessageCenter
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-             
+
             loginLink.Visible = SignIn.Instance.User == null ? true : false;
 
-        
+            SuccesfulLoginHandler();
 
+
+        }
+
+        private void SuccesfulLoginHandler()
+        {
+            if (Session["NewLogin"] != null)
+            {
+                if (SignIn.Instance.IsLoggedIn)
+                {
+                    //Show welcome message
+                    loginStatusText.Text = "Velkommen " + SignIn.Instance.ToString();
+
+                    //hide login input
+                    loginPasswordInput.Visible = false;
+                    loginTuserInput.Visible = false;
+                    btn_login.Visible = false;
+                    btn_login.UseSubmitBehavior = false;
+                    //
+
+                    //Reopen modal to display welcome message
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
+                }
+               
+                Session["NewLogin"] = null;
+            }
         }
 
         protected void btn_login_Click(object sender, EventArgs e)
@@ -36,12 +61,12 @@ namespace MessageCenter
             switch (loginStatus)
             {
                 case StatusCode.OK:
-                    loginStatusText.Text = "Velkommen " + SignIn.Instance.ToString();
-                    loginPasswordInput.Visible = false;
-                    loginTuserInput.Visible = false;
-                    btn_login.Visible = false;
-                    btn_login.UseSubmitBehavior = false;
+
+                    //Next postback / pageload will change the ui and welcome the user
+                    Session["NewLogin"] = SignIn.Instance.ToString();
                     Utility.WriteLog("Login success");
+                    //Trigger a page reload 
+                    Response.Redirect(Request.RawUrl);
 
                     break;
                 case StatusCode.FORHINDRING:
@@ -49,12 +74,13 @@ namespace MessageCenter
                     break;
                 case StatusCode.ERROR:
                     loginStatusText.Text = "Fejl ved hentning af login info, kontakt venligst it-support!";
-                    break;                
-            }           
+                    break;
+            }
 
-            
-
+            //Reopen the login modal in case of invalid credentials / error
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
+
+
 
         }
 

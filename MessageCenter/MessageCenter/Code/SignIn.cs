@@ -57,9 +57,20 @@ namespace MessageCenter.Code
         {
             get
             {
+                if (this.user== null)
+                {
+                    return false;
+                }
                 return Configurations.TUserIsAdmin(this.user.Tuser);
             }
         }
+
+        /// <summary>
+        /// Attempts to log in using the input credentials and returns the status of the attempt - OK:success, Forhindring:Wrong credentials, Error:API exception
+        /// </summary>
+        /// <param name="tUser"></param>
+        /// <param name="passWord"></param>
+        /// <returns></returns>
         public StatusCode LogIn(string tUser, string passWord)
         {
             StatusCode returnCode = StatusCode.ERROR;
@@ -104,6 +115,10 @@ namespace MessageCenter.Code
 
         public override string ToString()
         {
+            if (this.user == null)
+            {
+                return null;
+            }
             return this.user.FirstName + " " + this.user.LastName;
         }
 

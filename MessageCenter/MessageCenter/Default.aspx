@@ -41,6 +41,8 @@
                     </Triggers>
                 </asp:UpdatePanel>
             </asp:Panel>
+                <asp:Button ID="addNewMessageBtn" Text="Tilføj Besked" runat="server" OnClick="addNewMessageBtn_Click"
+                    CssClass="sparkron-submit-btn-sm" CausesValidation="false" Visible="<%#ShowAdminInterface%>" />
 
             <!--fortsæt knap-->
             <asp:Button ID="btn_proceedToMessagePage" Text="Fortsæt" runat="server" OnClick="btn_proceedToMessagePage_Click" CssClass="sparkron-submit-btn" CausesValidation="false" />

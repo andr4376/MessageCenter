@@ -12,6 +12,14 @@ namespace MessageCenter
     public partial class _Default : Page
     {
 
+        public bool ShowAdminInterface
+        {
+            get
+            {
+               return SignIn.Instance.IsAdmin;
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -32,6 +40,8 @@ namespace MessageCenter
         private void Initialize()
         {
             Utility.WriteLog("Initializing Front Page");
+
+            DataBind();
 
             MessageHandler.Reset();
 
@@ -171,7 +181,10 @@ namespace MessageCenter
 
         }
 
-       
+        protected void addNewMessageBtn_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 
