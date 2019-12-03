@@ -50,12 +50,11 @@ namespace MessageCenter.Code
        
 
 
-        string filePath;
         public string FilePath
         {
             get
             {
-                return filePath = MessageHandler.Instance.GetTempFilesPath() + "\\" + FileName;
+                return  MessageHandler.Instance.GetTempFilesPath() + "\\" + FileName;
 
             }
 
@@ -100,6 +99,7 @@ namespace MessageCenter.Code
             {
                 case "docx":
                     ReplaceWordDocText();
+                    
                     break;
                 default:
                     Utility.WriteLog("File type " + this.FileType + " is not supported for data insertion");
@@ -139,7 +139,9 @@ namespace MessageCenter.Code
             }
 
             //Overwrite existing temp file
-            document.SaveAs(filePath);
+            document.SaveAs(FilePath);
+
+            
 
             //Close the word application
             openedWordDoc.Quit();
@@ -220,6 +222,23 @@ namespace MessageCenter.Code
             opnenedWordDocument.Selection.Find.Execute(ref textToReplace, ref matchCase, ref matchWholeWord,
                 ref matchWildCards, ref matchSoundsLike, ref matchAllWordForms, ref forward, ref wrap, ref format, ref newText, ref replace,
                 ref matchKashida, ref matchDiacritics, ref matchAlefHamza, ref matchControl);
+        }
+
+        public void ConvertDocToPDF()
+        {
+            if (this.FileType == "docx")
+            {
+                Application wordApplication = new Application();
+                Document wordDocument = wordApplication.Documents.Open(this.FilePath);
+
+                
+                this.FileName = this.FileName.Replace(FileType, "pdf");
+
+                wordDocument.SaveAs2(FilePath, WdSaveFormat.wdFormatPDF);
+                wordDocument.Close();
+                wordApplication.Quit();
+
+            }
         }
 
         public void RemoveTempFile()

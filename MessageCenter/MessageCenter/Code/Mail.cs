@@ -19,22 +19,23 @@ namespace MessageCenter.Code
 
         public Mail(string from, string to, string title, string text, string cc)
         {
+            //The email message object
             mailMessage = new MailMessage();
+
+            //the email client connects to the email service (gmail)
             smtpClient = new SmtpClient(smtpHost);
 
+            //Setup email:
             mailMessage.From = new MailAddress(from);
-
-            mailMessage.To.Add(to);
+            mailMessage.To.Add(to); //allows multiple adresses, seperated by ','
 
             if (cc != string.Empty)
             {
-                mailMessage.CC.Add(cc);
+                mailMessage.CC.Add(cc);//allows multiple adresses, seperated by ','
             }
-
             mailMessage.Subject = title;
-
-
             mailMessage.Body = text;
+
             //TODO: add rich text editing
             //   mailMessage.Body = ConvertTextToHtml(text);
 
@@ -42,7 +43,10 @@ namespace MessageCenter.Code
             // mailMessage.IsBodyHtml = true;
 
             smtpClient.Port = smtpPort;
-            smtpClient.Credentials = new System.Net.NetworkCredential(mailCredentialUsername, mailCredentialPassword);
+
+            //Login to the mail service (sparkronmessagecenter@gmail.com's google login)
+            smtpClient.Credentials = 
+                new System.Net.NetworkCredential(mailCredentialUsername, mailCredentialPassword);
             smtpClient.EnableSsl = true;
         }
 
@@ -60,8 +64,11 @@ namespace MessageCenter.Code
         {
             try
             {
+                //Sends the Email
                 smtpClient.Send(mailMessage);
 
+                //Dispose of attachments so that the files are not "in use"
+                //Allows the applikation to immediately delete the temporary files (attachments)
                 mailMessage.Attachments.Dispose();
 
             }
@@ -71,7 +78,6 @@ namespace MessageCenter.Code
                 Utility.PrintWarningMessage("Der opstod fejl ved at sende email: " + exception.ToString() + " - kontakt venligt teknisk support");
             }
 
-            //Release all files from attachments, so we can delete the files.
         }
 
         public void AttachFile(MessageAttachment messageAttachment)

@@ -345,10 +345,18 @@ namespace MessageCenter.Code
         {
             if (message is Mail)
             {
-                foreach (MessageAttachment attachment in Attachments)
+                lock (attachmentsKey) // waits here if the attachments are currently in use by another thread
                 {
-                    ((Mail)message).AttachFile(attachment);
+                    foreach (MessageAttachment attachment in Attachments)
+                    {
+                        if (attachment.FileType == "docx")
+                        {
+                            attachment.ConvertDocToPDF();
+                        }
 
+                        ((Mail)message).AttachFile(attachment);
+
+                    }
                 }
 
             }
@@ -356,6 +364,7 @@ namespace MessageCenter.Code
 
         public void SendMessage()
         {
+
             if (this.MsgTemplate.MessageType == MessageType.MAIL)
             {
                 AddAttachments();
