@@ -173,7 +173,7 @@ namespace MessageCenter
                 int? id = DatabaseManager.Instance.AddMessageTemplate(MessageHandler.Instance.MsgTemplate);
 
 
-                if (id== null)
+                if (id == null)
                 {
                     //ERROR
                     return;
@@ -186,6 +186,11 @@ namespace MessageCenter
                 }
 
             }
+
+            //delete temp files and reset messagehandler instance
+            MessageHandler.Reset();
+            //go to front page
+            Response.Redirect("Default.aspx");
 
 
         }
