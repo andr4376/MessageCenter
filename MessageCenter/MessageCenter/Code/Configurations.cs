@@ -93,7 +93,11 @@ namespace MessageCenter.Code
                   "<getCustomerFromCprParameters>customers/cpr/</getCustomerFromCprParameters>\n" +
                   "<getEmployeeFromCredentials>employees/login/</getEmployeeFromCredentials>\n" +
                   "<getCustomerFromAdvisor>customers/advisor/</getCustomerFromAdvisor>\n" +
-                //
+                //Admins
+                "<admins>" +
+                     "<Tuser>T210672</Tuser>" +
+                     "<Tuser>T200454</Tuser>" +
+                "</admins>" +
                 "</configurations>\n";
 
             //Create and write to file
@@ -133,9 +137,26 @@ namespace MessageCenter.Code
             Utility.PrintWarningMessage("Fejl ved indlæsning af app konfigurationer - kontakt venligt teknisk support");
             Utility.WriteLog("the xml node '" + configDictionary[configurationType] + "' does not exist!");
 #if DEBUG
-            throw new Exception("GetConfigurationsValue was called with an unsupported ConfigurationsType: "+configurationsFile);
+            throw new Exception("GetConfigurationsValue was called with an unsupported ConfigurationsType: " + configurationsFile);
 #endif
             return string.Empty;
+        }
+
+        public static bool TUserIsAdmin(string tUser)
+        {
+            //Get the xml attribute
+            XmlNodeList xmlNodes = configurationsFile.DocumentElement.SelectNodes("/configurations/admins/Tuser");
+
+            //Return the first value it finds, if any exists
+            foreach (XmlNode xmlNode in xmlNodes)
+            {
+                if (tUser.ToUpper() == xmlNode.InnerText.ToUpper())
+                {
+                    return true;
+                } 
+            }
+
+            return false;
         }
     }
 }

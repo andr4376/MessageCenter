@@ -53,7 +53,13 @@ namespace MessageCenter.Code
                 return User != null;
             }
         }
-
+        public bool IsAdmin
+        {
+            get
+            {
+                return Configurations.TUserIsAdmin(this.user.Tuser);
+            }
+        }
         public StatusCode LogIn(string tUser, string passWord)
         {
             StatusCode returnCode = StatusCode.ERROR;
@@ -79,9 +85,7 @@ namespace MessageCenter.Code
             catch (Exception)
             {
                 Utility.PrintWarningMessage("Api Exception! kunne lave kald for at finde loginbruger");                
-            }            
-
-            
+            }
             return returnCode;
         }
 

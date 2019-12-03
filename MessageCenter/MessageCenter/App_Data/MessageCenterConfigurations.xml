@@ -10,4 +10,8 @@
 <getCustomerFromCprParameters>customers/cpr/</getCustomerFromCprParameters>
 <getEmployeeFromCredentials>employees/login/</getEmployeeFromCredentials>
 <getCustomerFromAdvisor>customers/advisor/</getCustomerFromAdvisor>
+  <admins>
+     <Tuser>T210672</Tuser>
+     <Tuser>T200454</Tuser>
+  </admins>
 </configurations>
