@@ -1,0 +1,279 @@
+﻿
+body {
+	background-color: #ebebeb;
+}
+
+h2 {
+	font-family: 'Titillium Web', sans-serif;
+}
+
+/*The sandy navbar*/
+.sparkron-navbar {
+	background-color: #D8D0C0;
+	border-color: #D8D0C0;
+}
+/*Sparekassen Kronjyllands logo style*/
+.logo-img {
+	max-height: 75%;
+	max-width: 75%;
+	margin-top: 2.5%;
+}
+
+/*the style for the links in the navbar (fx, "Home")*/
+.nav-link {
+	color: #000;
+	font-family: 'Titillium Web', sans-serif;
+	font-size: 24px;
+}
+
+/*hover color for navlinks are red and white*/
+.nav > li > a:hover {
+	background-color: #D11A24;
+	color: white;
+}
+
+/*Make the search group (input and button) "stick" until scrolling past the message box*/
+@media (min-width: 991px) {
+	.search-group {
+		margin-top: 5%;
+		position: -webkit-sticky; /* Safari */
+		position: sticky;
+		top: 50px;
+	}
+}
+/*The box containing the template messages*/
+.template-msg-listbox {
+	font-family: 'Titillium Web', sans-serif;
+	font-size: 16px;
+	max-width: 100%;
+	margin-bottom: 10px;
+	border: none;
+	background-color: inherit;
+	overflow-y: scroll;
+	word-break: break-all;
+}
+
+	.template-msg-listbox > option:hover {
+		color: white;
+		background-color: #313131;
+	}
+
+/*Remove blue outline when a select(asp:ListBox) item is clicked*/
+select:focus {
+	outline: 0;
+}
+
+.sparkron-jumbotron {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
+	color: inherit;
+	background-color: #EFE9E0;
+}
+
+
+/*header for the listbox*/
+.sparkron-box-header {
+	border-top-right-radius: 25px;
+	border-top-left-radius: 5px;
+	border: 3px solid #313131;
+	background-color: #313131;
+	margin-bottom: inherit;
+	box-shadow: 10px 10px 8px 0px rgba(0,0,0,0.22);
+	color: white;
+}
+/*the box containing the listbox*/
+.sparkron-box {
+	border: 2px solid #313131;
+	background-color: white;
+	border-bottom-left-radius: 25px;
+	border-bottom-right-radius: 5px;
+	border: 3px solid #313131;
+	height: 500px !important;
+	width: 100%;
+	box-shadow: 10px 10px 8px 0px rgba(0,0,0,0.22);
+}
+
+.sparkron-customer-box {
+	margin-top: 15px;
+	background-color: white;
+	border-bottom-left-radius: 25px;
+	border-bottom-right-radius: 5px;
+	border: 3px solid #747474;
+	height: 300px !important;
+	width: 575px;
+	box-shadow: 10px 10px 8px 0px rgba(0,0,0,0.22);
+}
+
+.mini-logo {
+	max-height: 5%;
+	max-width: 5%;
+}
+
+
+.sparkron-submit-btn {
+	font-family: 'Titillium Web', sans-serif;
+	font-size: 26px;
+	background-color: #D11A24;
+	color: white;
+	border: none;
+	box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.22);
+	float: right;
+	--webkit-tranistion: color 0.25s ease-in; /*for Safari and Chrome*/
+	transition: color 0.25s ease-in; /*for IE*/
+	--moz-transition: color 0.25s ease-in; /* for Mozilla Firefox*/
+	--webkit-tranistion: background-color 0.25s ease-in; /*for Safari and Chrome*/
+	transition: background-color 0.25s ease-in; /*for IE*/
+	--moz-transition: background-color 0.25s ease-in; /* for Mozilla Firefox*/
+	width: 100%;
+}
+
+.sparkron-submit-btn-sm {
+	font-family: 'Titillium Web', sans-serif;
+	font-size: 20px;
+	background-color: white;
+	color: #D11A24;
+	border: 2px solid darkgrey;
+	box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.22);
+	padding-right: 10px;
+	padding-bottom: 5px;
+	--webkit-tranistion: color 0.25s ease-in; /*for Safari and Chrome*/
+	transition: color 0.25s ease-in; /*for IE*/
+	--moz-transition: color 0.25s ease-in; /* for Mozilla Firefox*/
+	--webkit-tranistion: background-color 0.25s ease-in; /*for Safari and Chrome*/
+	transition: background-color 0.25s ease-in; /*for IE*/
+	--moz-transition: background-color 0.25s ease-in; /* for Mozilla Firefox*/
+}
+
+.sparkron-submit-btn:hover {
+	background-color: white;
+	color: #D11A24;
+}
+
+.sparkron-submit-btn-sm:hover {
+	background-color: darkgrey;
+	color: white;
+}
+
+.sparkron-search-btn {
+	font-family: 'Titillium Web', sans-serif;
+	font-size: 20px;
+	background-color: white;
+	color: #D11A24;
+	border: 2px solid darkgrey;
+	box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.22);
+	padding-right: 10px;
+	padding-bottom: 5px;
+	--webkit-tranistion: color 0.25s ease-in; /*for Safari and Chrome*/
+	transition: color 0.25s ease-in; /*for IE*/
+	--moz-transition: color 0.25s ease-in; /* for Mozilla Firefox*/
+	--webkit-tranistion: background-color 0.25s ease-in; /*for Safari and Chrome*/
+	transition: background-color 0.25s ease-in; /*for IE*/
+	--moz-transition: background-color 0.25s ease-in; /* for Mozilla Firefox*/
+	width: 100%;
+}
+
+	.sparkron-search-btn:hover {
+		background-color: darkgrey;
+		color: white;
+	}
+
+.sparkron-search-input {
+	font-family: 'Titillium Web', sans-serif;
+	font-size: 20px;
+	background-color: white;
+	color: grey;
+	margin-bottom: 5px;
+	width: 100%;
+}
+
+.sparkron-modal {
+	font-family: 'Titillium Web', sans-serif;
+	font-size: 20px;
+	background-color: white;
+	color: grey;
+	width: 50%;
+}
+
+
+.message-template-section {
+	background-color: white;
+	box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.22);
+	border-radius: 5px;
+	margin-top: 25px;
+	margin-left: 25px;
+	margin-right: 25px;
+	padding-left: 25px;
+	padding-right: 25px;
+}
+
+.message-template-section-adresse-input {
+	background-color: white;
+	box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.22);
+	border-radius: 5px;
+	margin-top: 25px;
+	margin-left: 25px;
+	margin-right: 25px;
+	padding-left: 25px;
+	padding-right: 25px;
+	max-width: 45%;
+}
+
+.sparkron-message-body {
+	margin-top: 50px;
+	font-family: 'Titillium Web', sans-serif;
+	background-color: #D8D0C0;
+}
+
+.sparkron-input-title {
+	font-size: 26px;
+}
+
+.sparkron-input-maintext {
+	height: 300px;
+}
+
+.message-text-input {
+	min-width: 100%;
+}
+
+.profile-img {
+	margin-left: 15%;
+}
+
+.attachments-listbox {
+	font-size: 16px;
+	max-width: 100%;
+	min-width: 100%;
+	margin-bottom: 10px;
+	border: none;
+	background-color: inherit;
+	overflow-y: scroll;
+	word-break: break-all;
+}
+
+
+
+th, td {
+	padding: 5px;
+	text-align: left;
+	border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+	background-color: #f5f5f5;
+}
+
+tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+
+table {
+	width: 100%;
+}
+
+select {
+	font-family: 'Titillium Web', sans-serif;
+	font-size: 24px;
+width:100%;
+}

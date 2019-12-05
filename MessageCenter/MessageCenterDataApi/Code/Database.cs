@@ -46,7 +46,9 @@ namespace MessageCenterDataApi.Code
 
         private void Initialize()
         {
-            string appdatafolder = Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "App_Data");
+
+           
+            string appdatafolder = Path.GetFullPath(HttpContext.Current.Server.MapPath("~/App_Data"));
             dbPath = appdatafolder + "\\" + dbPath;
 
             DBConnect = new SQLiteConnection("Data source = " + dbPath + "; Version = 3; ");

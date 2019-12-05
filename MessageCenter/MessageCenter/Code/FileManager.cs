@@ -62,8 +62,10 @@ namespace MessageCenter.Code
 
         private void Initialize()
         {
-            applicationPath = HttpContext.Current.Request.PhysicalApplicationPath;
-            appDataPath = Path.Combine(applicationPath, "App_Data");
+            // applicationPath = HttpContext.Current.Request.PhysicalApplicationPath;
+
+            applicationPath = Path.GetFullPath(HttpContext.Current.Server.MapPath("~"));        
+            appDataPath = Path.GetFullPath(HttpContext.Current.Server.MapPath("~/App_Data"));
 
 
         }

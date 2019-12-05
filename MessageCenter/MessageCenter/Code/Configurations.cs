@@ -84,7 +84,7 @@ namespace MessageCenter.Code
                   "<dbFileName>database.db</dbFileName>\n" +
                   "<messageTemplateTableName>MessageTemplates</messageTemplateTableName>\n" +
                   "<attachmentsTableName>Attachments</attachmentsTableName>\n" +
-                  "<apiUrl>http://localhost:58616/api/</apiUrl>\n" +
+                  "<apiUrl>https://messagecenterdataapi.azurewebsites.net/api/</apiUrl>\n" +
 
                   //Api parametres
                   "<getAllEmployeesParameters>employees/</getAllEmployeesParameters>\n" +

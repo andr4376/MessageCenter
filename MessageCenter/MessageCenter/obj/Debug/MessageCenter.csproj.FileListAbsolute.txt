@@ -128,8 +128,11 @@ D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\Micro
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\Microsoft.ScriptManager.WebForms.dll
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\Microsoft.Web.Infrastructure.dll
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\Newtonsoft.Json.dll
+D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\System.Data.SQLite.dll
+D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\System.Net.Http.Formatting.dll
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\System.Web.Optimization.dll
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\WebGrease.dll
+D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\System.Net.Http.Formatting.xml
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\System.Web.Optimization.xml
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\Newtonsoft.Json.xml
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\Antlr3.Runtime.pdb
@@ -140,6 +143,5 @@ D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\obj\Debug
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\obj\Debug\MessageCenter.csproj.CopyComplete
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\obj\Debug\MessageCenter.dll
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\obj\Debug\MessageCenter.pdb
-D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\System.Data.SQLite.dll
-D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\System.Net.Http.Formatting.dll
-D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\System.Net.Http.Formatting.xml
+D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\DocumentFormat.OpenXml.dll
+D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\DocumentFormat.OpenXml.xml

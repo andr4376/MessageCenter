@@ -1,0 +1,126 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="MessageCenter.SiteMaster" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> - Message Center</title>
+
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+
+    <webopt:BundleReference runat="server" Path="~/Content/css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="~/Content/sparekassen-theme.css" rel="stylesheet" />
+
+    <!-- Henter fonten "Titillium fra google -->
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web&display=swap" rel="stylesheet">
+</head>
+<body>
+    <form runat="server">
+        <asp:ScriptManager runat="server">
+            <Scripts>
+                <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
+                <%--Framework Scripts--%>
+                <asp:ScriptReference Name="MsAjaxBundle" />
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="bootstrap" />
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+                <asp:ScriptReference Name="WebFormsBundle" />
+                <%--Site Scripts--%>
+            </Scripts>
+        </asp:ScriptManager>
+
+        <div class="navbar navbar-fixed-top sparkron-navbar collapse navbar-collapse">
+
+            <div class="container">
+
+                <ul class="nav navbar-nav">
+                    <li>                        
+                        <asp:Image ID="logo" runat="server" ImageUrl="~/Images/logo-sparekassen-kronjylland.png" CssClass="logo-img"/>
+                    </li>
+                    <li><a runat="server" href="~/" class="nav-link">Hjem</a></li>
+                    <li><a runat="server" href="~/About" class="nav-link">Om siden</a></li>
+                    <li><a runat="server" href="~/Contact" class="nav-link">Kontakt</a></li>
+                    <li>
+                        <!-- Button to trigger login modal -->
+                        <a id="loginLink" class="nav-link" runat="server" data-toggle="modal" data-target="#loginModal">Login
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <!--LOGIN MODAL (popup)-->
+        <asp:Panel runat="server" DefaultButton="btn_login" CssClass="sparkron-modal">
+            <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+
+                    <div class="modal-content">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        <div class="modal-header">
+                            <h2 class="modal-title" id="exampleModalLabel">Login</h2>
+                            
+                        </div>
+                        <div class="modal-body">
+
+                            <!-- LOGIN -->
+                            <asp:Panel runat="server" DefaultButton="btn_login">
+                                <div class="container">
+                                    <div class="row">
+                                        <asp:TextBox ID="loginTuserInput" runat="server" placeholder="TUser"></asp:TextBox>
+                                        <asp:RequiredFieldValidator runat="server" ID="rfvTUserInput" ControlToValidate="loginTuserInput"
+                                            ErrorMessage="Skal udfyldes*" Display="Dynamic"></asp:RequiredFieldValidator>
+                                    </div>
+
+                                    <div class="row">
+                                        <asp:TextBox ID="loginPasswordInput" runat="server" placeholder="Kodeord" TextMode="Password"></asp:TextBox>
+                                        <asp:RequiredFieldValidator runat="server" ID="rfvLoginPassword" ControlToValidate="loginPasswordInput"
+                                            ErrorMessage="Skal udfyldes*" Display="Dynamic"></asp:RequiredFieldValidator>
+                                    </div>
+                                </div>
+                            </asp:Panel>
+                            <asp:Literal ID="loginStatusText" runat="server"></asp:Literal>
+
+                        </div>
+                        <div class="modal-footer">
+                            <asp:Button ID="btn_login" Text="Login" runat="server" OnClick="btn_login_Click" CssClass="sparkron-submit-btn" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+                function openModal() {
+                    $('#loginModal').modal({ show: true });
+                }
+            </script>
+        </asp:Panel>
+        <!--LOGIN MODAL (popup) END-->
+
+        <!-- MAIN CONTENT-->
+        <div class="container body-content">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+            <hr />
+            <footer>
+                <p>&copy; <%: DateTime.Now.Year %> - SparKron Message Center</p>
+            </footer>
+        </div>
+        <!-- MAIN CONTENT END-->
+    </form>
+</body>
+
+</html>

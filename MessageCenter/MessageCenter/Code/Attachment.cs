@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Microsoft.Office.Interop;
 using Microsoft.Office.Interop.Word;
+using DocumentFormat.OpenXml.Packaging;
 
 namespace MessageCenter.Code
 {
@@ -201,6 +202,7 @@ namespace MessageCenter.Code
         /// <param name="newText">The text you wish to replace 'textToReplace' with</param>
         private void WordDocReplaceText(Microsoft.Office.Interop.Word.Application opnenedWordDocument, object textToReplace, object newText)
         {
+
             //all values are stored as local object variables, because the Execute method requires object references in its parameters
             object matchCase = false;
             object matchWholeWord = true;
