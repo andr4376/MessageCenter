@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Web;
+using System.Web.SessionState;
 
 namespace MessageCenter.Code
 {
@@ -37,8 +38,6 @@ namespace MessageCenter.Code
 
         private MessageTemplate msgTemplate;
 
-        private static MessageHandler instance;
-
         private static Dictionary<MESSAGE_VARIABLES, string> messageVariables;
 
         private Message message;
@@ -59,18 +58,32 @@ namespace MessageCenter.Code
         {
             get
             {
-
-                return attachments;
-
+                return Instance.attachments;
             }
             set
             {
-
-                attachments = value;
+                Instance.attachments = value;
 
             }
         }
 
+        public Message Msg
+        {
+            get { return Instance.message; }
+            set { Instance.message = value; }
+        }
+
+        public Customer Receiver
+        {
+            get { return Instance.receiver; }
+            set { Instance.receiver = value; }
+        }
+
+        public Employee Sender
+        {
+            get { return Instance.sender; }
+            set { Instance.sender = value; }
+        }
         public static string GetMessageVariable(MESSAGE_VARIABLES variable)
         {
 
@@ -96,11 +109,18 @@ namespace MessageCenter.Code
         {
             get
             {
-                if (instance == null)
+                if (HttpContext.Current == null)
                 {
-                    instance = new MessageHandler();
+                    return null;
                 }
-                return instance;
+
+                HttpSessionState session = HttpContext.Current.Session;
+                if (session["MessageHandler"] == null)
+                {
+                    session["MessageHandler"] = new MessageHandler();
+                }
+                return (MessageHandler)session["MessageHandler"];
+
             }
         }
 
@@ -109,35 +129,25 @@ namespace MessageCenter.Code
 
         public MessageTemplate MsgTemplate
         {
-            get { return msgTemplate; }
+            get { return Instance.msgTemplate; }
             set
             {
-                msgTemplate = value;
+                Instance.msgTemplate = value;
 
-                if (msgTemplate != null && msgTemplate.MessageType == MessageType.MAIL)
+                if (Instance.msgTemplate != null && Instance.msgTemplate.MessageType == MessageType.MAIL)
                 {
                     GetAttachments();
                 }
             }
         }
 
-        public Employee Sender
-        {
-            get { return sender; }
-            set { sender = value; }
+   
 
-        }
-
-        public Customer Receiver
-        {
-            get { return receiver; }
-            set { receiver = value; }
-
-        }
+      
 
         public bool IsReady
         {
-            get { return (sender != null && receiver != null && msgTemplate != null); }
+            get { return (Sender != null && Receiver != null && MsgTemplate != null); }
         }
 
 
@@ -175,15 +185,15 @@ namespace MessageCenter.Code
             string txt = "MessageHandler properties"
                 + "\n" +
                 "Sender TUser: " +
-                (sender == null ? "NULL" : sender.Tuser)
+                (Sender == null ? "NULL" : Sender.Tuser)
 
                 + "\n" +
                 "Receiver ID: " +
-                (receiver == null ? "NULL" : receiver.Id.ToString())
+                (Receiver == null ? "NULL" : Receiver.Id.ToString())
 
                 + "\n" +
                 "Message id: " +
-                (msgTemplate == null ? "NULL" : msgTemplate.Id.ToString());
+                (MsgTemplate == null ? "NULL" : MsgTemplate.Id.ToString());
 
             return txt;
         }
@@ -192,14 +202,15 @@ namespace MessageCenter.Code
 
         public static void Reset()
         {
-            if (instance == null)
+            if (HttpContext.Current.Session["MessageHandler"] == null)
             {
                 return;
             }
 
-            FileManager.Instance.DeleteDirectory(instance.GetTempFilesPath());
+            FileManager.Instance.DeleteDirectory(
+               ((MessageHandler)HttpContext.Current.Session["MessageHandler"]).GetTempFilesPath());
 
-            instance = null;
+            HttpContext.Current.Session["MessageHandler"] = null;
         }
 
         public string GetValueFromMessageVariable(MESSAGE_VARIABLES variable)
@@ -208,49 +219,49 @@ namespace MessageCenter.Code
             switch (variable)
             {
                 case MESSAGE_VARIABLES.CUSTOMER_FULLNAME:
-                    value = receiver.FullName;
+                    value = Receiver.FullName;
                     break;
 
                 case MESSAGE_VARIABLES.CUSTOMER_FIRSTNAME:
-                    value = receiver.FirstName;
+                    value = Receiver.FirstName;
 
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_LASTNAME:
-                    value = receiver.LastName;
+                    value = Receiver.LastName;
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_BIRTHDAY:
-                    value = receiver.Birthday;
+                    value = Receiver.Birthday;
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_PHONENUMBER:
-                    value = receiver.PhoneNumber;
+                    value = Receiver.PhoneNumber;
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_EMAIL:
-                    value = receiver.Email;
+                    value = Receiver.Email;
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_AGE:
-                    value = receiver.Age.ToString();
+                    value = Receiver.Age.ToString();
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_CPR:
-                    value = receiver.Cpr;
+                    value = Receiver.Cpr;
                     break;
 
                 case MESSAGE_VARIABLES.DEPARTMENT:
-                    value = sender.Department;
+                    value = Sender.Department;
                     break;
                 case MESSAGE_VARIABLES.EMPLOYEE_FULLNAME:
-                    value = sender.FullName;
+                    value = Sender.FullName;
                     break;
                 case MESSAGE_VARIABLES.EMPLOYEE_FIRSTNAME:
-                    value = sender.FirstName;
+                    value = Sender.FirstName;
                     break;
                 case MESSAGE_VARIABLES.EMPLOYEE_LASTNAME:
-                    value = sender.LastName;
+                    value = Sender.LastName;
                     break;
                 case MESSAGE_VARIABLES.EMPLOYEE_PHONENUMBER:
-                    value = sender.PhoneNumber;
+                    value = Sender.PhoneNumber;
                     break;
                 case MESSAGE_VARIABLES.EMPLOYEE_EMAIL:
-                    value = sender.Email;
+                    value = Sender.Email;
                     break;
                 default:
                     break;
@@ -260,13 +271,13 @@ namespace MessageCenter.Code
 
         }
 
-        internal void SetBlankMessage(int type)
+        public void SetBlankMessage(int type)
         {
             //An empty message template with the given type (is converted to enum)
-            this.msgTemplate = new MessageTemplate(type);
+            MsgTemplate = new MessageTemplate(type);
 
             //For path naming
-            this.sender = SignIn.Instance.User;
+            Sender = SignIn.Instance.User;
 
             Attachments = new List<MessageAttachment>();
 
@@ -286,8 +297,9 @@ namespace MessageCenter.Code
             if (Attachments != null)
             {
                 //Edit the attachments asynchronously
-                new Thread(AttachmentsInsertData).Start();
+               // new Thread(AttachmentsInsertData).Start();
 
+                AttachmentsInsertData();
 
             }
 
@@ -318,7 +330,7 @@ namespace MessageCenter.Code
                     continue;
                 }
 
-                msgTemplate.Text = msgTemplate.Text.Replace(
+                MsgTemplate.Text = MsgTemplate.Text.Replace(
                     GetMessageVariable(variable.Key), value);
 
             }
@@ -328,23 +340,23 @@ namespace MessageCenter.Code
         {
 
 
-            switch (msgTemplate.MessageType)
+            switch (MsgTemplate.MessageType)
             {
                 case MessageType.MAIL:
-                    this.message = new Mail(
-                 sender.Email,
-                 receiver.Email,
-                 msgTemplate.Title,
-                 msgTemplate.Text,
+                    Msg = new Mail(
+                 Sender.Email,
+                 Receiver.Email,
+                 MsgTemplate.Title,
+                 MsgTemplate.Text,
                  cCAdress);
                     break;
 
                 //TODO:
                 case MessageType.SMS:
-                    this.message = new Sms(
-                        sender.PhoneNumber,
-                        receiver.PhoneNumber,
-                        msgTemplate.Text);
+                    Msg = new Sms(
+                        Sender.PhoneNumber,
+                        Receiver.PhoneNumber,
+                        MsgTemplate.Text);
                     break;
                 default:
                     break;
@@ -354,7 +366,7 @@ namespace MessageCenter.Code
 
         public void AddAttachments()
         {
-            if (message is Mail)
+            if (Msg is Mail)
             {
                 lock (attachmentsKey) // waits here if the attachments are currently in use by another thread
                 {
@@ -365,7 +377,7 @@ namespace MessageCenter.Code
                             attachment.ConvertDocToPDF();
                         }
 
-                        ((Mail)message).AttachFile(attachment);
+                        ((Mail)Msg).AttachFile(attachment);
 
                     }
                 }
@@ -381,7 +393,7 @@ namespace MessageCenter.Code
                 AddAttachments();
             }
 
-            this.message.Send();
+            Msg.Send();
 
             Reset();
         }
@@ -389,14 +401,14 @@ namespace MessageCenter.Code
 
         public List<MessageAttachment> GetAttachments()
         {
-            if (msgTemplate.Id == null)
+            if (MsgTemplate.Id == null)
             {
                 return null;
             }
 
-            Utility.WriteLog("Getting all attachments for messageTemplate id " + msgTemplate.Id);
+            Utility.WriteLog("Getting all attachments for messageTemplate id " + MsgTemplate.Id);
 
-            this.Attachments = DatabaseManager.Instance.GetAttachmentsFromMessageId(msgTemplate.Id);
+            this.Attachments = DatabaseManager.Instance.GetAttachmentsFromMessageId(MsgTemplate.Id);
 
             if (Attachments == null)
             {
@@ -407,7 +419,7 @@ namespace MessageCenter.Code
 
             }
 
-            Utility.WriteLog(Attachments.Count + " attachments found for messageTemplate with id: " + msgTemplate.Id);
+            Utility.WriteLog(Attachments.Count + " attachments found for messageTemplate with id: " + MsgTemplate.Id);
 
 
             foreach (MessageAttachment attachment in Attachments)
@@ -416,7 +428,6 @@ namespace MessageCenter.Code
 
                 if (createFilesStatus == StatusCode.ERROR)
                 {
-
                     return null;
                 }
             }
@@ -428,12 +439,12 @@ namespace MessageCenter.Code
         {
             string path = string.Empty;
 
-            if (msgTemplate != null && sender != null)
+            if (MsgTemplate != null && Sender != null)
             {
-                path = FileManager.Instance.GetTempDirectory(msgTemplate, sender.Tuser);
+                path = FileManager.Instance.GetTempDirectory(MsgTemplate, Sender.Tuser);
 
             }
-          
+
             return path;
         }
 

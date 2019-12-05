@@ -265,15 +265,11 @@ namespace MessageCenter
 
         private void DisplayMessageData()
         {
-            //TODO:
-            //activate elements
-            //Fill with data
-            //replace text with customer name / employee name ect.
-
+            //Prints message template, sender and receiver to output
             Utility.WriteLog(MessageHandler.Instance.ToString());
 
+            //Inserts data into message text / attachments (Fx. replaces [customerFullName] with "Keld Hansen")
             MessageHandler.Instance.FillMessageWithData();
-
 
             //Refreshes page
             Response.Redirect(Request.RawUrl);
@@ -285,6 +281,7 @@ namespace MessageCenter
 
         protected void btn_Submit_User_Click(object sender, EventArgs e)
         {
+            //
             if (GetSelectedCustomer() == StatusCode.OK)
             {
                 DisplayMessageData();
@@ -303,12 +300,19 @@ namespace MessageCenter
                 return StatusCode.FORHINDRING;
             }
 
-            Customer customer = SignIn.Instance.MyCustomers.Where(
-                c => c.Cpr ==
-               selectedCustomer)
-                .ToList()[0];
+            if ((selectedCustomer.Length != 10 &&//not cpr
+                selectedCustomer.Length != 8)) //not cvr
+            {
+                Utility.WriteLog("ERROR: GetSelectedCustomer was called where the selected customer's identifier was " + selectedCustomer +
+                    " - invalid (not cpr/cvr)");
+                return StatusCode.ERROR;
 
-            MessageHandler.Instance.Receiver = customer;
+            }
+            //Get customer from api
+            Customer customer = ApiManager.Instance.MakeRestCall<Customer>(
+                Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.GET_CUSTOMER_FROM_CPR_API_PARAMETERS)
+               + selectedCustomer)[0];
+
 
             if (customer == null)
             {
@@ -316,6 +320,9 @@ namespace MessageCenter
                     + Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
                 return StatusCode.ERROR;
             }
+
+            MessageHandler.Instance.Receiver = customer;
+
 
             return StatusCode.OK;
         }
@@ -444,7 +451,7 @@ namespace MessageCenter
         protected void UploadFileBtn_Click(object sender, EventArgs e)
         {
 
-     
+
             MessageAttachment tmp;
             if (AttachmentFileUpload.HasFile)
             {

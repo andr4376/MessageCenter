@@ -98,7 +98,6 @@ namespace MessageCenter.Code
             if (Directory.Exists(path))
             {
                 Directory.Delete(path, true);
-
             }
 
         }

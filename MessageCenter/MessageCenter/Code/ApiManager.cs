@@ -74,8 +74,8 @@ namespace MessageCenter.Code
             if (response.IsSuccessStatusCode)
             {
                 //Convert the result into  
-                returnElements = (List<ModelType>)response.Content.ReadAsAsync<IEnumerable<ModelType>>().Result;  //Make sure to add a reference to System.Net.Http.Formatting.dll
-
+                returnElements = (List<ModelType>)response.Content.ReadAsAsync<IEnumerable<ModelType>>().Result;
+               
             }
             else
             {
@@ -107,3 +107,6 @@ namespace MessageCenter.Code
         public static readonly string getEmployeeFromCredentials = "employees/login/";
         public static readonly string getCustomerFromAdvisor = "customers/advisor/";
 */
+
+
+//System.Net.Http.Formatting.dll - incase calls dont work on other machines
