@@ -16,14 +16,14 @@
                 <div class="modal-body">
 
                     <asp:DropDownList ID="selectMsgTypeDropDownList" runat="server" CssClass="sparkron-dropdown">
-                        <asp:ListItem Text="Mail" Value="0"/>
+                        <asp:ListItem Text="Mail" Value="0" />
                         <asp:ListItem Text="Sms" Value="1" />
                     </asp:DropDownList>
 
                 </div>
                 <div class="modal-footer">
-                     <asp:Button ID="selectMsgTypeBtn" Text="Godkend" runat="server" OnClick="selectMsgTypeBtn_Click"
-                         CssClass="sparkron-submit-btn" CausesValidation="false"/>
+                    <asp:Button ID="selectMsgTypeBtn" Text="Godkend" runat="server" OnClick="selectMsgTypeBtn_Click"
+                        CssClass="sparkron-submit-btn" CausesValidation="false" />
                 </div>
             </div>
         </div>
@@ -73,17 +73,19 @@
     <!-- newMessage Page Body-->
     <div runat="server" id="messageTemplateBody" class="sparkron-message-body" visible="false">
 
-        
+
         <div class="container">
 
             <div class="message-template-section row">
                 <asp:TextBox CssClass="sparkron-input-title message-text-input" runat="server"
-                    ID="titleTextBox" BorderStyle="None" TextMode="SingleLine" placeholder="Beskedens Title" autocomplete="off"></asp:TextBox>
+                    ID="titleTextBox" BorderStyle="None" TextMode="SingleLine" placeholder="Beskedens Titel - bør ikke indeholde beskedvariabler" autocomplete="off"></asp:TextBox>
             </div>
 
             <div class="message-template-section row">
                 <asp:TextBox CssClass="message-text-input sparkron-input-maintext" runat="server"
-                    ID="messageTextTextBox" BorderStyle="None" TextMode="MultiLine" autocomplete="off"></asp:TextBox>
+                    ID="messageTextTextBox" BorderStyle="None" TextMode="MultiLine" autocomplete="off"
+                     placeholder="Beskedindhold - benyt evt. variabler fra den nedenstående tabel. Så kan applikationen automatisk indsætte den tilsvarende information, når beskeden skal afsendes."
+                    ></asp:TextBox>
             </div>
 
             <!-- Attachment section -->
@@ -111,16 +113,28 @@
                 </div>
                 <asp:Button ID="DownloadAttachmentBtn" Text="Download" runat="server" OnClick="DownloadAttachmentBtn_Click" CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
                 <asp:Button ID="RemoveAttachmentButton" Text="Fjern" runat="server" OnClick="RemoveAttachmentButton_Click" CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
-                <asp:Button ID="openNewAttachmentModalBtn" Text="Tilføj Fil" runat="server" OnClick="openNewAttachmentModalBtn_Click"  CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
+                <asp:Button ID="openNewAttachmentModalBtn" Text="Tilføj Fil" runat="server" OnClick="openNewAttachmentModalBtn_Click" CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
             </div>
 
             <asp:Button ID="CreateMessageBtn" Text="Gem beskedskabelon" runat="server" OnClick="CreateMessageBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false"
                 OnClientClick="this.disabled=true;" UseSubmitBehavior="false" />
         </div>
-
-
-
     </div>
+
+    <!--A table listing and descibing the message variables-->
+    <div class="container">
+        <div class="sparkron-message-body">
+            <div class="message-template-section row">
+                <asp:Table ID="variablesTable" runat="server" CssClass="message-template-section">
+                    <asp:TableRow>
+                        <asp:TableCell><h2>Variabel</h2></asp:TableCell>
+                        <asp:TableCell><h2>Beskrivelse</h2></asp:TableCell>
+                    </asp:TableRow>
+                </asp:Table>
+            </div>
+        </div>
+    </div>
+
     <!--newMessage Page Body END-->
 
 

@@ -100,6 +100,10 @@ namespace MessageCenter.Code
         {
             get
             {
+                if (messageVariables == null)
+                {
+                    SetupMessageVariables();
+                }
                 return messageVariables;
             }
         }

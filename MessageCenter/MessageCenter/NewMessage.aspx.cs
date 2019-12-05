@@ -35,7 +35,11 @@ namespace MessageCenter
             if (!IsPostBack)
             {
                 Initialize();
+
             }
+
+            SetupVariablesTable();
+
 
         }
         protected void Page_PreRender(object sender, EventArgs e)
@@ -66,6 +70,87 @@ namespace MessageCenter
             MessageHandler.Reset();
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openPickMessageTypeModal();", true);
 
+        }
+
+        private void SetupVariablesTable()
+        {
+
+            foreach (KeyValuePair<MESSAGE_VARIABLES, string> variable in MessageHandler.GetMessageVariables)
+            {
+                string description = string.Empty;
+
+                switch (variable.Key)
+                {
+                    case MESSAGE_VARIABLES.CUSTOMER_FULLNAME:
+                        description = "Kundens fulde navn - F.eks \"Andreas Kirkegaard Jensen\"";
+                        break;
+                    case MESSAGE_VARIABLES.CUSTOMER_FIRSTNAME:
+                        description = "Kundens fornavn - F.eks \"Andreas\"";
+
+                        break;
+                    case MESSAGE_VARIABLES.CUSTOMER_LASTNAME:
+                        description = "Kundens efternavn - F.eks \"Kirkegaard Jensen\"";
+
+                        break;
+                    case MESSAGE_VARIABLES.CUSTOMER_BIRTHDAY:
+                        description = "Kundens fødselsdag- F.eks \"26-01-1994\"";
+
+                        break;
+                    case MESSAGE_VARIABLES.CUSTOMER_PHONENUMBER:
+                        description = "Kundens mobilnr. - F.eks \"40965001\"";
+
+                        break;
+                    case MESSAGE_VARIABLES.CUSTOMER_EMAIL:
+                        description = "Kundens email- F.eks \"andr4376@gmail.com\"";
+
+                        break;
+                    case MESSAGE_VARIABLES.CUSTOMER_AGE:
+                        description = "Kundens alder - F.eks \"25\"";
+
+                        break;
+                    case MESSAGE_VARIABLES.CUSTOMER_CPR:
+                        description = "Kundens cprnr. - F.eks \"260194xxxx\"";
+
+                        break;
+                    case MESSAGE_VARIABLES.DEPARTMENT:
+                        description = "Afsenderens / kundens afdeling - F.eks \"Spentrup\"";
+
+                        break;
+                    case MESSAGE_VARIABLES.EMPLOYEE_FULLNAME:
+                        description = "Navnet på medarbejderen som afsender beskeden";
+
+                        break;
+                    case MESSAGE_VARIABLES.EMPLOYEE_FIRSTNAME:
+                        description = "Fornavnet på medarbejderen som afsender beskeden";
+
+                        break;
+                    case MESSAGE_VARIABLES.EMPLOYEE_LASTNAME:
+                        description = "Efternavnet på medarbejderen som afsender beskeden";
+
+                        break;
+                    case MESSAGE_VARIABLES.EMPLOYEE_PHONENUMBER:
+                        description = "Mobil nummeret til medarbejderen som afsender beskeden";
+
+                        break;
+                    case MESSAGE_VARIABLES.EMPLOYEE_EMAIL:
+                        description = "Email adresse til medarbejderen som afsender beskeden";
+                        break;
+                    default:
+                        break;
+                }
+
+                TableRow row = new TableRow();
+
+                TableCell variableName = new TableCell();
+                variableName.Text = variable.Value;
+                row.Cells.Add(variableName);
+
+                TableCell variableDescription = new TableCell();
+                variableDescription.Text = description;
+                row.Cells.Add(variableDescription);
+
+                variablesTable.Rows.Add(row);
+            }
         }
 
         protected void DownloadAttachmentBtn_Click(object sender, EventArgs e)

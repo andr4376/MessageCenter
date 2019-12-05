@@ -115,7 +115,7 @@
 
             <div class="message-template-section row">
                 <asp:TextBox CssClass="sparkron-input-title message-text-input" runat="server"
-                    ID="titleTextBox" BorderStyle="None" TextMode="SingleLine" placeholder="Beskedens Title" autocomplete="off"
+                    ID="titleTextBox" BorderStyle="None" TextMode="SingleLine" placeholder="Beskedens Titel" autocomplete="off"
                     Text="<%# this.GetTitle %>">></asp:TextBox>
             </div>
 
