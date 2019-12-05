@@ -4,20 +4,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
+using System.Web.SessionState;
 
 namespace MessageCenter.Code
 {
     public class SignIn
     {
-        private static SignIn instance;
 
         private  Employee user;
 
-       
+
 
         public Employee User
         {
-            get { return user; }
+            get { return Instance.user; }
+            set { Instance.user = value;
+               
+            }
         }
 
         public List<Customer> MyCustomers
@@ -28,7 +31,7 @@ namespace MessageCenter.Code
                 {
                     return ApiManager.Instance.MakeRestCall<Customer>(
                         Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.GET_CUSTOMER_FROM_ADVISOR_TUSER_API_PARAMETERS)
-                        + user.Tuser);
+                        + User.Tuser);
                 }
                 return null;
             }
@@ -38,11 +41,13 @@ namespace MessageCenter.Code
         {
             get
             {
-                if (instance == null)
+              
+                HttpSessionState session = HttpContext.Current.Session;
+                if (session["SignIn"] == null)
                 {
-                    instance = new SignIn();
+                    session["SignIn"] = new SignIn();
                 }
-                return instance;
+                return (SignIn)session["SignIn"];
             }
         }
 
@@ -57,11 +62,11 @@ namespace MessageCenter.Code
         {
             get
             {
-                if (this.user== null)
+                if (User == null)
                 {
                     return false;
                 }
-                return Configurations.TUserIsAdmin(this.user.Tuser);
+                return Configurations.TUserIsAdmin(User.Tuser);
             }
         }
 
@@ -77,7 +82,7 @@ namespace MessageCenter.Code
 
             try
             {
-                this.user = ApiManager.Instance.MakeRestCall<Employee>
+                User = ApiManager.Instance.MakeRestCall<Employee>
                 (Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.GET_EMPLOYEE_FROM_CREDENTIALS_API_PARAMETERS)
                 + tUser.ToUpper() + "/"
                 + EncryptPassword(passWord))[0];
@@ -89,13 +94,13 @@ namespace MessageCenter.Code
                 }
                 else
                 {
-                    Utility.WriteLog("login: " + user.Tuser + " - " + user.FirstName + " " + user.LastName);
+                    Utility.WriteLog("login: " + User.Tuser + " - " + User.FirstName + " " + User.LastName);
                     returnCode = StatusCode.OK;
                 }
             }
             catch (Exception)
             {
-                Utility.PrintWarningMessage("Api Exception! kunne lave kald for at finde loginbruger");                
+                Utility.PrintWarningMessage("Api Exception! kunne lave kald for at finde loginbruger");
             }
             return returnCode;
         }
@@ -109,19 +114,21 @@ namespace MessageCenter.Code
         {
             byte[] encodedPassword = System.Text.Encoding.ASCII.GetBytes(passWord);
             encodedPassword = new System.Security.Cryptography.SHA256Managed().ComputeHash(encodedPassword);
-                       
+
             return System.Convert.ToBase64String(encodedPassword).Replace('/', '_').Replace('+', 'q').Replace('=', 'a');
         }
 
         public override string ToString()
         {
-            if (this.user == null)
+            if (this.User == null)
             {
                 return null;
             }
-            return this.user.FirstName + " " + this.user.LastName;
+            return this.User.FirstName + " " + this.User.LastName;
         }
 
-
+     
     }
+
+   
 }

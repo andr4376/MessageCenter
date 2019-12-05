@@ -14,12 +14,8 @@ namespace MessageCenter.Code
     {
         private static ApiManager instance;
 
-        private string apiUrl;
-        
-
-
-
-
+        private string apiUrl;      
+                     
         private HttpClient httpClient;
 
         public static ApiManager Instance

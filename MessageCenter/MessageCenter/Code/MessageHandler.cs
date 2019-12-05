@@ -262,7 +262,11 @@ namespace MessageCenter.Code
 
         internal void SetBlankMessage(int type)
         {
+            //An empty message template with the given type (is converted to enum)
             this.msgTemplate = new MessageTemplate(type);
+
+            //For path naming
+            this.sender = SignIn.Instance.User;
 
             Attachments = new List<MessageAttachment>();
 
@@ -295,7 +299,6 @@ namespace MessageCenter.Code
             {
                 foreach (MessageAttachment attachment in Attachments)
                 {
-
                     //Try to insert customer / employee data
                     attachment.InsertData();
                 }
@@ -425,9 +428,9 @@ namespace MessageCenter.Code
         {
             string path = string.Empty;
 
-            if (msgTemplate != null && SignIn.Instance.User.Tuser != null)
+            if (msgTemplate != null && sender != null)
             {
-                path = FileManager.Instance.GetTempDirectory(msgTemplate, SignIn.Instance.User.Tuser);
+                path = FileManager.Instance.GetTempDirectory(msgTemplate, sender.Tuser);
 
             }
           
