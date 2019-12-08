@@ -53,6 +53,7 @@ namespace MessageCenter
             {
                 return;
             }
+            btn_login.Enabled = false;
 
             StatusCode loginStatus = SignIn.Instance.LogIn(loginTuserInput.Text, loginPasswordInput.Text);
 
@@ -70,12 +71,15 @@ namespace MessageCenter
 
                     break;
                 case StatusCode.FORHINDRING:
+                    btn_login.Enabled = true;
                     loginStatusText.Text = "Forkert TUser eller kode!";
                     break;
                 case StatusCode.ERROR:
+                    btn_login.Enabled = true;
                     loginStatusText.Text = "Fejl ved hentning af login info, kontakt venligst it-support!";
                     break;
             }
+
 
             //Reopen the login modal in case of invalid credentials / error
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);

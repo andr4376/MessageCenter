@@ -131,6 +131,7 @@ namespace MessageCenter.Code
 
 
 
+
         public MessageTemplate MsgTemplate
         {
             get { return Instance.msgTemplate; }
@@ -223,49 +224,49 @@ namespace MessageCenter.Code
             switch (variable)
             {
                 case MESSAGE_VARIABLES.CUSTOMER_FULLNAME:
-                    value = Receiver.FullName;
+                    value = receiver.FullName;
                     break;
 
                 case MESSAGE_VARIABLES.CUSTOMER_FIRSTNAME:
-                    value = Receiver.FirstName;
+                    value = receiver.FirstName;
 
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_LASTNAME:
-                    value = Receiver.LastName;
+                    value = receiver.LastName;
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_BIRTHDAY:
-                    value = Receiver.Birthday;
+                    value = receiver.Birthday;
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_PHONENUMBER:
-                    value = Receiver.PhoneNumber;
+                    value = receiver.PhoneNumber;
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_EMAIL:
-                    value = Receiver.Email;
+                    value = receiver.Email;
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_AGE:
-                    value = Receiver.Age.ToString();
+                    value = receiver.Age.ToString();
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_CPR:
-                    value = Receiver.Cpr;
+                    value = receiver.Cpr;
                     break;
 
                 case MESSAGE_VARIABLES.DEPARTMENT:
-                    value = Sender.Department;
+                    value = sender.Department;
                     break;
                 case MESSAGE_VARIABLES.EMPLOYEE_FULLNAME:
-                    value = Sender.FullName;
+                    value = sender.FullName;
                     break;
                 case MESSAGE_VARIABLES.EMPLOYEE_FIRSTNAME:
-                    value = Sender.FirstName;
+                    value = sender.FirstName;
                     break;
                 case MESSAGE_VARIABLES.EMPLOYEE_LASTNAME:
-                    value = Sender.LastName;
+                    value = sender.LastName;
                     break;
                 case MESSAGE_VARIABLES.EMPLOYEE_PHONENUMBER:
-                    value = Sender.PhoneNumber;
+                    value = sender.PhoneNumber;
                     break;
                 case MESSAGE_VARIABLES.EMPLOYEE_EMAIL:
-                    value = Sender.Email;
+                    value = sender.Email;
                     break;
                 default:
                     break;
@@ -300,23 +301,42 @@ namespace MessageCenter.Code
 
             if (Attachments != null)
             {
-                //Edit the attachments asynchronously
-               // new Thread(AttachmentsInsertData).Start();
 
-                AttachmentsInsertData();
+                //The thread needs a reference to the Instance because the Singleton instance is retrieved with the 
+                //current HttpContext which is not accessible from thread.
+                //In other words - Singletons was a mistake
+                MessageHandler instanceReference = Instance;
+
+                //Edit the attachments asynchronously
+                new Thread(
+                    () => AttachmentsInsertData(instanceReference)) //Alternate paramterized thread
+                { IsBackground = true } //In case it lingers, it gets removed on server restart
+                .Start();
+
+               
 
             }
 
         }
 
-        private void AttachmentsInsertData()
+        private void AttachmentsInsertData(MessageHandler messageHandler)
         {
             lock (attachmentsKey)
             {
-                foreach (MessageAttachment attachment in Attachments)
+                foreach (MessageAttachment attachment in messageHandler.attachments)
                 {
-                    //Try to insert customer / employee data
-                    attachment.InsertData();
+                    try
+                    {
+                        //Try to insert customer / employee data
+                        attachment.EditAttachment(messageHandler);
+                    }
+                    catch (Exception e)
+                    {
+                        Utility.WriteLog(
+                            "Error - attempt to edit attachment: "+attachment.FileName + " failed! \nmError message: \n"+e.ToString());
+                        
+                    }
+                    
                 }
             }
         }
@@ -443,9 +463,9 @@ namespace MessageCenter.Code
         {
             string path = string.Empty;
 
-            if (MsgTemplate != null && Sender != null)
+            if (msgTemplate != null && sender != null)
             {
-                path = FileManager.Instance.GetTempDirectory(MsgTemplate, Sender.Tuser);
+                path = FileManager.Instance.GetTempDirectory(msgTemplate, sender.Tuser);
 
             }
 

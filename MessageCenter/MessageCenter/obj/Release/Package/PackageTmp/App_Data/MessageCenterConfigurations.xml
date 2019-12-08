@@ -3,7 +3,7 @@
 <dbFileName>database.db</dbFileName>
 <messageTemplateTableName>MessageTemplates</messageTemplateTableName>
 <attachmentsTableName>Attachments</attachmentsTableName>
-<apiUrl>https://messagecenterdataapi.azurewebsites.net/api/</apiUrl>
+<apiUrl>http://localhost:58616/api/</apiUrl>
 <getAllEmployeesParameters>employees/</getAllEmployeesParameters>
 <getAllCustomerParameters>customers/</getAllCustomerParameters>
 <getEmployeeFromTUserParameters>employees/tuser/</getEmployeeFromTUserParameters>

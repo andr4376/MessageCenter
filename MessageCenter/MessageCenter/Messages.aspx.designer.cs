@@ -49,13 +49,13 @@ namespace MessageCenter {
         protected global::System.Web.UI.WebControls.ListBox listBoxCustomers;
         
         /// <summary>
-        /// btn_Submit_User control.
+        /// btn_Submit_Customer control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btn_Submit_User;
+        protected global::System.Web.UI.WebControls.Button btn_Submit_Customer;
         
         /// <summary>
         /// AttachmentFileUpload control.

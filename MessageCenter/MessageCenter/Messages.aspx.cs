@@ -228,12 +228,7 @@ namespace MessageCenter
             //Check if doubleClick event on listbox
             if (Request["__EVENTARGUMENT"] != null && Request["__EVENTARGUMENT"] == "doubleClickCustomer")
             {
-                if (GetSelectedCustomer() == StatusCode.OK)
-                {
-                    DisplayMessageData();
-
-                    return true;
-                }
+                PickCustomer();
             }
             return false;
         }
@@ -279,15 +274,37 @@ namespace MessageCenter
             Page.DataBind();
         }
 
-        protected void btn_Submit_User_Click(object sender, EventArgs e)
+        protected void btn_Submit_Customer_Click(object sender, EventArgs e)
         {
             //
-            if (GetSelectedCustomer() == StatusCode.OK)
+
+            PickCustomer();
+
+
+
+
+        }
+
+        private void PickCustomer()
+        {
+            switch (GetSelectedCustomer())
             {
-                DisplayMessageData();
+                case StatusCode.OK:
+                    DisplayMessageData();
+                    break;
+
+                //User did not select a customer
+                case StatusCode.FORHINDRING:
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openPickUserModal();", true);
+                    break;
+
+                //Just in case
+                case StatusCode.ERROR:
+                    Utility.WriteLog("Error in btn_Submit_Customer_Click - something went wrong in GetSelectedCustomer()");
+                    Response.Redirect("Default.aspx");
+                    break;
 
             }
-
         }
 
         private StatusCode GetSelectedCustomer()
@@ -445,6 +462,8 @@ namespace MessageCenter
         protected void openNewAttachmentModalBtn_Click(object sender, EventArgs e)
         {
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openAttachmentModal();", true);
+
+
 
         }
 

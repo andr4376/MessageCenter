@@ -97,7 +97,8 @@
 
                         </div>
                         <div class="modal-footer">
-                            <asp:Button ID="btn_login" Text="Login" runat="server" OnClick="btn_login_Click" CssClass="sparkron-submit-btn" />
+                            <asp:Button ID="btn_login" Text="Login" runat="server" OnClick="btn_login_Click" CssClass="sparkron-submit-btn" 
+                                />
                         </div>
                     </div>
                 </div>

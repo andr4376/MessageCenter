@@ -72,3 +72,5 @@ D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\obj\Relea
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\obj\Release\MessageCenter.csproj.CopyComplete
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\obj\Release\MessageCenter.dll
 D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\obj\Release\MessageCenter.pdb
+D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\DocumentFormat.OpenXml.dll
+D:\skole\Hovedopgave\Project\MessageCenter\MessageCenter\MessageCenter\bin\DocumentFormat.OpenXml.xml

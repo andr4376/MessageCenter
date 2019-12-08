@@ -47,7 +47,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <asp:Button ID="btn_Submit_User" Text="Vælg Kunde" runat="server" OnClick="btn_Submit_User_Click" CssClass="sparkron-submit-btn" />
+                    <asp:Button ID="btn_Submit_Customer" Text="Vælg Kunde" runat="server" OnClick="btn_Submit_Customer_Click" CssClass="sparkron-submit-btn" CausesValidation="false"/>
                 </div>
             </div>
         </div>

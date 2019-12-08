@@ -21,7 +21,7 @@ namespace MessageCenter.Models
         {
             get
             {
-                DateTime birthDate = Convert.ToDateTime(Birthday);
+                DateTime birthDate = DateTime.ParseExact(this.Birthday, "dd-MM-yyyy", null);
 
                 return (int)(DateTime.Now - birthDate).TotalDays / 365;                   
             }

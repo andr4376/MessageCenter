@@ -48,16 +48,21 @@ namespace MessageCenter.Code
             }
         }
 
-       
+
 
 
         public string FilePath
         {
             get
             {
-                return  MessageHandler.Instance.GetTempFilesPath() + "\\" + FileName;
+                return MessageHandler.Instance.GetTempFilesPath() + "\\" + FileName;
 
             }
+
+        }
+        public string GetFilePath(MessageHandler msgHandler)
+        {
+            return msgHandler.GetTempFilesPath() + "\\" + FileName;
 
         }
 
@@ -68,11 +73,11 @@ namespace MessageCenter.Code
 
 
         }
-        public MessageAttachment(int _id, int _messageTemplateId, string _fileName, byte[] _fileData) : this(_fileName,_fileData)
+        public MessageAttachment(int _id, int _messageTemplateId, string _fileName, byte[] _fileData) : this(_fileName, _fileData)
         {
             this.Id = _id;
             this.MessageTemplateId = _messageTemplateId;
-          
+
 
         }
 
@@ -84,7 +89,7 @@ namespace MessageCenter.Code
             Utility.WriteLog("Creating Temporary file for attachment with id:" + Id + " full filepath:" + FilePath);
 
             //Create a temporary file for this attachment
-           return FileManager.Instance.CreateFile(FilePath, FileData);
+            return FileManager.Instance.CreateFile(FilePath, FileData);
         }
 
 
@@ -94,13 +99,13 @@ namespace MessageCenter.Code
                 System.IO.File.ReadAllBytes(FileManager.Instance.GetFilePath("Developement\\testDocument.docx")));
         }
 
-        public void InsertData()
+        public void EditAttachment(MessageHandler messageHandler)
         {
             switch (this.FileType)
             {
                 case "docx":
-                    ReplaceWordDocText();
-                    
+                    ReplaceWordDocText(messageHandler);
+
                     break;
                 default:
                     Utility.WriteLog("File type " + this.FileType + " is not supported for data insertion");
@@ -112,35 +117,49 @@ namespace MessageCenter.Code
         /// <summary>
         /// Finds MessageVariables withing a word document and replaces them with customer / employee data
         /// </summary>
-        private void ReplaceWordDocText()
+        private void ReplaceWordDocText(MessageHandler messageHandler)
         {
             Utility.WriteLog("Replacing all message variables within the attachment " + FileName);
-          
+
             //Create a new word file
             Microsoft.Office.Interop.Word.Application openedWordDoc = new Microsoft.Office.Interop.Word.Application();
 
             //Load this attachment's word document into the open file with writing access
-            Microsoft.Office.Interop.Word.Document document = openedWordDoc.Documents.Open(FilePath, ReadOnly: false);
-               
+            Microsoft.Office.Interop.Word.Document document = openedWordDoc.Documents.Open(GetFilePath(messageHandler), ReadOnly: false);
+
             //Activate the document to allow editing
             document.Activate();
-                        
-            foreach (KeyValuePair<MESSAGE_VARIABLES, string> variable in MessageHandler.GetMessageVariables)
+
+            try
             {
-                //Fx. "[customerFullName]"
-                string value = MessageHandler.Instance.GetValueFromMessageVariable(variable.Key);
-
-                if (value == string.Empty)
+                foreach (KeyValuePair<MESSAGE_VARIABLES, string> variable in MessageHandler.GetMessageVariables)
                 {
-                    continue;
-                }
-                //Fx. Replace "[customerFullName]" with "Jane Doe" in the opened word Document
-                WordDocReplaceText(openedWordDoc, MessageHandler.GetMessageVariable(variable.Key), value);
+                    //Fx. "[customerFullName] => Andreas Kirkegaard Jensen"
+                    string value = messageHandler.GetValueFromMessageVariable(variable.Key);
 
+                    if (value == string.Empty)
+                    {
+                        continue;
+                    }
+                    //Fx. Replace "[customerFullName]" with "Jane Doe" in the opened word Document
+                    WordDocReplaceText(openedWordDoc, MessageHandler.GetMessageVariable(variable.Key), value);
+
+                }
+            }
+            catch (Exception)
+            {
+                //If something goes wrong while editting the word document:
+                //Close the document, so the file is not in use by this process
+                document.Close();
+                openedWordDoc.Quit();
+
+                Utility.WriteLog("Error in ReplaceWordDocText");
+
+                throw;
             }
 
             //Overwrite existing temp file
-            document.SaveAs(FilePath);
+            document.SaveAs(GetFilePath(messageHandler));
 
 
             //Close the word application
@@ -153,47 +172,7 @@ namespace MessageCenter.Code
 
 
 
-        public string GetWordDocAsHtml()
-        {
-            //TODO:
-            if (FileType!="docx")
-            {
-                return string.Empty;
-            }
 
-            object documentFormat = 8;
-            string randomName = DateTime.Now.Ticks.ToString();
-            object htmlFilePath = FilePath.Replace("docx", "html");
-            object fileSavePath = FilePath;
-
-                    
-            //Open the word document in background.
-            Application applicationclass = new Application();
-            applicationclass.Documents.Open(ref fileSavePath);
-            applicationclass.Visible = false;
-            Document document = applicationclass.ActiveDocument;
-
-            //Save the word document as HTML file.
-            document.SaveAs(ref htmlFilePath, ref documentFormat);
-
-            //Close the word document.
-            document.Close();
-
-            //Read the saved Html File.
-            string wordHTML = System.IO.File.ReadAllText(htmlFilePath.ToString());
-
-            string tempPath = MessageHandler.Instance.GetTempFilesPath();
-            //Loop and replace the Image Path.
-            foreach (Match match in Regex.Matches(wordHTML, "<v:imagedata.+?src=[\"'](.+?)[\"'].*?>", RegexOptions.IgnoreCase))
-            {
-                wordHTML = Regex.Replace(wordHTML, match.Groups[1].Value, tempPath + "/" + match.Groups[1].Value);
-            }
-
-
-            return wordHTML;
-
-            
-        }
 
         /// <summary>
         /// Finds and Replaces text with new text in the exact same format
@@ -220,7 +199,7 @@ namespace MessageCenter.Code
             object visible = true;
             object replace = 2;
             object wrap = 1;
-          
+
 
             opnenedWordDocument.Selection.Find.Execute(ref textToReplace, ref matchCase, ref matchWholeWord,
                 ref matchWildCards, ref matchSoundsLike, ref matchAllWordForms, ref forward, ref wrap, ref format, ref newText, ref replace,
@@ -234,7 +213,7 @@ namespace MessageCenter.Code
                 Application wordApplication = new Application();
                 Document wordDocument = wordApplication.Documents.Open(this.FilePath);
 
-                
+
                 this.FileName = this.FileName.Replace(FileType, "pdf");
 
                 wordDocument.SaveAs2(FilePath, WdSaveFormat.wdFormatPDF);
@@ -248,6 +227,77 @@ namespace MessageCenter.Code
         {
             FileManager.Instance.DeleteFile(FilePath);
         }
+
+
+        /// <summary>
+        /// Not in use - not done
+        /// </summary>
+        private void EditWordDocSDKOpenXML()
+        {
+            //SERVER SIDE WORD PROCESSING using SDK Open XML 2.5
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(FilePath, true))
+            {
+                string docText = null;
+                using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
+                {
+                    //The xml content of the word document
+                    docText = sr.ReadToEnd();
+                }
+
+                foreach (KeyValuePair<MESSAGE_VARIABLES, string> variable in MessageHandler.GetMessageVariables)
+                {
+                    //Fx. "[customerFullName] => Andreas Kirkegaard Jensen"
+                    string value = MessageHandler.Instance.GetValueFromMessageVariable(variable.Key);
+
+                    if (value == string.Empty)
+                    {
+                        continue;
+                    }
+
+
+                    Regex regexText = new Regex(variable.Value.Replace("[", "\\[").Replace("]", "\\]"));
+
+                    docText = regexText.Replace(docText, value);
+
+                    /*
+                     This did not work.
+                     The Problem:
+
+                    I'm reading the raw xml data of the word file, and i cannot guarentee that 
+                    each word / paragraph is a complete string.
+
+                                Ideally it would be structured like this:
+
+                    Kære [customerFirstName]...                   
+                 
+                                    But Word tends to split up the words like this:
+                                           (each line represents a "string")
+                      kære [  
+                     customerFirstName  
+                      ]
+                 
+                                    and sometimes like this:
+                    kæ
+                    re [cus
+                    tomer   
+                    FirstNa 
+                    
+                    m   
+                    e]   
+
+                      Word does this because each "string" is wrapped in xml - fx size, font, styl
+                      but also spell checking instructions, which makes it incredibly inconsistent
+                     */
+
+                }
+
+                using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
+                {
+                    sw.Write(docText);
+                }
+            }
+
+        }
     }
 }
 /*
@@ -257,38 +307,49 @@ namespace MessageCenter.Code
 */
 
 
-    //SERVER SIDE WORD PROCESSING
-/* using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(FilePath, true))
-    {
-        string docText = null;
-        using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
-        {
-            docText = sr.ReadToEnd();
-        }
 
-        foreach (KeyValuePair<MESSAGE_VARIABLES, string> variable in MessageHandler.GetMessageVariables)
-        {
-            //Fx. "[customerFullName]"
-            string value = MessageHandler.Instance.GetValueFromMessageVariable(variable.Key);
+/*
+public string GetWordDocAsHtml()
+{
+//TODO:
+if (FileType != "docx")
+{
+    return string.Empty;
+}
 
-            if (value == string.Empty)
-            {
-                continue;
-            }
+object documentFormat = 8;
+string randomName = DateTime.Now.Ticks.ToString();
+object htmlFilePath = FilePath.Replace("docx", "html");
+object fileSavePath = FilePath;
 
 
-            Regex regexText = new Regex(variable.Value.Replace("[", "\\[").Replace("]", "\\]"));
+//Open the word document in background.
+Application applicationclass = new Application();
+applicationclass.Documents.Open(ref fileSavePath);
+applicationclass.Visible = false;
+Document document = applicationclass.ActiveDocument;
 
-            docText = regexText.Replace(docText, value);
+//Save the word document as HTML file.
+document.SaveAs(ref htmlFilePath, ref documentFormat);
 
-            regexText = new Regex(variable.Value.Replace("[", "").Replace("]", ""));
+//Close the word document.
+document.Close();
 
-            docText = regexText.Replace(docText, value);
-        }
+//Read the saved Html File.
+string wordHTML = System.IO.File.ReadAllText(htmlFilePath.ToString());
 
-        using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
-        {
-            sw.Write(docText);
-        }
-    }
+string tempPath = MessageHandler.Instance.GetTempFilesPath();
+//Loop and replace the Image Path.
+foreach (Match match in Regex.Matches(wordHTML, "<v:imagedata.+?src=[\"'](.+?)[\"'].*?>", RegexOptions.IgnoreCase))
+{
+    wordHTML = Regex.Replace(wordHTML, match.Groups[1].Value, tempPath + "/" + match.Groups[1].Value);
+}
+
+
+return wordHTML;
+
+
+
+
+}
 */
