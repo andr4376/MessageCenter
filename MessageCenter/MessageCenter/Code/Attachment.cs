@@ -114,7 +114,7 @@ namespace MessageCenter.Code
         /// </summary>
         private void ReplaceWordDocText()
         {
-            Utility.WriteLog("Replacing all message variables within the attachment " + FileName + " (Word Doc)");
+            Utility.WriteLog("Replacing all message variables within the attachment " + FileName);
           
             //Create a new word file
             Microsoft.Office.Interop.Word.Application openedWordDoc = new Microsoft.Office.Interop.Word.Application();
@@ -142,18 +142,19 @@ namespace MessageCenter.Code
             //Overwrite existing temp file
             document.SaveAs(FilePath);
 
-            
 
             //Close the word application
+            document.Close();
             openedWordDoc.Quit();
 
             Utility.WriteLog("All message variables within the attachment " + FileName + " (Word Doc) has been replaced");
 
         }
 
+
+
         public string GetWordDocAsHtml()
         {
-
             //TODO:
             if (FileType!="docx")
             {
@@ -167,7 +168,7 @@ namespace MessageCenter.Code
 
                     
             //Open the word document in background.
-            _Application applicationclass = new Application();
+            Application applicationclass = new Application();
             applicationclass.Documents.Open(ref fileSavePath);
             applicationclass.Visible = false;
             Document document = applicationclass.ActiveDocument;
@@ -181,7 +182,7 @@ namespace MessageCenter.Code
             //Read the saved Html File.
             string wordHTML = System.IO.File.ReadAllText(htmlFilePath.ToString());
 
-            string tempPath = "TempFiles/Besked om økonomiske vanskligheder nr.0_T210672";
+            string tempPath = MessageHandler.Instance.GetTempFilesPath();
             //Loop and replace the Image Path.
             foreach (Match match in Regex.Matches(wordHTML, "<v:imagedata.+?src=[\"'](.+?)[\"'].*?>", RegexOptions.IgnoreCase))
             {
@@ -253,4 +254,41 @@ namespace MessageCenter.Code
  * fileData = System.IO.File.ReadAllBytes("D:\\skole\\Hovedopgave\\Project\\MessageCenter\\MessageCenter\\MessageCenter\\Images\\andreas.jpg");
 
             File.WriteAllBytes(FileManager.Instance.GetFilePath("testBillede.jpg"), fileData);
+*/
+
+
+    //SERVER SIDE WORD PROCESSING
+/* using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(FilePath, true))
+    {
+        string docText = null;
+        using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
+        {
+            docText = sr.ReadToEnd();
+        }
+
+        foreach (KeyValuePair<MESSAGE_VARIABLES, string> variable in MessageHandler.GetMessageVariables)
+        {
+            //Fx. "[customerFullName]"
+            string value = MessageHandler.Instance.GetValueFromMessageVariable(variable.Key);
+
+            if (value == string.Empty)
+            {
+                continue;
+            }
+
+
+            Regex regexText = new Regex(variable.Value.Replace("[", "\\[").Replace("]", "\\]"));
+
+            docText = regexText.Replace(docText, value);
+
+            regexText = new Regex(variable.Value.Replace("[", "").Replace("]", ""));
+
+            docText = regexText.Replace(docText, value);
+        }
+
+        using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
+        {
+            sw.Write(docText);
+        }
+    }
 */
