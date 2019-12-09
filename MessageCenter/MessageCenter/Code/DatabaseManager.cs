@@ -172,16 +172,24 @@ private StatusCode LoadAllMessageTemplates()
             //Setup Database file - if it goes well, Create the table if needed, else return error.
 
             StatusCode code = CreateDbFileIfNotExists();
+/*
+            string script = File.ReadAllText(
+                FileManager.Instance.GetFilePath(
+                    "SqlScripts/CreateTables.sql"));
 
+            ExecuteSQLiteNonQuery(script);
+            */
             switch (code)
             {
                 //Ingen db fil fundet - ny er oprettet
                 case StatusCode.OK:
+                    
                     if (CreateTables() != StatusCode.OK)
                     {
                         return StatusCode.ERROR;
                     }
-
+                    
+                    AddAttachmentToDB(MessageAttachment.GetTestAttachment(), 1);
                     break;
 
                 //DB fil findes i forvejen
@@ -299,9 +307,33 @@ private StatusCode LoadAllMessageTemplates()
             }
             return id;
         }
+
+        /// <summary>
+        /// Deletes the MessageTemplate with the input id, and all attachments related to it
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public StatusCode DeleteMessageTemplate(int id)
+        {
+            string command = string.Format("delete from {0} where id = {1};"
+                , MessageTemplatesTableName, id.ToString());
+
+            StatusCode result = ExecuteSQLiteNonQuery(command);
+
+            if (result == StatusCode.OK)
+            {
+                command = string.Format("delete from {0} where messageId = {1};"
+                , AttachmentsTableName, id.ToString());
+
+                result = ExecuteSQLiteNonQuery(command);
+            }
+
+            return result;
+        }
+
         public int? GetNextId(string tablename)
         {
-            string cmdText = "SELECT MAX(id)+1 from " + tablename+";";
+            string cmdText = "SELECT MAX(id)+1 from " + tablename + ";";
 
             int? id = null;
 
@@ -315,7 +347,7 @@ private StatusCode LoadAllMessageTemplates()
                 {
                     while (dataReader.Read())
                     {
-                        id = dataReader.GetInt32(dataReader.GetOrdinal("MAX(id)+1"));                         
+                        id = dataReader.GetInt32(dataReader.GetOrdinal("MAX(id)+1"));
 
                     }
                 }

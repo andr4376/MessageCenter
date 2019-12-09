@@ -19,25 +19,10 @@ namespace MessageCenter.Code
         /// <param name="message">The warning message to be printed</param>
         public static void PrintWarningMessage(string message)
         {
-            System.Web.HttpContext.Current.Response.Write("<SCRIPT LANGUAGE=\"\"JavaScript\"\">alert(\"" + message + "\")</SCRIPT>");           
+            System.Web.HttpContext.Current.Response.Write
+                ("<SCRIPT LANGUAGE=\"\"JavaScript\"\">alert(\"" + message + "\")</SCRIPT>");           
         }
 
-        /// <summary>
-        /// Converts a list of MessageTemplates into a Dictionary containing "ID" and "Title"
-        /// </summary>
-        /// <param name="list">The list of MessageTemplates to be converted</param>
-        /// <returns></returns>
-        public static Dictionary<string,string> ConvertTemplateListToDictionary(List<MessageTemplate> list)
-        {
-            Dictionary<string, string> messagesDictionary = new Dictionary<string, string>();
-
-            foreach (MessageTemplate message in list)
-            {
-                messagesDictionary.Add(message.Id.ToString(), message.Title);
-
-            }
-            return messagesDictionary;
-        }
 
         /// <summary>
         /// Converts a list of customers into a dictionary to be displayed in a listbox
@@ -46,14 +31,14 @@ namespace MessageCenter.Code
         /// <returns></returns>
         public static Dictionary<string, string> ConvertCustomerListToDictionary(List<Customer> list)
         {
-            Dictionary<string, string> messagesDictionary = new Dictionary<string, string>();
+            Dictionary<string, string> customerDictionary = new Dictionary<string, string>();
 
             foreach (Customer customer in list)
             {
-                messagesDictionary.Add(customer.Cpr, customer.Cpr+" - "+customer.FirstName+" "+customer.LastName);
+                customerDictionary.Add(customer.Cpr, customer.Cpr+" - "+customer.FirstName+" "+customer.LastName);
 
             }
-            return messagesDictionary;
+            return customerDictionary;
         }
 
 

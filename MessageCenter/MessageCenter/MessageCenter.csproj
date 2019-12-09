@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
+    <Content Include="App_Data\SqlScripts\CreateTables.sql" />
     <Content Include="App_Data\MessageCenterConfigurations.xml" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-darkly.css" />

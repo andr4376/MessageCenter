@@ -79,15 +79,14 @@ namespace MessageCenter
 
         private StatusCode PopulateMessageTemplatesListBox()
         {
-           Dictionary<string,string> listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(
-               DatabaseManager.Instance.GetAllMessageTemplates());
+            List<MessageTemplate> messages = DatabaseManager.Instance.GetAllMessageTemplates();
 
-            if (listBoxMessageDictionary == null)
+            if (messages == null)
             {
                 return StatusCode.ERROR;
             }
 
-            UpdateListBox(listBoxMessageDictionary);
+            UpdateListBox(messages);
 
             return StatusCode.OK;
         }
@@ -129,16 +128,15 @@ namespace MessageCenter
                 //Get all messagetemplates where the title contains the search input
                 List<MessageTemplate> templates = DatabaseManager.Instance.GetMessagesTitleContainsText(inputText);
 
-                Dictionary<string,string> listBoxMessageDictionary = Utility.ConvertTemplateListToDictionary(templates);
 
-                UpdateListBox(listBoxMessageDictionary);
+                UpdateListBox(templates);
 
             }
 
 
         }
 
-        private void UpdateListBox(Dictionary<string,string> messageTemplateDictionary)
+        private void UpdateListBox(List<MessageTemplate> listOfMsgTemplates)
         {
 
             if (listBoxMessageTemplates.Items.Count > 0)
@@ -146,9 +144,9 @@ namespace MessageCenter
                 listBoxMessageTemplates.Items.Clear();
             }
 
-            listBoxMessageTemplates.DataSource = messageTemplateDictionary;
-            listBoxMessageTemplates.DataTextField = "Value";
-            listBoxMessageTemplates.DataValueField = "Key";
+            listBoxMessageTemplates.DataSource = listOfMsgTemplates;
+            listBoxMessageTemplates.DataTextField = "Title";
+            listBoxMessageTemplates.DataValueField = "Id";
             listBoxMessageTemplates.DataBind();
 
 
@@ -184,6 +182,25 @@ namespace MessageCenter
         protected void addNewMessageBtn_Click(object sender, EventArgs e)
         {
             Response.Redirect("NewMessage.aspx");
+        }
+
+        protected void removeMessageTemplate_Click(object sender, EventArgs e)
+        {
+            int messageId;
+
+            //If user has selected a message template
+            if (Int32.TryParse(listBoxMessageTemplates.SelectedValue, out messageId))
+            {
+                //Delete the selected message Template, and all its attachments
+                StatusCode deleteStatus=
+                DatabaseManager.Instance.DeleteMessageTemplate(messageId);
+
+                //Get all attachments and Update listbox               
+                    UpdateListBox(
+                        DatabaseManager.Instance.GetAllMessageTemplates());
+;
+            }
+
         }
     }
 }

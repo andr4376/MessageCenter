@@ -243,12 +243,13 @@ namespace MessageCenter
 
             }
 
+
             Dictionary<string, string> dictionaryVersionOfList =
                 Utility.ConvertCustomerListToDictionary(customersToShow);
 
             listBoxCustomers.DataSource = dictionaryVersionOfList;
-            listBoxCustomers.DataTextField = "Value";
-            listBoxCustomers.DataValueField = "Key";
+            listBoxCustomers.DataTextField = "Value"; //cpr+firstname+lastname
+            listBoxCustomers.DataValueField = "Key"; //cpr
             listBoxCustomers.DataBind();
 
 
