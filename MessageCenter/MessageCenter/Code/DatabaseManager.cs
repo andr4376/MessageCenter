@@ -87,6 +87,11 @@ namespace MessageCenter.Code
 
 
 
+        /// <summary>
+        /// Returns a messageattachment object from the sqlite response
+        /// </summary>
+        /// <param name="dataReader"></param>
+        /// <returns></returns>
         private MessageAttachment ExtractAttachmentData(SQLiteDataReader dataReader)
         {
 
@@ -95,6 +100,8 @@ namespace MessageCenter.Code
             string fileName = dataReader.GetString(dataReader.GetOrdinal("fileName"));
             byte[] fileData = null;
 
+
+            //Extract file data 
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 using (var fileDataStream = dataReader.GetStream(dataReader.GetOrdinal("fileData")))
@@ -104,14 +111,10 @@ namespace MessageCenter.Code
                 fileData = memoryStream.ToArray();
             }
 
-
-
             MessageAttachment attachment = new MessageAttachment(
                 id, messageId, fileName, fileData
                 );
-
-
-
+                       
 
             return attachment;
         }
@@ -172,24 +175,35 @@ private StatusCode LoadAllMessageTemplates()
             //Setup Database file - if it goes well, Create the table if needed, else return error.
 
             StatusCode code = CreateDbFileIfNotExists();
-/*
+
             string script = File.ReadAllText(
                 FileManager.Instance.GetFilePath(
                     "SqlScripts/CreateTables.sql"));
 
             ExecuteSQLiteNonQuery(script);
-            */
+
             switch (code)
             {
                 //Ingen db fil fundet - ny er oprettet
                 case StatusCode.OK:
-                    
-                    if (CreateTables() != StatusCode.OK)
+
+                    /*if (CreateTables() != StatusCode.OK)
+                   {
+                       return StatusCode.ERROR;
+                   }*/
+
+                    //Insert DEMO message templates - one Mail and one SMS
+                    script = File.ReadAllText(
+                FileManager.Instance.GetFilePath(
+                    "SqlScripts/InsertInitialData.sql"));
+
+                    ExecuteSQLiteNonQuery(script);
+
+                    foreach (MessageAttachment demoAttachment in MessageAttachment.GetTestAttachment())
                     {
-                        return StatusCode.ERROR;
+                        //Add attachments to the first element in messageTemplates table (mail)
+                        AddAttachmentToDB(demoAttachment, 1);
                     }
-                    
-                    AddAttachmentToDB(MessageAttachment.GetTestAttachment(), 1);
                     break;
 
                 //DB fil findes i forvejen
@@ -245,42 +259,7 @@ private StatusCode LoadAllMessageTemplates()
             return StatusCode.OK;
         }
 
-        /// <summary>
-        /// Populates the DB with test MessageTemplates if the solution is running in debug mode.
-        /// </summary>
-        /// <returns>status</returns>
-        private StatusCode PopulateDb()
-        {
-
-            Random rnd = new Random();
-
-            StatusCode status = StatusCode.OK;
-
-#if DEBUG
-            for (int i = 0; i < 25; i++)
-            {
-                MessageTemplate testMessage = new MessageTemplate("Besked om økonomiske vanskligheder nr." + i, "Kære "
-                    + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_FULLNAME) + ",\n" +
-                    "Jeg må desværre informere dig om at du befinder dig i en afsindigt ulækker økonomisk situation - Hvis jeg var dig, ville jeg " +
-                    "stikke af til Mexico, før vi kommer og tager dine knæskalder. blablabla, her er dit Cpr nummer, " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_CPR) + "" +
-                    ", dit fornavn: " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_FIRSTNAME) + "...\n"
-                    + "Vi kan se at dit telefon nummer er " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_PHONENUMBER) + ", din email er "
-                    + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_EMAIL) + ", og vi ved du er " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_AGE) + "!\n" +
-                    "Tag og pas på du,\n" +
-                    "Mvh, " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.EMPLOYEE_FULLNAME) + "\n Sparekassen Kronjylland -" + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.DEPARTMENT) + " afdelingen"
-                    , rnd.Next(0, 1 + 1));
-
-                status = AddMessageTemplate(testMessage) == null ? StatusCode.ERROR : StatusCode.OK;
-
-                if (status != StatusCode.OK)
-                {
-                    break;
-                }
-            }
-#endif
-            return status;
-        }
-
+        
         /// <summary>
         /// Adds a new message template to the database
         /// </summary>
@@ -303,8 +282,9 @@ private StatusCode LoadAllMessageTemplates()
             {
                 Utility.WriteLog("SQLite Error: " + cmd);
                 Utility.PrintWarningMessage("Fejl ved tilføjelse af test beskeder");
+                return id;
+            }            
 
-            }
             return id;
         }
 
@@ -352,12 +332,11 @@ private StatusCode LoadAllMessageTemplates()
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-#if DEBUG
-                System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af alle beskedskabeloner!");
-                throw;
-#endif
+                //There are no elements in the table
+                //return null which is fine
+
             }
 
             DBConnect.Close();
@@ -397,92 +376,7 @@ private StatusCode LoadAllMessageTemplates()
 
             return status;
         }
-
-        private StatusCode CreateTables()
-        {
-            //Create MessageTemplates table
-
-            string cmd = "DROP TABLE IF EXISTS " + MessageTemplatesTableName;
-
-            StatusCode returnCode = ExecuteSQLiteNonQuery(cmd);
-
-            if (returnCode != StatusCode.OK)
-            {
-                Utility.WriteLog("SQLite Error: " + cmd);
-
-                return returnCode;
-            }
-
-            cmd = "Create table " + MessageTemplatesTableName + "" +
-            "(id integer primary key, " +
-            "title varchar, " +
-            "text varchar, " +
-            "messageType integer)";
-
-            returnCode = ExecuteSQLiteNonQuery(cmd);
-
-            if (returnCode == StatusCode.OK)
-            {
-                Utility.WriteLog("Table '" + MessageTemplatesTableName + "' has been created!");
-
-#if DEBUG
-                if (PopulateDb() != StatusCode.OK)
-                {
-                    returnCode = StatusCode.ERROR;
-                }
-#endif
-            }
-            else
-            {
-                Utility.WriteLog("ERROR: Could not create table '" + MessageTemplatesTableName + "'!");
-
-
-            }
-
-            //Create attachment table
-            cmd = "DROP TABLE IF EXISTS " + AttachmentsTableName;
-
-            returnCode = ExecuteSQLiteNonQuery(cmd);
-
-            if (returnCode != StatusCode.OK)
-            {
-                Utility.WriteLog("SQLite Error: " + cmd);
-
-                return returnCode;
-            }
-
-            cmd = "Create table " + AttachmentsTableName + "" +
-            "(id integer primary key, " +
-            "messageId integer, " +
-            "fileName varchar, " +
-            "fileData BLOB)";
-
-            returnCode = ExecuteSQLiteNonQuery(cmd);
-
-            if (returnCode == StatusCode.OK)
-            {
-                Utility.WriteLog("Table '" + AttachmentsTableName + "' has been created!");
-
-#if DEBUG
-                if (PopulateDb() != StatusCode.OK)
-                {
-                    returnCode = StatusCode.ERROR;
-                }
-
-#endif
-
-            }
-            else
-            {
-                Utility.WriteLog("ERROR: Could not create table '" + AttachmentsTableName + "'!");
-
-
-            }
-
-            return returnCode;
-
-        }
-
+        
 
         public StatusCode ExecuteSQLiteNonQuery(string command)
         {
@@ -595,6 +489,12 @@ private StatusCode LoadAllMessageTemplates()
             return messagesContainingString;
         }
 
+
+        /// <summary>
+        /// Returns a list of message attachments related to the input message id
+        /// </summary>
+        /// <param name="messageId">id of the message you wish to fetch attachments for</param>
+        /// <returns></returns>
         public List<MessageAttachment> GetAttachmentsFromMessageId(int? messageId)
         {
             if (messageId == null)
@@ -611,12 +511,14 @@ private StatusCode LoadAllMessageTemplates()
             " WHERE messageId = " + messageId + ";", DBConnect);
 
             MessageAttachment tmpAttachment = null;
+
             try
             {
                 using (SQLiteDataReader dataReader = command.ExecuteReader())
                 {
-                    while (dataReader.Read())
+                    while (dataReader.Read()) //foreach attachment related to the message id
                     {
+                        //Convert response to attachment
                         tmpAttachment = ExtractAttachmentData(dataReader);
 
                         if (tmpAttachment != null)
@@ -641,6 +543,11 @@ private StatusCode LoadAllMessageTemplates()
             return attachments;
         }
 
+        /// <summary>
+        /// Returns a list of message templates, which title contains the input string
+        /// </summary>
+        /// <param name="textToContain"></param>
+        /// <returns></returns>
         private List<MessageTemplate> DBQueryTitleContains(string textToContain)
         {
 
@@ -726,19 +633,127 @@ private StatusCode LoadAllMessageTemplates()
 
 
 /*
- messages = new List<MessageTemplate>() { new MessageTemplate("en"),
-                new MessageTemplate("dhnk,jfsjksknabdkjsahdkjashdjksahkjdhkjsahdjksahdkjashdasddhjkfsddsf"),
-                new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIRE"),
-                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIRE"),
-                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("sd"),
-                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIRE"),
-                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FsadasdIRE"),
-                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIRE"),
-                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIasRE"),
-                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIRE"),
-                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("asdasdasssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"),
-                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIRE"),
-                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FIRE"),
-                 new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("asdsadasdasdasdasdas"),
-             new MessageTemplate("fdsa35f51dsa"), new MessageTemplate("FdasdasdasdsadasdsadsaIRE")};
-             */
+        private StatusCode CreateTables()
+        {
+            //Create MessageTemplates table
+
+            string cmd = "DROP TABLE IF EXISTS " + MessageTemplatesTableName;
+
+            StatusCode returnCode = ExecuteSQLiteNonQuery(cmd);
+
+            if (returnCode != StatusCode.OK)
+            {
+                Utility.WriteLog("SQLite Error: " + cmd);
+
+                return returnCode;
+            }
+
+            cmd = "Create table " + MessageTemplatesTableName + "" +
+            "(id integer primary key, " +
+            "title varchar, " +
+            "text varchar, " +
+            "messageType integer)";
+
+            returnCode = ExecuteSQLiteNonQuery(cmd);
+
+            if (returnCode == StatusCode.OK)
+            {
+                Utility.WriteLog("Table '" + MessageTemplatesTableName + "' has been created!");
+
+#if DEBUG
+                if (PopulateDb() != StatusCode.OK)
+                {
+                    returnCode = StatusCode.ERROR;
+                }
+#endif
+            }
+            else
+            {
+                Utility.WriteLog("ERROR: Could not create table '" + MessageTemplatesTableName + "'!");
+
+
+            }
+
+            //Create attachment table
+            cmd = "DROP TABLE IF EXISTS " + AttachmentsTableName;
+
+            returnCode = ExecuteSQLiteNonQuery(cmd);
+
+            if (returnCode != StatusCode.OK)
+            {
+                Utility.WriteLog("SQLite Error: " + cmd);
+
+                return returnCode;
+            }
+
+            cmd = "Create table " + AttachmentsTableName + "" +
+            "(id integer primary key, " +
+            "messageId integer, " +
+            "fileName varchar, " +
+            "fileData BLOB)";
+
+            returnCode = ExecuteSQLiteNonQuery(cmd);
+
+            if (returnCode == StatusCode.OK)
+            {
+                Utility.WriteLog("Table '" + AttachmentsTableName + "' has been created!");
+
+#if DEBUG
+                if (PopulateDb() != StatusCode.OK)
+                {
+                    returnCode = StatusCode.ERROR;
+                }
+
+#endif
+
+            }
+            else
+            {
+                Utility.WriteLog("ERROR: Could not create table '" + AttachmentsTableName + "'!");
+
+
+            }
+
+            return returnCode;
+
+        }
+        */
+
+
+/*
+    /// <summary>
+    /// Populates the DB with test MessageTemplates if the solution is running in debug mode.
+    /// </summary>
+    /// <returns>status</returns>
+    private StatusCode PopulateDb()
+    {
+
+        Random rnd = new Random();
+
+        StatusCode status = StatusCode.OK;
+
+#if DEBUG
+        for (int i = 0; i < 25; i++)
+        {
+            MessageTemplate testMessage = new MessageTemplate("Besked om økonomiske vanskligheder nr." + i, "Kære "
+                + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_FULLNAME) + ",\n" +
+                "Jeg må desværre informere dig om at du befinder dig i en afsindigt ulækker økonomisk situation - Hvis jeg var dig, ville jeg " +
+                "stikke af til Mexico, før vi kommer og tager dine knæskalder. blablabla, her er dit Cpr nummer, " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_CPR) + "" +
+                ", dit fornavn: " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_FIRSTNAME) + "...\n"
+                + "Vi kan se at dit telefon nummer er " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_PHONENUMBER) + ", din email er "
+                + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_EMAIL) + ", og vi ved du er " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.CUSTOMER_AGE) + "!\n" +
+                "Tag og pas på du,\n" +
+                "Mvh, " + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.EMPLOYEE_FULLNAME) + "\n Sparekassen Kronjylland -" + MessageHandler.GetMessageVariable(MESSAGE_VARIABLES.DEPARTMENT) + " afdelingen"
+                , rnd.Next(0, 1 + 1));
+
+            status = AddMessageTemplate(testMessage) == null ? StatusCode.ERROR : StatusCode.OK;
+
+            if (status != StatusCode.OK)
+            {
+                break;
+            }
+        }
+#endif
+        return status;
+    }
+    */

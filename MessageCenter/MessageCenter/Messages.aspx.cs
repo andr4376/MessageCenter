@@ -506,6 +506,7 @@ namespace MessageCenter
 
             int messageIndex;
 
+
             if (!Int32.TryParse(listBoxAttachments.SelectedValue, out messageIndex))
             {
                 Utility.PrintWarningMessage("Noget gik galt ved identificering af den valgte fil - kontakt venligst teknisk support: " +
@@ -514,10 +515,11 @@ namespace MessageCenter
                 return;
             }
 
+
             Response.Clear();
             Response.ContentType = "application/octet-stream";
             Response.AppendHeader("content-disposition", "filename="
-            + MessageHandler.Instance.Attachments[messageIndex].FilePath);
+            + MessageHandler.Instance.Attachments[messageIndex].FileName);
             Response.WriteFile(MessageHandler.Instance.Attachments[messageIndex].FilePath);
             Response.Flush();
             Response.End();

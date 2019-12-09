@@ -93,10 +93,16 @@ namespace MessageCenter.Code
         }
 
 
-        public static MessageAttachment GetTestAttachment()
+        public static List<MessageAttachment> GetTestAttachment()
         {
-            return new MessageAttachment(2, 1, "testDocument.docx",
-                System.IO.File.ReadAllBytes(FileManager.Instance.GetFilePath("Developement\\testDocument.docx")));
+            return new List<MessageAttachment>(){
+
+                new MessageAttachment(1, 1, "andreas.jpg",
+                System.IO.File.ReadAllBytes(FileManager.Instance.GetImageDirectory()+"andreas.jpg")),
+
+                new MessageAttachment(2, 1, "testDocument.docx",
+                System.IO.File.ReadAllBytes(FileManager.Instance.GetFilePath("Developement\\testDocument.docx")))
+            };
         }
 
         public void EditAttachment(MessageHandler messageHandler)

@@ -240,7 +240,7 @@ namespace MessageCenter
             Response.Clear();
             Response.ContentType = "application/octet-stream";
             Response.AppendHeader("content-disposition", "filename="
-            + MessageHandler.Instance.Attachments[messageIndex].FilePath);
+            + MessageHandler.Instance.Attachments[messageIndex].FileName);
             Response.WriteFile(MessageHandler.Instance.Attachments[messageIndex].FilePath);
             Response.Flush();
             Response.End();
@@ -258,10 +258,21 @@ namespace MessageCenter
                 int? id = DatabaseManager.Instance.AddMessageTemplate(MessageHandler.Instance.MsgTemplate);
 
 
-                if (id == null)
+                if (id == null) //table is empty and this is the only element
                 {
-                    //ERROR
-                    return;
+                    id = DatabaseManager.Instance.GetNextId(
+                        Configurations.GetConfigurationsValue(
+                            CONFIGURATIONS_ATTRIBUTES.MESSAGE_TEMPLATE_TABLE_NAME));
+
+                    if (id != null)
+                        id -= 1;//set id to that of the newest added
+                    else
+                    {
+                        Utility.WriteLog("Error - failed to get id of the newly added msg template");
+                        return;
+                    }
+
+
                 }
 
                 //Save all attachments with a reference to the message template created above

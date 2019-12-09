@@ -96,10 +96,13 @@ namespace MessageCenter.Code
 
         public void DeleteDirectory(string path)
         {
+            lock (MessageHandler.attachmentsKey)
+            {
 
             if (Directory.Exists(path))
             {
                 Directory.Delete(path, true);
+            }
             }
 
         }
