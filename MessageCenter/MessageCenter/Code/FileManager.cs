@@ -64,7 +64,7 @@ namespace MessageCenter.Code
         {
             // applicationPath = HttpContext.Current.Request.PhysicalApplicationPath;
 
-            applicationPath = Path.GetFullPath(HttpContext.Current.Server.MapPath("~"));        
+            applicationPath = Path.GetFullPath(HttpContext.Current.Server.MapPath("~"));
             appDataPath = Path.GetFullPath(HttpContext.Current.Server.MapPath("~/App_Data"));
 
 
@@ -87,7 +87,7 @@ namespace MessageCenter.Code
 
         public string GetTempDirectory(MessageTemplate message, string employeeTUser)
         {
-                                
+
 
             string directoryPath = appDataPath + ("\\TempFiles\\" + message.PathName + "_" + employeeTUser);
 
@@ -99,10 +99,10 @@ namespace MessageCenter.Code
             lock (MessageHandler.attachmentsKey)
             {
 
-            if (Directory.Exists(path))
-            {
-                Directory.Delete(path, true);
-            }
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
             }
 
         }
@@ -149,7 +149,8 @@ namespace MessageCenter.Code
             //Alternate parameterized thread
             Thread fileDeleteThread = new Thread(
                 () => DeleteFileWhenNotInUse(filePath)
-                );
+                )
+            { IsBackground=true};
             fileDeleteThread.Start();
 
         }

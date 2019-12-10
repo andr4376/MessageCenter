@@ -20,9 +20,9 @@ namespace MessageCenter.Code
             this.text = text;
         }
 
-        public override void Send()
+        public override StatusCode Send()
         {
-            base.Send();
+           return base.Send();
         }
 
     }

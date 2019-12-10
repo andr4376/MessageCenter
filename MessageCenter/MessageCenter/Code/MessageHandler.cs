@@ -32,7 +32,7 @@ namespace MessageCenter.Code
     /// </summary>
     public class MessageHandler
     {
-        private Customer receiver;
+        private Customer recipient;
 
         private Employee sender;
 
@@ -73,10 +73,10 @@ namespace MessageCenter.Code
             set { Instance.message = value; }
         }
 
-        public Customer Receiver
+        public Customer Recipient
         {
-            get { return Instance.receiver; }
-            set { Instance.receiver = value; }
+            get { return Instance.recipient; }
+            set { Instance.recipient = value; }
         }
 
         public Employee Sender
@@ -146,13 +146,13 @@ namespace MessageCenter.Code
             }
         }
 
-   
 
-      
+
+
 
         public bool IsReady
         {
-            get { return (Sender != null && Receiver != null && MsgTemplate != null); }
+            get { return (Sender != null && Recipient != null && MsgTemplate != null); }
         }
 
 
@@ -194,7 +194,7 @@ namespace MessageCenter.Code
 
                 + "\n" +
                 "Receiver ID: " +
-                (Receiver == null ? "NULL" : Receiver.Id.ToString())
+                (Recipient == null ? "NULL" : Recipient.Id.ToString())
 
                 + "\n" +
                 "Message id: " +
@@ -224,30 +224,30 @@ namespace MessageCenter.Code
             switch (variable)
             {
                 case MESSAGE_VARIABLES.CUSTOMER_FULLNAME:
-                    value = receiver.FullName;
+                    value = recipient.FullName;
                     break;
 
                 case MESSAGE_VARIABLES.CUSTOMER_FIRSTNAME:
-                    value = receiver.FirstName;
+                    value = recipient.FirstName;
 
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_LASTNAME:
-                    value = receiver.LastName;
+                    value = recipient.LastName;
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_BIRTHDAY:
-                    value = receiver.Birthday;
+                    value = recipient.Birthday;
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_PHONENUMBER:
-                    value = receiver.PhoneNumber;
+                    value = recipient.PhoneNumber;
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_EMAIL:
-                    value = receiver.Email;
+                    value = recipient.Email;
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_AGE:
-                    value = receiver.Age.ToString();
+                    value = recipient.Age.ToString();
                     break;
                 case MESSAGE_VARIABLES.CUSTOMER_CPR:
-                    value = receiver.Cpr;
+                    value = recipient.Cpr;
                     break;
 
                 case MESSAGE_VARIABLES.DEPARTMENT:
@@ -313,7 +313,7 @@ namespace MessageCenter.Code
                 { IsBackground = true } //In case it lingers, it gets removed on server restart
                 .Start();
 
-               
+
 
             }
 
@@ -333,10 +333,10 @@ namespace MessageCenter.Code
                     catch (Exception e)
                     {
                         Utility.WriteLog(
-                            "Error - attempt to edit attachment: "+attachment.FileName + " failed! \nmError message: \n"+e.ToString());
-                        
+                            "Error - attempt to edit attachment: " + attachment.FileName + " failed! \nmError message: \n" + e.ToString());
+
                     }
-                    
+
                 }
             }
         }
@@ -369,7 +369,7 @@ namespace MessageCenter.Code
                 case MessageType.MAIL:
                     Msg = new Mail(
                  Sender.Email,
-                 Receiver.Email,
+                 Recipient.Email,
                  MsgTemplate.Title,
                  MsgTemplate.Text,
                  cCAdress);
@@ -379,7 +379,7 @@ namespace MessageCenter.Code
                 case MessageType.SMS:
                     Msg = new Sms(
                         Sender.PhoneNumber,
-                        Receiver.PhoneNumber,
+                        Recipient.PhoneNumber,
                         MsgTemplate.Text);
                     break;
                 default:
@@ -388,17 +388,34 @@ namespace MessageCenter.Code
 
         }
 
-        public void AddAttachments()
+        public KeyValuePair<StatusCode, string> AddAttachments()
         {
-            if (Msg is Mail)
+            StatusCode status = StatusCode.OK;
+            string description = string.Empty;
+
+            if (Msg != null && Msg is Mail)//currently only mails can have attachments
             {
+
                 lock (attachmentsKey) // waits here if the attachments are currently in use by another thread
                 {
                     foreach (MessageAttachment attachment in Attachments)
                     {
                         if (attachment.FileType == "docx")
                         {
+
+                            //converts word documents to PDF, before sending them                            
+                            status =
                             attachment.ConvertDocToPDF();
+                                                      
+
+                            if (status != StatusCode.OK)
+                            {
+
+                                description = "Der opstod fejl ved behandling af " + attachment.FileName + ", og besked blev derfor ikke afsendt";
+                                break; //exit loop and return report
+
+                            }
+
                         }
 
                         ((Mail)Msg).AttachFile(attachment);
@@ -407,21 +424,58 @@ namespace MessageCenter.Code
                 }
 
             }
+            return new KeyValuePair<StatusCode, string>(status, description);
         }
 
-        public void SendMessage()
+        public KeyValuePair<StatusCode, string> SendMessage()
         {
+            StatusCode status = StatusCode.OK;
+            string description = string.Empty;
 
-            if (this.MsgTemplate.MessageType == MessageType.MAIL)
+            //Add attachments (if supported by the messagetype)
+            KeyValuePair<StatusCode, string> report =
+            AddAttachments();
+
+            if (report.Key != StatusCode.OK)
             {
-                AddAttachments();
+                Msg.Reset();
+                return report;
             }
 
-            Msg.Send();
+            //Attempt to send message
+            StatusCode messageSentStatus =
+              Msg.Send();
 
-            Reset();
+            if (messageSentStatus != StatusCode.OK)
+            {
+                description = "FEJL - Besked kunne ikke afsendes.";
+            }
+
+            //Log attempt
+            LogSentMessage(messageSentStatus);
+
+
+            //Clean up temp files and remove Singleton object reference
+            if (messageSentStatus == StatusCode.OK)
+                Reset();
+
+            return new KeyValuePair<StatusCode, string>(status, description);
+
         }
 
+        private void LogSentMessage(StatusCode status)
+        {
+            string ricipientAdresse = msgTemplate.MessageType == MessageType.MAIL ? recipient.Email : recipient.PhoneNumber;
+
+            DatabaseManager.Instance.LogSentMessage(
+                msgTemplate.Id,     //the selected message tmplate
+                status,  //was it sent correctly?
+                sender.Tuser,       //employee who sent the message
+                recipient.Cpr,      //the selected customer
+                ricipientAdresse,   //the adresse which the message was sent to
+                msgTemplate.Title,  //the title of the message (might have been modified by employee)
+                msgTemplate.Text);  //the text (might have been modified by employee)
+        }
 
         public List<MessageAttachment> GetAttachments()
         {

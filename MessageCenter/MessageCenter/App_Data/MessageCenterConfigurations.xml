@@ -1,7 +1,8 @@
 <configurations>
 <supportEmail>andr4376@gmail.com</supportEmail>
 <dbFileName>database.db</dbFileName>
-<messageTemplateTableName>MessageTemplates</messageTemplateTableName>
+  <messageTemplateTableName>MessageTemplates</messageTemplateTableName>
+  <messageLogTableName>MessageLog</messageLogTableName>
 <attachmentsTableName>Attachments</attachmentsTableName>
 <apiUrl>http://localhost:58616/api/</apiUrl>
 <getAllEmployeesParameters>employees/</getAllEmployeesParameters>

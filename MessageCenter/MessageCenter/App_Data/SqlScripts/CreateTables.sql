@@ -5,7 +5,11 @@ CREATE TABLE IF NOT EXISTS MessageLog
 messageTemplateId INTEGER,
 status varchar,
 senderTuser varchar,
-recipientsCpr varchar);
+recipientsCpr varchar,
+recipientsAdresse varchar,
+title varchar,
+text varchar,
+timeStamp varchar);
 
 
 CREATE TABLE IF NOT EXISTS MessageTemplates

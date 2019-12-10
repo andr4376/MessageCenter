@@ -45,7 +45,7 @@ namespace MessageCenter.Code
             smtpClient.Port = smtpPort;
 
             //Login to the mail service (sparkronmessagecenter@gmail.com's google login)
-            smtpClient.Credentials = 
+            smtpClient.Credentials =
                 new System.Net.NetworkCredential(mailCredentialUsername, mailCredentialPassword);
             smtpClient.EnableSsl = true;
         }
@@ -60,24 +60,29 @@ namespace MessageCenter.Code
             return text.Replace("\n", "<br>");
         }
 
-        public override void Send()
+        public override StatusCode Send()
         {
+            StatusCode sentStatus;
+
             try
             {
                 //Sends the Email
                 smtpClient.Send(mailMessage);
 
-                //Dispose of attachments so that the files are not "in use"
-                //Allows the applikation to immediately delete the temporary files (attachments)
-                mailMessage.Attachments.Dispose();
+                this.Reset();
+
+                sentStatus = StatusCode.OK;
+
 
             }
             catch (Exception exception)
             {
+                sentStatus = StatusCode.ERROR;
                 Utility.WriteLog("Der opstod fejl ved at sende email: " + exception.ToString());
                 Utility.PrintWarningMessage("Der opstod fejl ved at sende email: " + exception.ToString() + " - kontakt venligt teknisk support");
             }
 
+            return sentStatus;
         }
 
         public void AttachFile(MessageAttachment messageAttachment)
@@ -87,6 +92,17 @@ namespace MessageCenter.Code
                 return;
             }
             this.mailMessage.Attachments.Add(new Attachment(messageAttachment.FilePath));
+        }
+
+        public override void Reset()
+        {
+            //Dispose of attachments so that the files are not "in use"
+            //Allows the applikation to immediately delete the temporary files (attachments)
+            if (mailMessage != null)
+            {
+                mailMessage.Attachments.Dispose();
+            }
+
         }
     }
 }

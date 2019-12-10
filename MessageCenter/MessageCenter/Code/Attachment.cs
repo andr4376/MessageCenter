@@ -212,21 +212,35 @@ namespace MessageCenter.Code
                 ref matchKashida, ref matchDiacritics, ref matchAlefHamza, ref matchControl);
         }
 
-        public void ConvertDocToPDF()
+        public StatusCode ConvertDocToPDF()
         {
+            StatusCode convertStatus = StatusCode.OK;
+
             if (this.FileType == "docx")
             {
-                Application wordApplication = new Application();
-                Document wordDocument = wordApplication.Documents.Open(this.FilePath);
+                try
+                {
+                    Application wordApplication = new Application();
+                    Document wordDocument = wordApplication.Documents.Open(this.FilePath);
 
 
-                this.FileName = this.FileName.Replace(FileType, "pdf");
+                    this.FileName = this.FileName.Replace(FileType, "pdf");
 
-                wordDocument.SaveAs2(FilePath, WdSaveFormat.wdFormatPDF);
-                wordDocument.Close();
-                wordApplication.Quit();
+                    wordDocument.SaveAs2(FilePath, WdSaveFormat.wdFormatPDF);
+                    wordDocument.Close();
+                    wordApplication.Quit();
+                }
+                catch (Exception e)
+                {
+
+                    convertStatus = StatusCode.FORHINDRING;
+                    //The machine does not have word installed
+                    Utility.WriteLog("ERROR- could not convert word doc to PDF - Perhaps server does not support Word functionality - message:" + e.ToString());
+                }
+                
 
             }
+            return convertStatus;
         }
 
         public void RemoveTempFile()

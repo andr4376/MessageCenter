@@ -14,6 +14,7 @@ namespace MessageCenter.Code
         DB_FILE_NAME,
         MESSAGE_TEMPLATE_TABLE_NAME,
         ATTACHMENTS_TABLE_NAME,
+        MESSAGE_LOG_TABLE_NAME,
         API_URL,
         GET_ALL_EMPLOYEES_API_PARAMETERS,
         GET_ALL_CUSTOMERS_API_PARAMETERS,
@@ -59,6 +60,7 @@ namespace MessageCenter.Code
                 {CONFIGURATIONS_ATTRIBUTES.ATTACHMENTS_TABLE_NAME,"attachmentsTableName" },
                 {CONFIGURATIONS_ATTRIBUTES.DB_FILE_NAME,"dbFileName" },
                 {CONFIGURATIONS_ATTRIBUTES.MESSAGE_TEMPLATE_TABLE_NAME,"messageTemplateTableName" },
+                {CONFIGURATIONS_ATTRIBUTES.MESSAGE_LOG_TABLE_NAME,"messageLogTableName" },
                 {CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL,"supportEmail" },
                 {CONFIGURATIONS_ATTRIBUTES.GET_ALL_CUSTOMERS_API_PARAMETERS,"getAllCustomerParameters" },
                 {CONFIGURATIONS_ATTRIBUTES.GET_ALL_EMPLOYEES_API_PARAMETERS,"getAllEmployeesParameters" },
@@ -83,6 +85,7 @@ namespace MessageCenter.Code
                   "<supportEmail>andr4376@gmail.com</supportEmail>\n" +
                   "<dbFileName>database.db</dbFileName>\n" +
                   "<messageTemplateTableName>MessageTemplates</messageTemplateTableName>\n" +
+                  "<messageLogTableName>MessageLog</messageLogTableName>" +
                   "<attachmentsTableName>Attachments</attachmentsTableName>\n" +
                   "<apiUrl>https://messagecenterdataapi.azurewebsites.net/api/</apiUrl>\n" +
 

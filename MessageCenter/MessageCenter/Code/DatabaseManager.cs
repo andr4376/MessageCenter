@@ -17,33 +17,28 @@ namespace MessageCenter.Code
 
         private SQLiteConnection DBConnect;
 
-        private string messageTemplatesTableName;
         private string MessageTemplatesTableName
         {
             get
             {
-                if (messageTemplatesTableName == null)
-                {
-                    messageTemplatesTableName =
-                        Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.MESSAGE_TEMPLATE_TABLE_NAME);
-                }
 
-                return messageTemplatesTableName;
+                return Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.MESSAGE_TEMPLATE_TABLE_NAME);
             }
         }
 
-        private string attachmentsTableName;
+        private string MessageLogTableName
+        {
+            get
+            {
+                return Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.MESSAGE_LOG_TABLE_NAME); ;
+            }
+        }
+
         private string AttachmentsTableName
         {
             get
             {
-                if (attachmentsTableName == null)
-                {
-                    attachmentsTableName =
-                        Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.ATTACHMENTS_TABLE_NAME);
-                }
-
-                return attachmentsTableName;
+                return Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.ATTACHMENTS_TABLE_NAME);
             }
         }
 
@@ -114,7 +109,7 @@ namespace MessageCenter.Code
             MessageAttachment attachment = new MessageAttachment(
                 id, messageId, fileName, fileData
                 );
-                       
+
 
             return attachment;
         }
@@ -259,7 +254,7 @@ private StatusCode LoadAllMessageTemplates()
             return StatusCode.OK;
         }
 
-        
+
         /// <summary>
         /// Adds a new message template to the database
         /// </summary>
@@ -283,7 +278,7 @@ private StatusCode LoadAllMessageTemplates()
                 Utility.WriteLog("SQLite Error: " + cmd);
                 Utility.PrintWarningMessage("Fejl ved tilføjelse af test beskeder");
                 return id;
-            }            
+            }
 
             return id;
         }
@@ -376,7 +371,7 @@ private StatusCode LoadAllMessageTemplates()
 
             return status;
         }
-        
+
 
         public StatusCode ExecuteSQLiteNonQuery(string command)
         {
@@ -625,6 +620,35 @@ private StatusCode LoadAllMessageTemplates()
             DBConnect.Close();
 
             return tmpMessage;
+        }
+
+        public void LogSentMessage(int? messageTemplateId ,StatusCode status, string senderTuser, string ricipientCpr, string ricipientAdresse, string title, string text)
+        {
+
+            string command = string.Format(
+                "insert into {0} VALUES(null," +
+                "{1}," +
+                "'{2}'," +
+                "'{3}'," +
+                "'{4}'," +
+                "'{5}'," +
+                "'{6}'," +
+                "'{7}'," +
+                "'{8}');",
+                MessageLogTableName,              //0   
+                messageTemplateId.ToString(),     //1
+                status,                           //2
+                senderTuser,                      //ect.
+                ricipientCpr,
+                ricipientAdresse,
+                title,
+                text,
+                DateTime.Now.ToString()
+                );
+
+            ExecuteSQLiteNonQuery(command);
+
+
         }
     }
 

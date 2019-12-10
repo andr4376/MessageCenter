@@ -8,9 +8,15 @@ namespace MessageCenter.Code
     public abstract class Message
     {
 
-        public virtual void Send()
+        public virtual StatusCode Send()
         {
 
+            return StatusCode.ERROR;
+        }
+
+        public virtual void Reset()
+        {
+            
         }
     }
 }

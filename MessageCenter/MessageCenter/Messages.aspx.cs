@@ -20,10 +20,10 @@ namespace MessageCenter
             {
                 if (MessageHandler.Instance.MsgTemplate != null)
                 {
-                    if (MessageHandler.Instance.Receiver != null)
+                    if (MessageHandler.Instance.Recipient != null)
                     {
                         return MessageHandler.Instance.MsgTemplate.MessageType == MessageType.MAIL ?
-                            MessageHandler.Instance.Receiver.Email : MessageHandler.Instance.Receiver.PhoneNumber;
+                            MessageHandler.Instance.Recipient.Email : MessageHandler.Instance.Recipient.PhoneNumber;
                     }
 
                 }
@@ -339,7 +339,7 @@ namespace MessageCenter
                 return StatusCode.ERROR;
             }
 
-            MessageHandler.Instance.Receiver = customer;
+            MessageHandler.Instance.Recipient = customer;
 
 
             return StatusCode.OK;
@@ -373,14 +373,14 @@ namespace MessageCenter
             {
                 case MessageType.MAIL:
                     MessageHandler.Instance.MsgTemplate.Text = messageTextTextBox.Text;
-                    MessageHandler.Instance.Receiver.Email = customerMailInputText.Text;
+                    MessageHandler.Instance.Recipient.Email = customerMailInputText.Text;
                     MessageHandler.Instance.cCAdress = ccAdressInput.Text;
 
 
                     break;
                 case MessageType.SMS:
                     MessageHandler.Instance.MsgTemplate.Text = smsContent.Text;
-                    MessageHandler.Instance.Receiver.PhoneNumber = smsPhoneNumber.Text;
+                    MessageHandler.Instance.Recipient.PhoneNumber = smsPhoneNumber.Text;
                     break;
 
                 default:
@@ -413,9 +413,24 @@ namespace MessageCenter
                 return;
             }
 
-            MessageHandler.Instance.SendMessage();
+            KeyValuePair<StatusCode,string> messageSentReport =
+                MessageHandler.Instance.SendMessage();
 
-            Response.Redirect("Default.aspx");
+            switch (messageSentReport.Key)
+            {
+                case StatusCode.OK:
+                    Session["messageSentDescription"] = "Besked afsendt!";
+                    Response.Redirect("Default.aspx");
+                    break;
+
+                default:
+                    messageStatus.Text = messageSentReport.Value;
+
+                    break;
+            }
+
+
+            
 
         }
 
