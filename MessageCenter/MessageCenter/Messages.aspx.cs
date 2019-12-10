@@ -261,6 +261,7 @@ namespace MessageCenter
 
         private void DisplayMessageData()
         {
+
             //Prints message template, sender and receiver to output
             Utility.WriteLog(MessageHandler.Instance.ToString());
 
@@ -269,6 +270,7 @@ namespace MessageCenter
 
             //Refreshes page
             Response.Redirect(Request.RawUrl);
+
         }
         protected void Page_Init(object sender, EventArgs e)
         {
@@ -291,7 +293,7 @@ namespace MessageCenter
             switch (GetSelectedCustomer())
             {
                 case StatusCode.OK:
-                    DisplayMessageData();
+                   DisplayMessageData();
                     break;
 
                 //User did not select a customer
@@ -419,13 +421,24 @@ namespace MessageCenter
             switch (messageSentReport.Key)
             {
                 case StatusCode.OK:
-                    Session["messageSentDescription"] = "Besked afsendt!";
+                    //For displaying on user interface
+                    Session["messageSentDescription"] =
+                        new KeyValuePair<StatusCode,string>(StatusCode.OK,"Besked blev sendt!");
                     Response.Redirect("Default.aspx");
                     break;
 
-                default:
+                case StatusCode.FORHINDRING: // Complications while editing attachments
                     messageStatus.Text = messageSentReport.Value;
 
+                    break;
+                case StatusCode.ERROR:
+                    //For displaying on user interface
+                    Session["messageSentDescription"] =
+                        messageSentReport;
+                    Response.Redirect("Default.aspx");
+                    break;
+
+                default:                    
                     break;
             }
 
@@ -434,15 +447,7 @@ namespace MessageCenter
 
         }
 
-        public void ShowWordDocAsHtml(string html)
-        {
-            if (html == string.Empty)
-            {
-                return;
-            }
-            // attachmentsDiv.InnerHtml = html;
-
-        }
+        
 
         protected void DownloadAttachmentBtn_Click(object sender, EventArgs e)
         {

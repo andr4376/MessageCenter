@@ -622,8 +622,20 @@ private StatusCode LoadAllMessageTemplates()
             return tmpMessage;
         }
 
+
+        /// <summary>
+        /// Stores and logs information about the recently sent message (or attempt)
+        /// </summary>
+        /// <param name="messageTemplateId"></param>
+        /// <param name="status"></param>
+        /// <param name="senderTuser"></param>
+        /// <param name="ricipientCpr"></param>
+        /// <param name="ricipientAdresse"></param>
+        /// <param name="title"></param>
+        /// <param name="text"></param>
         public void LogSentMessage(int? messageTemplateId ,StatusCode status, string senderTuser, string ricipientCpr, string ricipientAdresse, string title, string text)
         {
+            string timeStamp = DateTime.Now.ToString();
 
             string command = string.Format(
                 "insert into {0} VALUES(null," +
@@ -643,12 +655,22 @@ private StatusCode LoadAllMessageTemplates()
                 ricipientAdresse,
                 title,
                 text,
-                DateTime.Now.ToString()
+                timeStamp
                 );
 
-            ExecuteSQLiteNonQuery(command);
+           StatusCode sqliteStatus =
+                ExecuteSQLiteNonQuery(command);
+            
 
-
+            Utility.WriteLog("\nLogging sent message attempt... SQLite execution status: " + sqliteStatus.ToString() + "! MessageInfo:\n"
+               + "Message Template ID: " + messageTemplateId.ToString() + "\n"
+               + "Message Status: " + status + "\n"
+               + "Sender TUser: " + senderTuser + "\n"
+               + "ricipientCpr: " + ricipientCpr + "\n"
+               + "ricipientAdresse: " + ricipientAdresse + "\n"
+               + "title: " + title + "\n"
+               + "timeStamp: " + timeStamp+"\n");         
+                                 
         }
     }
 

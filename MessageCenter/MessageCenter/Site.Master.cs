@@ -18,7 +18,25 @@ namespace MessageCenter
 
             SuccesfulLoginHandler();
 
+            MessageSentStatus();
 
+
+        }
+
+        private void MessageSentStatus()
+        {
+            if (Session["messageSentDescription"] != null)
+            {
+                KeyValuePair<StatusCode,string> messageStatus =
+                 (KeyValuePair<StatusCode, string>)Session["messageSentDescription"];
+
+                statusModalLabel.InnerText = messageStatus.Key.ToString();
+                statusModalText.Text = messageStatus.Value;
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openstatusModal();", true);
+
+                Session["messageSentDescription"] = null;
+            }
         }
 
         private void SuccesfulLoginHandler()
@@ -40,7 +58,7 @@ namespace MessageCenter
                     //Reopen modal to display welcome message
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
                 }
-               
+
                 Session["NewLogin"] = null;
             }
         }

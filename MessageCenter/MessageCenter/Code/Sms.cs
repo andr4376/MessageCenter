@@ -19,10 +19,11 @@ namespace MessageCenter.Code
             this.receiver = receiver;
             this.text = text;
         }
-
-        public override StatusCode Send()
+               
+        public override KeyValuePair<StatusCode, string> Send()
         {
-           return base.Send();
+
+            return new KeyValuePair<StatusCode, string>(StatusCode.ERROR, "Sms'er er desværre ikke understøttet i denne prototype");
         }
 
     }

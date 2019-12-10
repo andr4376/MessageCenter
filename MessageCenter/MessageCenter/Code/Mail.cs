@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Mail;
 
 namespace MessageCenter.Code
@@ -60,9 +61,10 @@ namespace MessageCenter.Code
             return text.Replace("\n", "<br>");
         }
 
-        public override StatusCode Send()
+        public override KeyValuePair<StatusCode, string> Send()
         {
             StatusCode sentStatus;
+            string description = string.Empty;
 
             try
             {
@@ -79,10 +81,14 @@ namespace MessageCenter.Code
             {
                 sentStatus = StatusCode.ERROR;
                 Utility.WriteLog("Der opstod fejl ved at sende email: " + exception.ToString());
-                Utility.PrintWarningMessage("Der opstod fejl ved at sende email: " + exception.ToString() + " - kontakt venligt teknisk support");
+
+                description = "Der opstod en ukendt fejl da vi forsøgte at sende mailen! - send den nedenstående fejlbesked til teknisk support ("
+                    + Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL) + "): \n" +
+                    exception.ToString();
+                
             }
 
-            return sentStatus;
+            return new KeyValuePair<StatusCode, string>(sentStatus,description);
         }
 
         public void AttachFile(MessageAttachment messageAttachment)

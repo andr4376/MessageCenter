@@ -191,6 +191,14 @@ namespace MessageCenter
             //If user has selected a message template
             if (Int32.TryParse(listBoxMessageTemplates.SelectedValue, out messageId))
             {
+                //DEMO skabeloner kan ikke slettes i sammenhæng med eksamensprojektet
+                if (DatabaseManager.Instance.GetMessageTemplateFromId(messageId).Title.Contains("DEMO"))
+                {
+                    //slet ikke hvis det er en demo skabelon (EKSAMEN)
+                    return;
+                }
+                ////Slet ovenstående efter eksamen
+
                 //Delete the selected message Template, and all its attachments
                 StatusCode deleteStatus=
                 DatabaseManager.Instance.DeleteMessageTemplate(messageId);

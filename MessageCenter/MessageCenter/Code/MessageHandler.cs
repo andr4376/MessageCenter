@@ -207,6 +207,9 @@ namespace MessageCenter.Code
 
         public static void Reset()
         {
+
+           
+
             if (HttpContext.Current.Session["MessageHandler"] == null)
             {
                 return;
@@ -406,11 +409,10 @@ namespace MessageCenter.Code
                             //converts word documents to PDF, before sending them                            
                             status =
                             attachment.ConvertDocToPDF();
-                                                      
+
 
                             if (status != StatusCode.OK)
                             {
-
                                 description = "Der opstod fejl ved behandling af " + attachment.FileName + ", og besked blev derfor ikke afsendt";
                                 break; //exit loop and return report
 
@@ -429,8 +431,9 @@ namespace MessageCenter.Code
 
         public KeyValuePair<StatusCode, string> SendMessage()
         {
-            StatusCode status = StatusCode.OK;
+
             string description = string.Empty;
+
 
             //Add attachments (if supported by the messagetype)
             KeyValuePair<StatusCode, string> report =
@@ -438,38 +441,45 @@ namespace MessageCenter.Code
 
             if (report.Key != StatusCode.OK)
             {
-                Msg.Reset();
-                return report;
+                Msg.Reset(); //Removes attachments from message ect. 
+                return report; //Return what went wrong
             }
 
             //Attempt to send message
-            StatusCode messageSentStatus =
+            report =
               Msg.Send();
 
-            if (messageSentStatus != StatusCode.OK)
+            if (report.Key != StatusCode.OK)
             {
-                description = "FEJL - Besked kunne ikke afsendes.";
+                description = "Besked kunne ikke afsendes";
+
+                description += " " + report.Value;
+
             }
 
             //Log attempt
-            LogSentMessage(messageSentStatus);
+            LogSentMessage(report.Key);
 
 
             //Clean up temp files and remove Singleton object reference
-            if (messageSentStatus == StatusCode.OK)
-                Reset();
+            if (report.Key != StatusCode.FORHINDRING)
+                Msg.Reset(); Reset();
 
-            return new KeyValuePair<StatusCode, string>(status, description);
+            return new KeyValuePair<StatusCode, string>(report.Key, description);
 
         }
 
+        /// <summary>
+        /// Store information about the currently sent message (or attempt at sending)
+        /// </summary>
+        /// <param name="status"></param>
         private void LogSentMessage(StatusCode status)
         {
             string ricipientAdresse = msgTemplate.MessageType == MessageType.MAIL ? recipient.Email : recipient.PhoneNumber;
 
             DatabaseManager.Instance.LogSentMessage(
                 msgTemplate.Id,     //the selected message tmplate
-                status,  //was it sent correctly?
+                status,             //was it sent correctly?
                 sender.Tuser,       //employee who sent the message
                 recipient.Cpr,      //the selected customer
                 ricipientAdresse,   //the adresse which the message was sent to
@@ -477,6 +487,11 @@ namespace MessageCenter.Code
                 msgTemplate.Text);  //the text (might have been modified by employee)
         }
 
+
+        /// <summary>
+        /// Retrives all attachments related to the current message template
+        /// </summary>
+        /// <returns></returns>
         public List<MessageAttachment> GetAttachments()
         {
             if (MsgTemplate.Id == null)
@@ -502,7 +517,8 @@ namespace MessageCenter.Code
 
             foreach (MessageAttachment attachment in Attachments)
             {
-                StatusCode createFilesStatus = attachment.CreateTempFile();
+                StatusCode createFilesStatus =
+                    attachment.CreateTempFile(); //Store file in app_data/temp/.../
 
                 if (createFilesStatus == StatusCode.ERROR)
                 {

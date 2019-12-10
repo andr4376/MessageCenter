@@ -8,10 +8,10 @@ namespace MessageCenter.Code
     public abstract class Message
     {
 
-        public virtual StatusCode Send()
+        public virtual KeyValuePair<StatusCode,string> Send()
         {
 
-            return StatusCode.ERROR;
+            return new KeyValuePair<StatusCode, string>(StatusCode.ERROR,"Ukendt beskedtype!");
         }
 
         public virtual void Reset()
