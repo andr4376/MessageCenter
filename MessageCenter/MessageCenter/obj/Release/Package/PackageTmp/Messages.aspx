@@ -155,6 +155,8 @@
 
             <asp:Button ID="sendMailBtn" Text="Send" runat="server" OnClick="sendMailBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false"
                 OnClientClick="this.disabled=true;" UseSubmitBehavior="false" />
+            <asp:Literal ID="messageStatus" Text="" runat="server" />
+            
         </div>
 
 

@@ -429,6 +429,10 @@ namespace MessageCenter.Code
             return new KeyValuePair<StatusCode, string>(status, description);
         }
 
+        /// <summary>
+        /// Sends the message, and returns a report descibing its success
+        /// </summary>
+        /// <returns></returns>
         public KeyValuePair<StatusCode, string> SendMessage()
         {
 
@@ -544,6 +548,8 @@ namespace MessageCenter.Code
 
         public void RemoveAttachment(int index)
         {
+            //Listbox attachments and attachments list is 1:1
+
             lock (attachmentsKey)
             {
                 Attachments[index].RemoveTempFile();

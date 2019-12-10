@@ -1,9 +1,10 @@
 <configurations>
 <supportEmail>andr4376@gmail.com</supportEmail>
 <dbFileName>database.db</dbFileName>
-<messageTemplateTableName>MessageTemplates</messageTemplateTableName>
+  <messageTemplateTableName>MessageTemplates</messageTemplateTableName>
+  <messageLogTableName>MessageLog</messageLogTableName>
 <attachmentsTableName>Attachments</attachmentsTableName>
-<apiUrl>http://localhost:58616/api/</apiUrl>
+<apiUrl>https://messagecenterdataapi.azurewebsites.net/api/</apiUrl>
 <getAllEmployeesParameters>employees/</getAllEmployeesParameters>
 <getAllCustomerParameters>customers/</getAllCustomerParameters>
 <getEmployeeFromTUserParameters>employees/tuser/</getEmployeeFromTUserParameters>

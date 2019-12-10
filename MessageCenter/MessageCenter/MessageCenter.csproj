@@ -148,8 +148,11 @@
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\SparkronMessageCenter - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Images\andreas.jpg" />
     <Content Include="Images\envelope.png" />
+    <Content Include="Images\envelope2.png" />
     <Content Include="Images\logo-sparekassen-kronjylland.png" />
+    <Content Include="Images\shh.jpg" />
     <Content Include="Messages.aspx" />
     <Content Include="NewMessage.aspx" />
     <Content Include="Scripts\bootstrap.js" />

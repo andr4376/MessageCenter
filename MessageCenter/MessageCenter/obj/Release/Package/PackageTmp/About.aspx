@@ -17,7 +17,9 @@
         Hvis du har valgt en Mail, har du mulighed for at fjerne og tilføje vedhæftede filer, og du kan også downloade filer for at se præcist hvad det er du sender. Hvis du evt. gerne vil tilføje noget tekst eller omskrive noget 
         i et word dokument, kan du downloade filen, fjern filen fra "vedhæftede filer", ændre i indholdet, og uploade det igen. 
         <br />
-        Adminstratorbrugere vil yderligt have mulighed for at tilføje nye beskedskabeloner, ved at klikke på den grå knap under listen af eksisterende skabeloner (vises kun hvis du er logget ind som adminstrator) 
+        <br />
+        Adminstratorbrugere vil yderligt have mulighed for at tilføje nye beskedskabeloner, ved at klikke på den grå knap under listen af eksisterende skabeloner (vises kun hvis du er logget ind som adminstrator)
+        De kan også fjerne valgte beskedskabeloner ved at trykke "Slet Besked".
     </p>
     <br />
     <br />
@@ -69,13 +71,14 @@
         Hvis du gerne vil sende en besked til dig selv, kan du ændre modtager emailen på beskedsiden, eller tilføje din email adresse med komma separering. Du kan evt. også taste den ind i "CC" feltet
     </p>
     <br />
-    <p>BEMÆRK! Siden kan pt. ikke sende Sms'er</p>
+    <p>BEMÆRK! Siden kan pt. ikke sende Sms'er, da sådan en service ville koste penge at tilføje, og servicen vil alligevel skulle fjernes hvis applikationen skal fortsætte sin udvikling. </p>
 
+    <br />
+    Du kan prøve at tilføje eller fjerne beskeder på forsiden, men husk at logge ind som adminstrator først! Beskeder med titlen "DEMO" kan ikke fjernes, da de skal bevares i sammenhæng med min eksamen.
     <br />
     <br />
     <p>Hvis du af en eller anden årsag ikke kan logge ind, eller ikke ser listen med kunder når du vælger en beskedskabelon, er det fordi at siden ikke kan få forbindelse til den API appen henter sit "bank data" fra :(</p>
     <br />
-    <p></p>
 
 
 </asp:Content>

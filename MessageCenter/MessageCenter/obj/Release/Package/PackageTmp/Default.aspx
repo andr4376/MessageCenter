@@ -38,10 +38,14 @@
 
                     <Triggers>
                         <asp:AsyncPostBackTrigger ControlID="searchBtn" EventName="Click" />
+                        <asp:AsyncPostBackTrigger ControlID="removeMessageTemplate" EventName="Click" />
                     </Triggers>
                 </asp:UpdatePanel>
             </asp:Panel>
                 <asp:Button ID="addNewMessageBtn" Text="Tilføj Besked" runat="server" OnClick="addNewMessageBtn_Click"
+                    CssClass="sparkron-submit-btn-sm" CausesValidation="false" Visible="<%#ShowAdminInterface%>" />
+
+                <asp:Button ID="removeMessageTemplate" Text="Slet Besked" runat="server" OnClick="removeMessageTemplate_Click"
                     CssClass="sparkron-submit-btn-sm" CausesValidation="false" Visible="<%#ShowAdminInterface%>" />
 
             <!--fortsæt knap-->

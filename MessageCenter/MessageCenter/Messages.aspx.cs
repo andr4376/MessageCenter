@@ -103,6 +103,10 @@ namespace MessageCenter
 
         }
 
+        /// <summary>
+        /// Update the listbox so its content matches that of the list of attachments
+        /// </summary>
+        /// <param name="attachments"></param>
         private void UpdateAttachmentsListbox(List<MessageAttachment> attachments)
         {
 
@@ -115,16 +119,20 @@ namespace MessageCenter
             {
                 listBoxAttachments.Items.Add(
                     new ListItem(
-                    attachments[i].FileName,
-                    i.ToString()));/*The list item value is the item index, because i cannot ensure that all attachments have ids*/
+                    attachments[i].FileName, //Text = Display file name
+                    i.ToString()) // value = index of the element
+                    );
+                /*The list item value is the item index, because i cannot ensure that all attachments have ids*/
             }
+
+
 
             /*
                         listBoxAttachments.DataSource = attachments;
                         listBoxAttachments.DataTextField = "FileName";
                         listBoxAttachments.DataValueField = "Id";
                         listBoxAttachments.DataBind();
-                        */
+            */
         }
 
         private void Initialize()
@@ -349,17 +357,32 @@ namespace MessageCenter
 
         protected void searchBtnCustomer_Click(object sender, EventArgs e)
         {
-            string searchInput = customerCprInput.Text;
+            string searchInput = customerCprInput.Text.ToUpper();
 
             List<Customer> customers = SignIn.Instance.MyCustomers;
 
+            List<Customer> searchResults;
+
             if (searchInput != "")
             {
-                UpdateCustomersListbox(
-                 customers.Where(x => x.Cpr.Contains(searchInput)).ToList<Customer>());
+
+                searchResults = customers.Where(x => x.Cpr.Contains(searchInput))
+                    .ToList<Customer>();
+
+                if (searchResults.Count==0)
+                {
+                    searchResults = customers.Where(x => x.FullName.ToUpper().Contains(searchInput))
+                    .ToList<Customer>();
+                }
+
+                UpdateCustomersListbox(searchResults);
+            
+
+
             }
             else
             {
+                //if black search input: show all
                 UpdateCustomersListbox(customers);
             }
 
@@ -415,27 +438,35 @@ namespace MessageCenter
                 return;
             }
 
+
+            //Send the message
             KeyValuePair<StatusCode,string> messageSentReport =
                 MessageHandler.Instance.SendMessage();
 
             switch (messageSentReport.Key)
             {
+                //if message is succesfully sent
                 case StatusCode.OK:
-                    //For displaying on user interface
-                    Session["messageSentDescription"] =
+
+                    Session["messageStatusDescription"] =
                         new KeyValuePair<StatusCode,string>(StatusCode.OK,"Besked blev sendt!");
-                    Response.Redirect("Default.aspx");
+                    Response.Redirect("Default.aspx");//go to home page
                     break;
 
-                case StatusCode.FORHINDRING: // Complications while editing attachments
+                    //if complications occured
+                case StatusCode.FORHINDRING: // Fx. Complications while editing attachments
                     messageStatus.Text = messageSentReport.Value;
-
-                    break;
-                case StatusCode.ERROR:
-                    //For displaying on user interface
-                    Session["messageSentDescription"] =
+                    //Site.Master.cs will make a popup descriping what went wrong in its Load_Page
+                    Session["messageStatusDescription"] =
                         messageSentReport;
-                    Response.Redirect("Default.aspx");
+                    Response.Redirect(Request.RawUrl); //refresh page to trigger Master's popup
+                    break;
+
+                case StatusCode.ERROR:
+                    //Site.Master.cs will make a popup descriping what went wrong in its Load_Page
+                    Session["messageStatusDescription"] =
+                        messageSentReport;
+                    Response.Redirect("Default.aspx"); //go to home page
                     break;
 
                 default:                    
@@ -448,12 +479,20 @@ namespace MessageCenter
         }
 
         
-
+        /// <summary>
+        /// On click event for download attachment button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void DownloadAttachmentBtn_Click(object sender, EventArgs e)
         {
             DownloadSelectedAttachment();
         }
-
+        /// <summary>
+        /// Remove the selected attachment from the list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void RemoveAttachmentButton_Click(object sender, EventArgs e)
         {
             if (listBoxAttachments.SelectedItem == null)
@@ -471,10 +510,11 @@ namespace MessageCenter
                 return;
             }
 
+            //Remove selected attachment (and its files)
+            //Listbox attachments and attachments list is 1:1
             MessageHandler.Instance.RemoveAttachment(messageIndex);
 
-
-
+            //refresh attachments listbox
             UpdateAttachmentsListbox(MessageHandler.Instance.Attachments);
 
 
@@ -488,34 +528,47 @@ namespace MessageCenter
 
         }
 
+       /// <summary>
+       /// Adds the user's uploaded file to attachments
+       /// </summary>
+       /// <param name="sender"></param>
+       /// <param name="e"></param>
         protected void UploadFileBtn_Click(object sender, EventArgs e)
         {
-
-
             MessageAttachment tmp;
+
+            //if the FileUpload Control has a file
             if (AttachmentFileUpload.HasFile)
             {
-
+                //Create a new attachment object with the file name and the file data
                 tmp = new MessageAttachment(
                     AttachmentFileUpload.FileName, AttachmentFileUpload.FileBytes);
 
+                //Create temporary file in app data 
                 StatusCode createFileStatus = tmp.CreateTempFile();
 
+                
                 if (createFileStatus == StatusCode.OK)
                 {
                     lock (MessageHandler.attachmentsKey)
                     {
+                        //Add attachment to the list of attachments for the current message
                         MessageHandler.Instance.Attachments.Add(tmp);
 
+                        //Refresh Listbox to show all attachments
                         UpdateAttachmentsListbox(MessageHandler.Instance.Attachments);
                     }
                 }
 
+                //Close the "upload file" modal
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "closeAttachmentModal();", true);
             }
 
         }
 
+        /// <summary>
+        /// Finds the selected attachment File, and sends a download to the user's client
+        /// </summary>
         private void DownloadSelectedAttachment()
         {
 
@@ -526,7 +579,7 @@ namespace MessageCenter
 
             int messageIndex;
 
-
+            //try to get selected file's list index
             if (!Int32.TryParse(listBoxAttachments.SelectedValue, out messageIndex))
             {
                 Utility.PrintWarningMessage("Noget gik galt ved identificering af den valgte fil - kontakt venligst teknisk support: " +
@@ -537,10 +590,18 @@ namespace MessageCenter
 
 
             Response.Clear();
+
+            //Tell the page we're about to stream file data
             Response.ContentType = "application/octet-stream";
+
+            //Set name of file
             Response.AppendHeader("content-disposition", "filename="
             + MessageHandler.Instance.Attachments[messageIndex].FileName);
+
+            //Send the selected attachment's file 
             Response.WriteFile(MessageHandler.Instance.Attachments[messageIndex].FilePath);
+
+            //Clear
             Response.Flush();
             Response.End();
         }
@@ -549,5 +610,5 @@ namespace MessageCenter
     }
 }
 
-//<asp:AsyncPostBackTrigger ControlID="UploadFileBtn" EventName="Click" />-
+
 

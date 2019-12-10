@@ -25,17 +25,17 @@ namespace MessageCenter
 
         private void MessageSentStatus()
         {
-            if (Session["messageSentDescription"] != null)
+            if (Session["messageStatusDescription"] != null)
             {
                 KeyValuePair<StatusCode,string> messageStatus =
-                 (KeyValuePair<StatusCode, string>)Session["messageSentDescription"];
+                 (KeyValuePair<StatusCode, string>)Session["messageStatusDescription"];
 
                 statusModalLabel.InnerText = messageStatus.Key.ToString();
                 statusModalText.Text = messageStatus.Value;
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openstatusModal();", true);
 
-                Session["messageSentDescription"] = null;
+                Session["messageStatusDescription"] = null;
             }
         }
 
