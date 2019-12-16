@@ -122,7 +122,9 @@
   <ItemGroup>
     <Content Include="About.aspx" />
     <Content Include="App_Data\SqlScripts\CreateTables.sql" />
-    <Content Include="App_Data\MessageCenterConfigurations.xml" />
+    <Content Include="App_Data\MessageCenterConfigurations.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="App_Data\SqlScripts\InsertInitialData.sql" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-darkly.css" />
@@ -148,7 +150,9 @@
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\SparkronMessageCenter - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Images\addNew.png" />
     <Content Include="Images\andreas.jpg" />
+    <Content Include="Images\delete.png" />
     <Content Include="Images\envelope.png" />
     <Content Include="Images\envelope2.png" />
     <Content Include="Images\logo-sparekassen-kronjylland.png" />
@@ -199,7 +203,7 @@
       <DependentUpon>About.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Code\ApiManager.cs" />
+    <Compile Include="Code\ApiCaller.cs" />
     <Compile Include="Code\Configurations.cs" />
     <Compile Include="Code\FileManager.cs" />
     <Compile Include="Code\Mail.cs" />

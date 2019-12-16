@@ -11,7 +11,7 @@ namespace MessageCenter
 {
     public partial class _Default : Page
     {
-
+       
         public bool ShowAdminInterface
         {
             get
@@ -116,6 +116,7 @@ namespace MessageCenter
         {
             //Get search input
             string inputText = searchInput.Text;
+
             Utility.WriteLog("searching for input: " + inputText);
 
             if (inputText == "")

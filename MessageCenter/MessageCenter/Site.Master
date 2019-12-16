@@ -146,18 +146,20 @@
         </asp:Panel>
         <!--Status Modal END-->
 
-        <!-- MAIN CONTENT-->
+
         <div class="container body-content">
+        <!-- MAIN CONTENT-->
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
             <hr />
+        <!-- Master Page Footer-->
             <footer>
                 <p>&copy; <%: DateTime.Now.Year %> - SparKron Message Center</p>
             </footer>
         </div>
-
-
         <!-- MAIN CONTENT END-->
+
+
     </form>
 </body>
 

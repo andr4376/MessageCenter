@@ -29,7 +29,7 @@ namespace MessageCenter.Code
             {
                 if (IsLoggedIn)
                 {
-                    return ApiManager.Instance.MakeRestCall<Customer>(
+                    return new ApiCaller().MakeRestCall<Customer>(
                         Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.GET_CUSTOMER_FROM_ADVISOR_TUSER_API_PARAMETERS)
                         + User.Tuser);
                 }
@@ -82,7 +82,7 @@ namespace MessageCenter.Code
 
             try
             {
-                User = ApiManager.Instance.MakeRestCall<Employee>
+                User = new ApiCaller().MakeRestCall<Employee>
                 (Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.GET_EMPLOYEE_FROM_CREDENTIALS_API_PARAMETERS)
                 + tUser.ToUpper() + "/"
                 + EncryptPassword(passWord))[0];
@@ -96,6 +96,9 @@ namespace MessageCenter.Code
                 {
                     Utility.WriteLog("login: " + User.Tuser + " - " + User.FirstName + " " + User.LastName);
                     returnCode = StatusCode.OK;
+
+                    //Clean up previous temp files, in case this user had any unfinished messages.
+                    FileManager.Instance.DeleteAllDirectoriesContainingTUser(User.Tuser);
                 }
             }
             catch (Exception)
@@ -104,6 +107,8 @@ namespace MessageCenter.Code
             }
             return returnCode;
         }
+
+        
 
         /// <summary>
         /// Hashes the password using SHA (Secure Hash Algorithm)

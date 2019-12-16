@@ -22,7 +22,8 @@
         <div class="container col-md-8" style="padding-left: 50px">
             <h2 class="sparkron-box-header">
                 <asp:Image ID="logo" runat="server" ImageUrl="~/Images/envelope.png" CssClass="mini-logo" />
-                Besked skabeloner</h2>
+                Besked skabeloner
+            </h2>
 
             <!-- Panel, så Enter kan vælge listbox item -->
             <asp:Panel runat="server" DefaultButton="btn_proceedToMessagePage">

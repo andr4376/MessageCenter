@@ -1,6 +1,7 @@
 ﻿using MessageCenter.Code;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -237,6 +238,12 @@ namespace MessageCenter
                 return;
             }
 
+            if (!(MessageHandler.Instance.Attachments[messageIndex] != null && File.Exists(
+                MessageHandler.Instance.Attachments[messageIndex].FilePath)))
+            {
+                return;
+            }
+
             Response.Clear();
             Response.ContentType = "application/octet-stream";
             Response.AppendHeader("content-disposition", "filename="
@@ -282,6 +289,7 @@ namespace MessageCenter
                 }
 
             }
+            //else tell user to fill title and text
 
             //delete temp files and reset messagehandler instance
             MessageHandler.Reset();

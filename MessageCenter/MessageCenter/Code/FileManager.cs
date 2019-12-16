@@ -85,10 +85,32 @@ namespace MessageCenter.Code
             return Path.Combine(applicationPath, "Images\\");
         }
 
+        /// <summary>
+        /// Deletes all directories which name contains the input tuser 
+        /// </summary>
+        /// <param name="tuser"></param>
+        public void DeleteAllDirectoriesContainingTUser(string tuser)
+        {
+            //get all the directories
+            IEnumerable<string> directoriesContainingTUser = Directory.EnumerateDirectories
+                (appDataPath + ("\\TempFiles\\"), "*", SearchOption.AllDirectories).
+                Where(x => x.Contains(tuser));
+
+            //Delete all found directories
+            foreach (string directory in directoriesContainingTUser)
+            {
+                DeleteDirectory(directory);
+            }
+        }
+
+        /// <summary>
+        /// returns a generated directory name based on the current message and the signed in tUser
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="employeeTUser"></param>
+        /// <returns></returns>
         public string GetTempDirectory(MessageTemplate message, string employeeTUser)
         {
-
-
             string directoryPath = appDataPath + ("\\TempFiles\\" + message.PathName + "_" + employeeTUser);
 
             return directoryPath;
@@ -98,7 +120,6 @@ namespace MessageCenter.Code
         {
             lock (MessageHandler.attachmentsKey)
             {
-
                 if (Directory.Exists(path))
                 {
                     Directory.Delete(path, true);

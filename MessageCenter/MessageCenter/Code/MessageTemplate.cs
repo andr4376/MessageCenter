@@ -8,34 +8,50 @@ namespace MessageCenter.Code
 
     public enum MessageType { MAIL, SMS };
 
+    /// <summary>
+    /// An object containing the title and main text for a message. 
+    /// </summary>
     public class MessageTemplate
     {
-
-
-
-        public int? Id
+        /// <summary>
+        /// Returns the messagetemplates id as a nullable int 
+        /// </summary>
+        public int? Id //it has no id when we make new messagetemplates (therefor nullable)
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// the title of the message
+        /// </summary>
         public string Title
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// The main text of the message.
+        /// </summary>
         public string Text
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Get / private set message type
+        /// </summary>
         public MessageType MessageType
         {
             get;
             private set;
         }
+
+        /// <summary>
+        /// Get / private set messagetype by enum index
+        /// </summary>
         public int MessageTypeId
         {
             get
@@ -48,6 +64,9 @@ namespace MessageCenter.Code
             }
         }
 
+        /// <summary>
+        /// The initial title of the message template. used for creating directories since the "title"'s value might change
+        /// </summary>
         private readonly string initialTitle;
 
         /// <summary>
@@ -90,6 +109,9 @@ namespace MessageCenter.Code
             }
         }
 
+        /// <summary>
+        /// Returns whether or not both the title and the main text of the message is not empty
+        /// </summary>
         public bool IsValid
         { get
             {
@@ -97,6 +119,12 @@ namespace MessageCenter.Code
             }
         }
 
+        /// <summary>
+        /// Message Template constructor
+        /// </summary>
+        /// <param name="title">title of the message</param>
+        /// <param name="text">content of the message</param>
+        /// <param name="messageType">type of the message by index</param>
         public MessageTemplate(string title, string text, int messageType)
         {
             this.Title = title;
@@ -106,6 +134,13 @@ namespace MessageCenter.Code
             initialTitle = title;
 
         }
+        /// <summary>
+        /// Message Template constructor
+        /// </summary>
+        /// <param name="title">title of the message</param>
+        /// <param name="text">content of the message</param>
+        /// <param name="messageType">type of the message by index</param>
+        /// <param name="id">the message templates id</param>
         public MessageTemplate(int id, string title, string text, int messageType) : this(title, text, messageType)
         {
             this.Id = id;
@@ -118,7 +153,7 @@ namespace MessageCenter.Code
         /// <param name="type"></param>
         public MessageTemplate(int type):this(string.Empty,string.Empty, type)
         {
-            initialTitle = "_NEW_MESSAGE_";
+            initialTitle = "_NEW_MESSAGE_"; //used for temp directory for the message template's attachments
         }
     }
 }

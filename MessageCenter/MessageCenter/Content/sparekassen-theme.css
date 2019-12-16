@@ -109,7 +109,11 @@ select:focus {
 	max-height: 5%;
 	max-width: 5%;
 }
-
+.mini-logo-right {
+	max-height: 5%;
+	max-width: 5%;
+	float:right;
+}
 
 .sparkron-submit-btn {
 	font-family: 'Titillium Web', sans-serif;

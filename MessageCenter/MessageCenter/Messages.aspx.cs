@@ -337,7 +337,7 @@ namespace MessageCenter
 
             }
             //Get customer from api
-            Customer customer = ApiManager.Instance.MakeRestCall<Customer>(
+            Customer customer = new ApiCaller().MakeRestCall<Customer>(
                 Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.GET_CUSTOMER_FROM_CPR_API_PARAMETERS)
                + selectedCustomer)[0];
 
