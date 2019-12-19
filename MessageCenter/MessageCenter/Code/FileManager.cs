@@ -16,14 +16,11 @@ namespace MessageCenter.Code
     {
         private static FileManager instance;
 
-        public string appDataPath;
+        private string appDataPath;
 
         private string applicationPath;
 
-        /// <summary>
-        /// The filepath to the database file
-        /// </summary>
-        private string dbFile = string.Empty;
+
 
         /// <summary>
         /// Returns the path to the database file
@@ -32,12 +29,7 @@ namespace MessageCenter.Code
         {
             get
             {
-                if (dbFile == string.Empty)
-                {
-                    dbFile = GetFilePath(Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.DB_FILE_NAME));
-                }
-
-                return dbFile;
+                return GetFilePath(Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.DB_FILE_NAME));
             }
         }
 
@@ -171,7 +163,7 @@ namespace MessageCenter.Code
             Thread fileDeleteThread = new Thread(
                 () => DeleteFileWhenNotInUse(filePath)
                 )
-            { IsBackground=true};
+            { IsBackground = true };
             fileDeleteThread.Start();
 
         }
@@ -235,7 +227,7 @@ namespace MessageCenter.Code
         /// </summary>
         /// <param name="file">the filepath</param>
         /// <returns></returns>
-        protected virtual bool FileIsInUse(FileInfo file)
+        private  bool FileIsInUse(FileInfo file)
         {
             try
             {

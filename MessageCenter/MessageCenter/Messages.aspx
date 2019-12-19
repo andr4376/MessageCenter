@@ -20,7 +20,7 @@
                     <div class="login-box container">
                         <div class="row">
                             <asp:Panel runat="server" DefaultButton="searchBtnCustomer">
-                                <asp:TextBox ID="customerCprInput" runat="server" placeholder="CPR" CssClass="sparkron-search-input" autocomplete="off"></asp:TextBox>
+                                <asp:TextBox ID="customerCprInput" runat="server" placeholder="CPR eller navn" CssClass="sparkron-search-input" autocomplete="off"></asp:TextBox>
                                 <asp:Button ID="searchBtnCustomer" runat="server" OnClick="searchBtnCustomer_Click"
                                     Text="Søg" CssClass="sparkron-search-btn" CausesValidation="False" />
                             </asp:Panel>
@@ -103,7 +103,7 @@
             <div class="message-template-section-adresse-input row col-md-6">
                 <asp:TextBox CssClass="message-text-input" runat="server" autocomplete="off"
                     ID="customerMailInputText" BorderStyle="None" TextMode="SingleLine" placeholder="Modtagers Email adresse"
-                    Text="<%# this.GetReceiverAdresse %>"></asp:TextBox>
+                    Text="<%# this.GetRecipientAdresse %>"></asp:TextBox>
 
             </div>
             <div class="message-template-section-adresse-input row col-md-6">
@@ -172,7 +172,7 @@
             <div class="message-template-section-adresse-input row">
                 <asp:TextBox CssClass="message-text-input" runat="server" autocomplete="off"
                     ID="smsPhoneNumber" BorderStyle="None" TextMode="SingleLine" placeholder="Modtagers Mobil Nr."
-                    Text="<%# this.GetReceiverAdresse %>"></asp:TextBox>
+                    Text="<%# this.GetRecipientAdresse %>"></asp:TextBox>
 
             </div>
 

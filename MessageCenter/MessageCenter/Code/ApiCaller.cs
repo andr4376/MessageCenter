@@ -28,7 +28,7 @@ namespace MessageCenter.Code
         }
 
        
-
+        /*
         /// <summary>
         /// Retrieves the input employee from the data api
         /// </summary>
@@ -41,6 +41,7 @@ namespace MessageCenter.Code
                 Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.GET_CUSTOMER_FROM_ADVISOR_TUSER_API_PARAMETERS) + tuser);
             return customers;
         }
+        */
 
         /// <summary>
         /// 

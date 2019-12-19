@@ -256,9 +256,15 @@ namespace MessageCenter
 
         protected void CreateMessageBtn_Click(object sender, EventArgs e)
         {
-            MessageHandler.Instance.MsgTemplate.Title = titleTextBox.Text;
-            MessageHandler.Instance.MsgTemplate.Text = messageTextTextBox.Text;
 
+            MessageHandler.Instance.MsgTemplate.Title = titleTextBox.Text.Replace("'","");
+
+            MessageHandler.Instance.MsgTemplate.Text = messageTextTextBox.Text.Replace("'", "");
+
+            if (!MessageHandler.Instance.MsgTemplate.IsValid)
+            {
+                return;
+            }
             if (MessageHandler.Instance.MsgTemplate.IsValid)
             {
                 //Save the message template

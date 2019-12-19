@@ -91,10 +91,6 @@ namespace MessageCenter
             return StatusCode.OK;
         }
 
-        protected void listBoxMessageTemplates_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Utility.WriteLog(listBoxMessageTemplates.SelectedValue);
-        }
 
         /// <summary>
         /// Proceeds to a message page for the selected ListBox MessageTemplate item
@@ -209,6 +205,11 @@ namespace MessageCenter
                         DatabaseManager.Instance.GetAllMessageTemplates());
 ;
             }
+
+        }
+
+        protected void addNewMessageBtn_Click1(object sender, ImageClickEventArgs e)
+        {
 
         }
     }

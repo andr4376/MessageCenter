@@ -13,7 +13,7 @@ namespace MessageCenter.Code
 
         private static DatabaseManager instance;
 
-        public List<MessageTemplate> messages;
+       
 
         private SQLiteConnection DBConnect;
 
@@ -95,7 +95,6 @@ namespace MessageCenter.Code
             string fileName = dataReader.GetString(dataReader.GetOrdinal("fileName"));
             byte[] fileData = null;
 
-
             //Extract file data 
             using (MemoryStream memoryStream = new MemoryStream())
             {
@@ -107,8 +106,7 @@ namespace MessageCenter.Code
             }
 
             MessageAttachment attachment = new MessageAttachment(
-                id, messageId, fileName, fileData
-                );
+                id, messageId, fileName, fileData);
 
 
             return attachment;
@@ -373,7 +371,7 @@ private StatusCode LoadAllMessageTemplates()
         }
 
 
-        public StatusCode ExecuteSQLiteNonQuery(string command)
+        private StatusCode ExecuteSQLiteNonQuery(string command)
         {
             StatusCode returnCode = StatusCode.OK;
 
@@ -460,14 +458,7 @@ private StatusCode LoadAllMessageTemplates()
                     return messagesDictionary;
                 }
                 */
-        private StatusCode GetAllMessagesFromDB()
-        {
-            //TODO: get messages from db instead! DELETE THIS
-            messages = new List<MessageTemplate>();
-            //
-
-            return StatusCode.OK;
-        }
+     
 
 
 
@@ -633,7 +624,8 @@ private StatusCode LoadAllMessageTemplates()
         /// <param name="ricipientAdresse"></param>
         /// <param name="title"></param>
         /// <param name="text"></param>
-        public void LogSentMessage(int? messageTemplateId ,StatusCode status, string senderTuser, string ricipientCpr, string ricipientAdresse, string title, string text)
+        public void LogSentMessage(int? messageTemplateId ,StatusCode status, string senderTuser, string ricipientCpr,
+            string ricipientAdresse, string title, string text)
         {
             string timeStamp = DateTime.Now.ToString();
 

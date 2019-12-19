@@ -14,7 +14,7 @@ namespace MessageCenter
     {
         private int messageTemplateIdInput;
 
-        public string GetReceiverAdresse
+        public string GetRecipientAdresse
         {
             get
             {

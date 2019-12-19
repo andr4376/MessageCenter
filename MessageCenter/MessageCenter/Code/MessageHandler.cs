@@ -58,31 +58,31 @@ namespace MessageCenter.Code
         {
             get
             {
-                return Instance.attachments;
+                return attachments;
             }
             set
             {
-                Instance.attachments = value;
+                attachments = value;
 
             }
         }
 
         public Message Msg
         {
-            get { return Instance.message; }
-            set { Instance.message = value; }
+            get { return message; }
+            set { message = value; }
         }
 
         public Customer Recipient
         {
-            get { return Instance.recipient; }
-            set { Instance.recipient = value; }
+            get { return recipient; }
+            set { recipient = value; }
         }
 
         public Employee Sender
         {
-            get { return Instance.sender; }
-            set { Instance.sender = value; }
+            get { return sender; }
+            set { sender = value; }
         }
         public static string GetMessageVariable(MESSAGE_VARIABLES variable)
         {
@@ -141,7 +141,7 @@ namespace MessageCenter.Code
 
                 if (Instance.msgTemplate != null && Instance.msgTemplate.MessageType == MessageType.MAIL)
                 {
-                    GetAttachments();
+                    FetchAttachmentsFromDb();
                 }
             }
         }
@@ -156,7 +156,7 @@ namespace MessageCenter.Code
         }
 
 
-        public MessageHandler()
+        private MessageHandler()
         {
 
 
@@ -496,7 +496,7 @@ namespace MessageCenter.Code
         /// Retrives all attachments related to the current message template
         /// </summary>
         /// <returns></returns>
-        public List<MessageAttachment> GetAttachments()
+        public List<MessageAttachment> FetchAttachmentsFromDb()
         {
             if (MsgTemplate.Id == null)
             {

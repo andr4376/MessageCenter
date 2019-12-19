@@ -17,8 +17,8 @@ namespace MessageCenter.Code
 
         public Employee User
         {
-            get { return Instance.user; }
-            set { Instance.user = value;
+            get { return user; }
+            set { user = value;
                
             }
         }

@@ -8,18 +8,18 @@ namespace MessageCenter.Code
     public class Sms : Message
     {
         private string sender;
-        private string receiver;
+        private string recipient;
 
         private string text;
 
 
-        public Sms(string sender, string receiver, string text)
+        public Sms(string sender, string recipient, string text)
         {
             this.sender = sender;
-            this.receiver = receiver;
+            this.recipient = recipient;
             this.text = text;
         }
-               
+
         public override KeyValuePair<StatusCode, string> Send()
         {
 
