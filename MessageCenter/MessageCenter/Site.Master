@@ -112,11 +112,7 @@
                     $('#loginModal').modal({ show: true });
                 }
 
-                function toggleSigninLoader() {
-
-                    if (!Page_ClientValidate) {
-                        return;
-                    }                   
+                function toggleSigninLoader() {                                                   
 
                     if (document.getElementById("loginTuserInput").value=="") {
                         return;

@@ -27,7 +27,7 @@ namespace MessageCenter
         {
             if (Session["messageStatusDescription"] != null)
             {
-                KeyValuePair<StatusCode,string> messageStatus =
+                KeyValuePair<StatusCode, string> messageStatus =
                  (KeyValuePair<StatusCode, string>)Session["messageStatusDescription"];
 
                 statusModalLabel.InnerText = messageStatus.Key.ToString();
@@ -63,26 +63,34 @@ namespace MessageCenter
             }
         }
 
+
         protected void btn_login_Click(object sender, EventArgs e)
         {
             Utility.WriteLog("Attempting to log in");
 
 
+
             if (SignIn.Instance.IsLoggedIn)
             {
+                //If user is somehow already logged in, return
                 return;
             }
-            
+
+            //disable button to prevent multiple login attempts at once
             btn_login.Enabled = false;
 
-            StatusCode loginStatus = SignIn.Instance.LogIn(loginTuserInput.Text, loginPasswordInput.Text);
+            //Login
+            StatusCode loginStatus =
+                SignIn.Instance.LogIn(loginTuserInput.Text, loginPasswordInput.Text);
 
+            //If succesful, hide login button
             loginLink.Visible = SignIn.Instance.User == null ? true : false;
 
             switch (loginStatus)
             {
-                case StatusCode.OK:
 
+                //SUCCESS
+                case StatusCode.OK:
                     //Next postback / pageload will change the ui and welcome the user
                     Session["NewLogin"] = SignIn.Instance.ToString();
                     Utility.WriteLog("Login success");
@@ -90,11 +98,14 @@ namespace MessageCenter
                     Response.Redirect(Request.RawUrl);
 
                     break;
+
+                //INVALID CREDENTIALS
                 case StatusCode.FORHINDRING:
                     btn_login.Enabled = true;
-                    loginStatusText.Text = "Forkert TUser eller kode!";
-
+                    loginStatusText.Text = "Forkert TUser eller kode!\n (prøv evt. testbrugeren: \"T210672\"+\"andr4376\")";
                     break;
+
+                //TECHNICAL ERROR
                 case StatusCode.ERROR:
                     btn_login.Enabled = true;
                     loginStatusText.Text = "Fejl ved hentning af login info, kontakt venligst it-support!";
@@ -104,12 +115,6 @@ namespace MessageCenter
 
             //Reopen the login modal in case of invalid credentials / error
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
-           
-
-            
-
-
-
         }
 
     }
