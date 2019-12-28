@@ -20,10 +20,15 @@ namespace MessageCenter.Code
             this.text = text;
         }
 
+        public override void Reset()
+        {
+           //SMS not implemented
+        }
+
         public override KeyValuePair<StatusCode, string> Send()
         {
 
-            return new KeyValuePair<StatusCode, string>(StatusCode.ERROR, "Sms'er er desværre ikke understøttet i denne prototype");
+            return new KeyValuePair<StatusCode, string>(StatusCode.ERROR, " - Sms'er er desværre ikke understøttet i denne prototype");
         }
 
     }

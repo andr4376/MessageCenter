@@ -11,15 +11,9 @@ namespace MessageCenter.Code
         /// Overridable Send method for messages
         /// </summary>
         /// <returns>A report containing send status and a description</returns>
-        public virtual KeyValuePair<StatusCode,string> Send()
-        {
+        public abstract KeyValuePair<StatusCode, string> Send();
 
-            return new KeyValuePair<StatusCode, string>(StatusCode.ERROR,"Ukendt beskedtype!");
-        }
 
-        public virtual void Reset()
-        {
-            
-        }
+        public abstract void Reset();
     }
 }

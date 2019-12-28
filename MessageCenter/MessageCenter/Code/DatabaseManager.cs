@@ -5,15 +5,15 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.SessionState;
 
 namespace MessageCenter.Code
 {
     public class DatabaseManager
     {
 
-        private static DatabaseManager instance;
 
-       
+
 
         private SQLiteConnection DBConnect;
 
@@ -30,7 +30,7 @@ namespace MessageCenter.Code
         {
             get
             {
-                return Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.MESSAGE_LOG_TABLE_NAME); ;
+                return Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.MESSAGE_LOG_TABLE_NAME); 
             }
         }
 
@@ -46,12 +46,12 @@ namespace MessageCenter.Code
         {
             get
             {
-                if (instance == null)
+                HttpSessionState session = HttpContext.Current.Session;
+                if (session["databaseManager"] == null)
                 {
-                    instance = new DatabaseManager();
+                    session["databaseManager"] = new DatabaseManager();
                 }
-                return instance;
-
+                return (DatabaseManager)session["databaseManager"];
             }
         }
 
@@ -166,7 +166,6 @@ private StatusCode LoadAllMessageTemplates()
             DBConnect = new SQLiteConnection("Data source = " + FileManager.Instance.DbFile + "; Version = 3; ");
 
             //Setup Database file - if it goes well, Create the table if needed, else return error.
-
             StatusCode code = CreateDbFileIfNotExists();
 
             string script = File.ReadAllText(
@@ -179,11 +178,6 @@ private StatusCode LoadAllMessageTemplates()
             {
                 //Ingen db fil fundet - ny er oprettet
                 case StatusCode.OK:
-
-                    /*if (CreateTables() != StatusCode.OK)
-                   {
-                       return StatusCode.ERROR;
-                   }*/
 
                     //Insert DEMO message templates - one Mail and one SMS
                     script = File.ReadAllText(
@@ -458,7 +452,7 @@ private StatusCode LoadAllMessageTemplates()
                     return messagesDictionary;
                 }
                 */
-     
+
 
 
 
@@ -624,7 +618,7 @@ private StatusCode LoadAllMessageTemplates()
         /// <param name="ricipientAdresse"></param>
         /// <param name="title"></param>
         /// <param name="text"></param>
-        public void LogSentMessage(int? messageTemplateId ,StatusCode status, string senderTuser, string ricipientCpr,
+        public void LogSentMessage(int? messageTemplateId, StatusCode status, string senderTuser, string ricipientCpr,
             string ricipientAdresse, string title, string text)
         {
             string timeStamp = DateTime.Now.ToString();
@@ -650,9 +644,9 @@ private StatusCode LoadAllMessageTemplates()
                 timeStamp
                 );
 
-           StatusCode sqliteStatus =
-                ExecuteSQLiteNonQuery(command);
-            
+            StatusCode sqliteStatus =
+                 ExecuteSQLiteNonQuery(command);
+
 
             Utility.WriteLog("\nLogging sent message attempt... SQLite execution status: " + sqliteStatus.ToString() + "! MessageInfo:\n"
                + "Message Template ID: " + messageTemplateId.ToString() + "\n"
@@ -661,8 +655,8 @@ private StatusCode LoadAllMessageTemplates()
                + "ricipientCpr: " + ricipientCpr + "\n"
                + "ricipientAdresse: " + ricipientAdresse + "\n"
                + "title: " + title + "\n"
-               + "timeStamp: " + timeStamp+"\n");         
-                                 
+               + "timeStamp: " + timeStamp + "\n");
+
         }
     }
 

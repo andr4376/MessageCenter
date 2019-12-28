@@ -195,15 +195,17 @@ namespace MessageCenter
                 return StatusCode.FORHINDRING;
             }
 
+            //The sender of the message is the employee who's signed in
             MessageHandler.Instance.Sender = SignIn.Instance.User;
-            MessageHandler.Instance.MsgTemplate = DatabaseManager.Instance.GetMessageTemplateFromId(messageTemplateIdInput);
 
-
-
-
-            if (MessageHandler.Instance.MsgTemplate == null || MessageHandler.Instance.Sender == null)
+            //Get the selected message template from db
+            MessageHandler.Instance.MsgTemplate = 
+                DatabaseManager.Instance.GetMessageTemplateFromId(messageTemplateIdInput);
+                                 
+            if (MessageHandler.Instance.MsgTemplate == null
+                || MessageHandler.Instance.Sender == null)
             {
-
+                //Message template does not exist or user is not signed in
                 return StatusCode.ERROR;
             }
 
@@ -266,8 +268,10 @@ namespace MessageCenter
         }
 
 
-
-        private void DisplayMessageData()
+        /// <summary>
+        /// Makes sure message template content is editted, and then displays it to the screen
+        /// </summary>
+        private void EditAndDisplayMessageData()
         {
 
             //Prints message template, sender and receiver to output
@@ -301,7 +305,7 @@ namespace MessageCenter
             switch (GetSelectedCustomer())
             {
                 case StatusCode.OK:
-                   DisplayMessageData();
+                   EditAndDisplayMessageData(); 
                     break;
 
                 //User did not select a customer
@@ -337,7 +341,7 @@ namespace MessageCenter
 
             }
             //Get customer from api
-            Customer customer = new ApiCaller().MakeRestCall<Customer>(
+            Customer customer = new ApiCaller().GetDataFromApi<Customer>(
                 Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.GET_CUSTOMER_FROM_CPR_API_PARAMETERS)
                + selectedCustomer)[0];
 
@@ -520,12 +524,11 @@ namespace MessageCenter
 
         }
 
+
         protected void openNewAttachmentModalBtn_Click(object sender, EventArgs e)
         {
+            //calls the JS function "openAttachmentModal()" from Messages.aspx
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openAttachmentModal();", true);
-
-
-
         }
 
        /// <summary>
@@ -544,21 +547,22 @@ namespace MessageCenter
                 tmp = new MessageAttachment(
                     AttachmentFileUpload.FileName, AttachmentFileUpload.FileBytes);
 
-                //Create temporary file in app data 
-                StatusCode createFileStatus = tmp.CreateTempFile();
+                
 
                 
-                if (createFileStatus == StatusCode.OK)
-                {
-                    lock (MessageHandler.attachmentsKey)
+              
+                    lock (MessageHandler.Instance.attachmentsKey)
                     {
                         //Add attachment to the list of attachments for the current message
-                        MessageHandler.Instance.Attachments.Add(tmp);
+                      tmp=  MessageHandler.Instance.AddAttachment(tmp);
+
 
                         //Refresh Listbox to show all attachments
                         UpdateAttachmentsListbox(MessageHandler.Instance.Attachments);
                     }
-                }
+
+                //Create temporary file in app data 
+                StatusCode createFileStatus = tmp.CreateTempFile();
 
                 //Close the "upload file" modal
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "closeAttachmentModal();", true);

@@ -110,7 +110,7 @@ namespace MessageCenter.Code
 
         public void DeleteDirectory(string path)
         {
-            lock (MessageHandler.attachmentsKey)
+            lock (MessageHandler.Instance.attachmentsKey)
             {
                 if (Directory.Exists(path))
                 {
@@ -140,6 +140,7 @@ namespace MessageCenter.Code
             catch (Exception e)
             {
                 Utility.WriteLog("ERROR in 'FileManager.CreateFile': " + e.ToString());
+
                 Utility.PrintWarningMessage("Der er opstået en fejl ved oprettelse af midlertidlige filer - kontakt venligst teknisk support: " +
                     Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
 

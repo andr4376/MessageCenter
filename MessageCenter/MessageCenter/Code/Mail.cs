@@ -66,13 +66,14 @@ namespace MessageCenter.Code
             StatusCode sentStatus;
             string description = string.Empty;
 
+            //Try to send mail
             try
             {
                 //Sends the Email
                 smtpClient.Send(mailMessage);
 
                 this.Reset();
-
+                
                 sentStatus = StatusCode.OK;
 
 
@@ -86,7 +87,7 @@ namespace MessageCenter.Code
                     + Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL) + "): \n" +
                     exception.ToString();
                 
-            }
+            } 
 
             return new KeyValuePair<StatusCode, string>(sentStatus,description);
         }

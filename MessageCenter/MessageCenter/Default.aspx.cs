@@ -11,12 +11,12 @@ namespace MessageCenter
 {
     public partial class _Default : Page
     {
-       
+
         public bool ShowAdminInterface
         {
             get
             {
-               return SignIn.Instance.IsAdmin;
+                return SignIn.Instance.IsAdmin;
             }
         }
 
@@ -27,7 +27,7 @@ namespace MessageCenter
             if (!Page.IsPostBack)
             {
                 Initialize();
-              
+
             }
             CheckIfListboxDoubleClick();
 
@@ -141,10 +141,32 @@ namespace MessageCenter
                 listBoxMessageTemplates.Items.Clear();
             }
 
+            //Add elements
             listBoxMessageTemplates.DataSource = listOfMsgTemplates;
             listBoxMessageTemplates.DataTextField = "Title";
             listBoxMessageTemplates.DataValueField = "Id";
             listBoxMessageTemplates.DataBind();
+
+
+            int listBoxMaxHeight = 500;
+            int listBoxMinHeight = 75;
+            int listBoxItemHeight = 25;
+
+            //get a height for listbox to fit elements
+            int listboxHeight = listBoxItemHeight * (listOfMsgTemplates.Count + 1);
+
+            if (listboxHeight > listBoxMaxHeight)
+                listboxHeight = listBoxMaxHeight;
+
+            if (listboxHeight < listBoxMinHeight)
+                listboxHeight = listBoxMinHeight;
+            //set height
+            listBoxMessageTemplates.Height = listboxHeight;
+
+            //Add a tooltip to each list item with their text, in case of horizontal overflow (long titles)
+            foreach (ListItem listBoxItem in listBoxMessageTemplates.Items)
+                listBoxItem.Attributes.Add("title", listBoxItem.Text);
+
 
 
         }
@@ -155,7 +177,7 @@ namespace MessageCenter
             {
                 return;
             }
-           
+
 
             //proceed if the has signed in, else, show user the login modal
             if (SignIn.Instance.User == null)
@@ -164,10 +186,10 @@ namespace MessageCenter
 
                 return;
             }
-            
-            Utility.WriteLog("proceeding to message page for message Id: "+listBoxMessageTemplates.SelectedItem.Value);
 
-           
+            Utility.WriteLog("proceeding to message page for message Id: " + listBoxMessageTemplates.SelectedItem.Value);
+
+
             //Stores the Id of the selected messagetemplate
             Session["MessageTemplateId"] = listBoxMessageTemplates.SelectedItem.Value;
 
@@ -197,13 +219,13 @@ namespace MessageCenter
                 ////Slet ovenstående efter eksamen
 
                 //Delete the selected message Template, and all its attachments
-                StatusCode deleteStatus=
+                StatusCode deleteStatus =
                 DatabaseManager.Instance.DeleteMessageTemplate(messageId);
 
                 //Get all attachments and Update listbox               
-                    UpdateListBox(
-                        DatabaseManager.Instance.GetAllMessageTemplates());
-;
+                UpdateListBox(
+                    DatabaseManager.Instance.GetAllMessageTemplates());
+                ;
             }
 
         }

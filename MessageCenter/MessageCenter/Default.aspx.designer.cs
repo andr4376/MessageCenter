@@ -40,6 +40,24 @@ namespace MessageCenter {
         protected global::System.Web.UI.WebControls.Image logo;
         
         /// <summary>
+        /// addNewMessageBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ImageButton addNewMessageBtn;
+        
+        /// <summary>
+        /// removeMessageTemplate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ImageButton removeMessageTemplate;
+        
+        /// <summary>
         /// UPListbox control.
         /// </summary>
         /// <remarks>
@@ -56,24 +74,6 @@ namespace MessageCenter {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListBox listBoxMessageTemplates;
-        
-        /// <summary>
-        /// addNewMessageBtn control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button addNewMessageBtn;
-        
-        /// <summary>
-        /// removeMessageTemplate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button removeMessageTemplate;
         
         /// <summary>
         /// btn_proceedToMessagePage control.

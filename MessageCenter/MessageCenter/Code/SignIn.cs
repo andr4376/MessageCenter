@@ -29,7 +29,7 @@ namespace MessageCenter.Code
             {
                 if (IsLoggedIn)
                 {
-                    return new ApiCaller().MakeRestCall<Customer>(
+                    return new ApiCaller().GetDataFromApi<Customer>(
                         Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.GET_CUSTOMER_FROM_ADVISOR_TUSER_API_PARAMETERS)
                         + User.Tuser);
                 }
@@ -40,8 +40,7 @@ namespace MessageCenter.Code
         public static SignIn Instance
         {
             get
-            {
-              
+            {              
                 HttpSessionState session = HttpContext.Current.Session;
                 if (session["SignIn"] == null)
                 {
@@ -70,6 +69,11 @@ namespace MessageCenter.Code
             }
         }
 
+        private SignIn()
+        {
+
+        }
+
         /// <summary>
         /// Attempts to log in using the input credentials and returns the status of the attempt - OK:success, Forhindring:Wrong credentials, Error:API exception
         /// </summary>
@@ -82,7 +86,7 @@ namespace MessageCenter.Code
 
             try
             {
-                User = new ApiCaller().MakeRestCall<Employee>
+                User = new ApiCaller().GetDataFromApi<Employee>
                 (Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.GET_EMPLOYEE_FROM_CREDENTIALS_API_PARAMETERS)
                 + tUser.ToUpper() + "/"
                 + EncryptPassword(passWord))[0];
@@ -103,7 +107,8 @@ namespace MessageCenter.Code
             }
             catch (Exception)
             {
-                Utility.PrintWarningMessage("Api Exception! kunne lave kald for at finde loginbruger");
+                Utility.PrintWarningMessage("Teknisk Fejl ved login forsøg! Kontakt venligst teknisk support på: "+
+                    Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
             }
             return returnCode;
         }

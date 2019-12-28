@@ -49,7 +49,7 @@ namespace MessageCenter.Code
         /// <summary>
         /// the "key" to accessing the attachments list
         /// </summary>
-        public static readonly object attachmentsKey = new object();
+        public readonly object attachmentsKey = new object();
 
         /// <summary>
         /// Returns the list of attachments that is locked so that only one thread can access it at a time
@@ -60,7 +60,7 @@ namespace MessageCenter.Code
             {
                 return attachments;
             }
-            set
+            private set
             {
                 attachments = value;
 
@@ -113,10 +113,6 @@ namespace MessageCenter.Code
         {
             get
             {
-                if (HttpContext.Current == null)
-                {
-                    return null;
-                }
 
                 HttpSessionState session = HttpContext.Current.Session;
                 if (session["MessageHandler"] == null)
@@ -131,18 +127,20 @@ namespace MessageCenter.Code
 
 
 
-
+        /// <summary>
+        /// Get/set for the messageHandler's MsgTemplate 
+        /// </summary>
         public MessageTemplate MsgTemplate
         {
-            get { return Instance.msgTemplate; }
+            get { return msgTemplate; }
             set
             {
-                Instance.msgTemplate = value;
+                msgTemplate = value;
 
-                if (Instance.msgTemplate != null && Instance.msgTemplate.MessageType == MessageType.MAIL)
-                {
+                //Automatically fetch all attachments when the msgTemplate is set
+                if (msgTemplate != null)
                     FetchAttachmentsFromDb();
-                }
+
             }
         }
 
@@ -208,7 +206,7 @@ namespace MessageCenter.Code
         public static void Reset()
         {
 
-           
+
 
             if (HttpContext.Current.Session["MessageHandler"] == null)
             {
@@ -216,7 +214,7 @@ namespace MessageCenter.Code
             }
 
             FileManager.Instance.DeleteDirectory(
-               ((MessageHandler)HttpContext.Current.Session["MessageHandler"]).GetTempFilesPath());
+               (Instance.GetTempFilesPath()));
 
             HttpContext.Current.Session["MessageHandler"] = null;
         }
@@ -313,7 +311,7 @@ namespace MessageCenter.Code
                 //Edit the attachments asynchronously
                 new Thread(
                     () => AttachmentsInsertData(instanceReference)) //Alternate paramterized thread
-                { IsBackground = true } //In case it lingers, it gets removed on server restart
+                { IsBackground = true }
                 .Start();
 
 
@@ -363,9 +361,11 @@ namespace MessageCenter.Code
             }
         }
 
+        /// <summary>
+        /// Instantiates the messagehandler's "message variable" based on the type of the messagetemplate.
+        /// </summary>
         public void SetupMessage()
         {
-
 
             switch (MsgTemplate.MessageType)
             {
@@ -391,7 +391,7 @@ namespace MessageCenter.Code
 
         }
 
-        public KeyValuePair<StatusCode, string> AddAttachments()
+        public KeyValuePair<StatusCode, string> AddAttachmentsToMessage()
         {
             StatusCode status = StatusCode.OK;
             string description = string.Empty;
@@ -413,7 +413,7 @@ namespace MessageCenter.Code
 
                             if (status != StatusCode.OK)
                             {
-                                description = "Der opstod fejl ved behandling af " + attachment.FileName + ", og besked blev derfor ikke afsendt";
+                                description = "Der opstod fejl ved behandling af den vedhæftede fil '" + attachment.FileName + "', og besked blev derfor ikke afsendt";
                                 break; //exit loop and return report
 
                             }
@@ -441,7 +441,7 @@ namespace MessageCenter.Code
 
             //Add attachments (if supported by the messagetype)
             KeyValuePair<StatusCode, string> report =
-            AddAttachments();
+            AddAttachmentsToMessage();
 
             if (report.Key != StatusCode.OK)
             {
@@ -453,11 +453,11 @@ namespace MessageCenter.Code
             report =
               Msg.Send();
 
-            if (report.Key != StatusCode.OK)
+            if (report.Key != StatusCode.OK)//If something went wrong
             {
                 description = "Besked kunne ikke afsendes";
 
-                description += " " + report.Value;
+                description += " " + report.Value;//add what went wrong to description
 
             }
 
@@ -466,11 +466,11 @@ namespace MessageCenter.Code
 
 
             //Clean up temp files and remove Singleton object reference
-            if (report.Key != StatusCode.FORHINDRING)
+            if (report.Key != StatusCode.FORHINDRING) //Stay on page if "Forhindring" - the complications can be fixed by user
                 Msg.Reset(); Reset();
 
-            return new KeyValuePair<StatusCode, string>(report.Key, description);
 
+            return new KeyValuePair<StatusCode, string>(report.Key, description);
         }
 
         /// <summary>
@@ -505,10 +505,12 @@ namespace MessageCenter.Code
 
             Utility.WriteLog("Getting all attachments for messageTemplate id " + MsgTemplate.Id);
 
+            //Get attachments that are related to this message template's Id
             this.Attachments = DatabaseManager.Instance.GetAttachmentsFromMessageId(MsgTemplate.Id);
 
             if (Attachments == null)
             {
+                //Error
                 Utility.PrintWarningMessage("Der opstod fejl ved udhentning af beskedens vedhæftede filer fra databasen." +
                     " Programmet kunne ikke identificere beskedskabelonen - kontakt venligt teknisk support:" +
                     Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
@@ -519,6 +521,7 @@ namespace MessageCenter.Code
             Utility.WriteLog(Attachments.Count + " attachments found for messageTemplate with id: " + MsgTemplate.Id);
 
 
+            // Create temprorary files for each newly fetched attachments
             foreach (MessageAttachment attachment in Attachments)
             {
                 StatusCode createFilesStatus =
@@ -533,6 +536,10 @@ namespace MessageCenter.Code
             return Attachments;
         }
 
+        /// <summary>
+        /// Returns a unique path for this message's temprorary folder based on the MessageTemplate and the signed in employee.
+        /// </summary>
+        /// <returns></returns>
         public string GetTempFilesPath()
         {
             string path = string.Empty;
@@ -546,6 +553,10 @@ namespace MessageCenter.Code
             return path;
         }
 
+        /// <summary>
+        /// Removes an attachment from the message
+        /// </summary>
+        /// <param name="index">The index of the attachment</param>
         public void RemoveAttachment(int index)
         {
             //Listbox attachments and attachments list is 1:1
@@ -556,6 +567,52 @@ namespace MessageCenter.Code
                 Attachments.Remove(Attachments[index]);
             }
 
+        }
+
+        /// <summary>
+        /// Handles adding attachments to the message and ensures unique namings of file names
+        /// </summary>
+        /// <param name="newAttachment">the MessageAttachment you wish to add</param>
+        /// <returns></returns>
+        public MessageAttachment AddAttachment(MessageAttachment newAttachment)
+        {
+
+            foreach (MessageAttachment attachment in Attachments)
+            {
+                //If an existing attachment shares name with the new attachment
+                if (attachment.FileName == newAttachment.FileName)
+                {
+                    string newFileName;
+                    try
+                    {
+                        //Anything before ".(file type)" Fx. "Test"
+                        string fileName = newAttachment.FileName.Replace("." + newAttachment.FileType, "");
+
+                        //The file type Fx. "png"
+                        string fileType = newAttachment.FileType;
+
+                        //Fx. Test_.png
+                        newFileName = fileName + "_." + fileType;
+
+                    }
+                    catch (Exception e)
+                    {
+
+                        Utility.WriteLog("ERROR in MessageHandler.AddAttachments!: " + e.ToString());
+
+                        //If anything should go wrong somehow, just create a unique name
+                        newFileName = "attachment" + DateTime.Now.Millisecond + "."+newAttachment.FileType;
+
+                    }
+                    //Update the attachments file name
+                    newAttachment.FileName = newFileName;
+                }
+            }
+
+            //Add attachment
+            Attachments.Add(newAttachment);
+
+            return newAttachment;
         }
     }
 }

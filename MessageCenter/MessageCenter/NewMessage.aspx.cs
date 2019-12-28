@@ -203,17 +203,17 @@ namespace MessageCenter
                 tmp = new MessageAttachment(
                     AttachmentFileUpload.FileName, AttachmentFileUpload.FileBytes);
 
+
+
+                lock (MessageHandler.Instance.attachmentsKey)
+                {
+                    tmp = MessageHandler.Instance.AddAttachment(tmp);
+
+                    UpdateAttachmentsListbox(MessageHandler.Instance.Attachments);
+                }
+
                 StatusCode createFileStatus = tmp.CreateTempFile();
 
-                if (createFileStatus == StatusCode.OK)
-                {
-                    lock (MessageHandler.attachmentsKey)
-                    {
-                        MessageHandler.Instance.Attachments.Add(tmp);
-
-                        UpdateAttachmentsListbox(MessageHandler.Instance.Attachments);
-                    }
-                }
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "closeAttachmentModal();", true);
             }
@@ -257,7 +257,7 @@ namespace MessageCenter
         protected void CreateMessageBtn_Click(object sender, EventArgs e)
         {
 
-            MessageHandler.Instance.MsgTemplate.Title = titleTextBox.Text.Replace("'","");
+            MessageHandler.Instance.MsgTemplate.Title = titleTextBox.Text.Replace("'", "");
 
             MessageHandler.Instance.MsgTemplate.Text = messageTextTextBox.Text.Replace("'", "");
 

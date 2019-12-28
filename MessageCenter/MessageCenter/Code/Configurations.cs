@@ -44,16 +44,18 @@ namespace MessageCenter.Code
         private static void SetupConfigurations()
         {
             configurationsFile = new XmlDocument();
+
+            //get path to config file 
             string configXmlPath = FileManager.Instance.GetFilePath(xmlConfigFileName);
 
 
-            if (!File.Exists(configXmlPath))
+            if (!File.Exists(configXmlPath)) //if config file does not exist
             {
-                CreateDefaultConfigurations(configXmlPath);
+                CreateDefaultConfigurations(configXmlPath); //create config file
             }
-            configurationsFile.Load(configXmlPath);
+            configurationsFile.Load(configXmlPath); //load configurations
 
-
+            //the values are the actual names of the xml nodes
             configDictionary = new Dictionary<CONFIGURATIONS_ATTRIBUTES, string>()
             {
                 {CONFIGURATIONS_ATTRIBUTES.API_URL,"apiUrl" },
@@ -68,7 +70,6 @@ namespace MessageCenter.Code
                 {CONFIGURATIONS_ATTRIBUTES.GET_CUSTOMER_FROM_ADVISOR_TUSER_API_PARAMETERS,"getCustomerFromAdvisor" },
                 {CONFIGURATIONS_ATTRIBUTES.GET_EMPLOYEE_FROM_TUSER_API_PARAMETERS,"getEmployeeFromTUserParameters" },
                 {CONFIGURATIONS_ATTRIBUTES.GET_EMPLOYEE_FROM_CREDENTIALS_API_PARAMETERS,"getEmployeeFromCredentials" }
-
             };
 
 
@@ -111,7 +112,7 @@ namespace MessageCenter.Code
 
 
         /// <summary>
-        /// Returns the input attribute's stored value
+        /// Returns a string value that is stored in the configuration XML file based on the input enum 
         /// </summary>
         /// <param name="configurationType">The configuration attribute you wish to a value from</param>
         /// <returns></returns>
@@ -119,16 +120,15 @@ namespace MessageCenter.Code
         {
             //If this is the first time we read from the config file
             if (configurationsFile == null)
-            {
                 SetupConfigurations();
 
-            }
-
-            //Translate enum to attribute name
-            string tmp = configDictionary[configurationType];
+            //Translate enum to attribute name (xml node text)
+            string configurationNodeName =
+                configDictionary[configurationType];
 
             //Get the xml attribute
-            XmlNodeList xmlNodes = configurationsFile.DocumentElement.SelectNodes("/configurations/" + configDictionary[configurationType]);
+            XmlNodeList xmlNodes = configurationsFile.DocumentElement.
+                SelectNodes("/configurations/" + configurationNodeName);
 
             //Return the first value it finds, if any exists
             foreach (XmlNode xmlNode in xmlNodes)
@@ -148,12 +148,12 @@ namespace MessageCenter.Code
         public static bool TUserIsAdmin(string tUser)
         {
             //Get the xml attribute
-            XmlNodeList xmlNodes = configurationsFile.DocumentElement.SelectNodes("/configurations/admins/Tuser");
+            XmlNodeList listOfAdminTUsers = configurationsFile.DocumentElement.SelectNodes("/configurations/admins/Tuser");
 
-            //Return the first value it finds, if any exists
-            foreach (XmlNode xmlNode in xmlNodes)
+            //for each admin
+            foreach (XmlNode adminTUser in listOfAdminTUsers)
             {
-                if (tUser.ToUpper() == xmlNode.InnerText.ToUpper())
+                if (tUser.ToUpper() == adminTUser.InnerText.ToUpper())
                 {
                     return true;
                 } 

@@ -67,10 +67,12 @@ namespace MessageCenter
         {
             Utility.WriteLog("Attempting to log in");
 
+
             if (SignIn.Instance.IsLoggedIn)
             {
                 return;
             }
+            
             btn_login.Enabled = false;
 
             StatusCode loginStatus = SignIn.Instance.LogIn(loginTuserInput.Text, loginPasswordInput.Text);
@@ -91,6 +93,7 @@ namespace MessageCenter
                 case StatusCode.FORHINDRING:
                     btn_login.Enabled = true;
                     loginStatusText.Text = "Forkert TUser eller kode!";
+
                     break;
                 case StatusCode.ERROR:
                     btn_login.Enabled = true;
@@ -101,6 +104,9 @@ namespace MessageCenter
 
             //Reopen the login modal in case of invalid credentials / error
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
+           
+
+            
 
 
 

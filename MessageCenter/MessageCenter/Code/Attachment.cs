@@ -12,25 +12,36 @@ namespace MessageCenter.Code
 {
     public class MessageAttachment
     {
+        /// <summary>
+        /// The unique id of the attachment
+        /// </summary>
         public int Id
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// The id of the message template it should be attached to
+        /// </summary>
         public int MessageTemplateId
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// The file name and type as it was uploaded
+        /// </summary>
         public string FileName
         {
             get;
-            private set;
+             set;
         }
 
-
+        /// <summary>
+        /// the data of the file
+        /// </summary>
         public byte[] FileData
         {
             get;
@@ -44,13 +55,16 @@ namespace MessageCenter.Code
         {
             get
             {
-                return this.FileName.Split('.')[1];
+                string[] fileParts = this.FileName.Split('.');
+                return fileParts[fileParts.Length-1];
             }
         }
 
 
 
-
+        /// <summary>
+        /// The path to this file in the temp folder
+        /// </summary>
         public string FilePath
         {
             get
@@ -60,6 +74,12 @@ namespace MessageCenter.Code
             }
 
         }
+
+        /// <summary>
+        /// Returns the path to this file in the temp folder - used in threaded methods that cant access singleton normally
+        /// </summary>
+        /// <param name="msgHandler"></param>
+        /// <returns></returns>
         public string GetFilePath(MessageHandler msgHandler)
         {
             return msgHandler.GetTempFilesPath() + "\\" + FileName;
@@ -81,6 +101,10 @@ namespace MessageCenter.Code
 
         }
 
+        /// <summary>
+        /// Creates the temporary file in the temp folder
+        /// </summary>
+        /// <returns>a status code describing the mothod's success</returns>
         public StatusCode CreateTempFile()
         {
             //Make sure temp folder exist
@@ -92,7 +116,7 @@ namespace MessageCenter.Code
             return FileManager.Instance.CreateFile(FilePath, FileData);
         }
 
-
+        //FOR TESTING
         public static List<MessageAttachment> GetTestAttachment()
         {
             return new List<MessageAttachment>(){
@@ -105,6 +129,10 @@ namespace MessageCenter.Code
             };
         }
 
+        /// <summary>
+        /// Inserts data from the messagehandler into this attachments content if possible
+        /// </summary>
+        /// <param name="messageHandler"></param>
         public void EditAttachment(MessageHandler messageHandler)
         {
             switch (this.FileType)
@@ -143,7 +171,7 @@ namespace MessageCenter.Code
                     //Fx. "[customerFullName] => Andreas Kirkegaard Jensen"
                     string value = messageHandler.GetValueFromMessageVariable(variable.Key);
 
-                    if (value == string.Empty)
+                    if (value == string.Empty)//just in case
                     {
                         continue;
                     }
@@ -152,16 +180,16 @@ namespace MessageCenter.Code
 
                 }
             }
-            catch (Exception)
+            catch (Exception e )
             {
                 //If something goes wrong while editting the word document:
                 //Close the document, so the file is not in use by this process
                 document.Close();
                 openedWordDoc.Quit();
 
-                Utility.WriteLog("Error in ReplaceWordDocText");
+                Utility.WriteLog("Error in ReplaceWordDocText: "+e.ToString());
 
-                throw;
+                throw e;
             }
 
             //Overwrite existing temp file
@@ -190,6 +218,7 @@ namespace MessageCenter.Code
         {
 
             //all values are stored as local object variables, because the Execute method requires object references in its parameters
+            //These settings will replace the text and keep the same format
             object matchCase = false;
             object matchWholeWord = true;
             object matchWildCards = false;
@@ -212,22 +241,31 @@ namespace MessageCenter.Code
                 ref matchKashida, ref matchDiacritics, ref matchAlefHamza, ref matchControl);
         }
 
+        /// <summary>
+        /// Converts a docx file to pdf
+        /// </summary>
+        /// <returns></returns>
         public StatusCode ConvertDocToPDF()
         {
             StatusCode convertStatus = StatusCode.OK;
 
-            if (this.FileType == "docx")
+            if (this.FileType == "docx")//if Word document
             {
                 try
                 {
-                    Application wordApplication = new Application();
-                    Document wordDocument = wordApplication.Documents.Open(this.FilePath);
+                    Application wordApplication = new Application();//new word application
+                    Document wordDocument = wordApplication.Documents.Open(this.FilePath); //open the document
 
+                    //change file name to have .pdf instead of .docx
+                    this.FileName = this.FileName.Replace(FileType, "pdf"); 
 
-                    this.FileName = this.FileName.Replace(FileType, "pdf");
-
+                    //save the open word document as PDF
                     wordDocument.SaveAs2(FilePath, WdSaveFormat.wdFormatPDF);
+
+                    //Close document
                     wordDocument.Close();
+
+                    //exit word application
                     wordApplication.Quit();
                 }
                 catch (Exception e)
