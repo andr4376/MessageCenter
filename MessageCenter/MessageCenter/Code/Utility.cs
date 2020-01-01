@@ -9,7 +9,7 @@ namespace MessageCenter.Code
     /// <summary>
     /// Returkoder, som returneres af mange metoder for at beskrive om metoden fuldførte sit job. 
     /// </summary>
-    public enum StatusCode {OK,FORHINDRING,ERROR};
+    public enum StatusCode { OK, FORHINDRING, ERROR };
 
     public static class Utility
     {
@@ -20,7 +20,7 @@ namespace MessageCenter.Code
         public static void PrintWarningMessage(string message)
         {
             System.Web.HttpContext.Current.Response.Write
-                ("<SCRIPT LANGUAGE=\"\"JavaScript\"\">alert(\"" + message + "\")</SCRIPT>");           
+                ("<SCRIPT LANGUAGE=\"\"JavaScript\"\">alert(\"" + message + "\")</SCRIPT>");
         }
 
 
@@ -35,7 +35,9 @@ namespace MessageCenter.Code
 
             foreach (Customer customer in list)
             {
-                customerDictionary.Add(customer.Cpr, customer.Cpr+" - "+customer.FirstName+" "+customer.LastName);
+                customerDictionary.Add(
+                    customer.Cpr, //key
+                    customer.Cpr + " - " + customer.FirstName + " " + customer.LastName);//value
 
             }
             return customerDictionary;
@@ -45,9 +47,12 @@ namespace MessageCenter.Code
         public static void WriteLog(string textToLog)
         {
             System.Diagnostics.Debug.WriteLine(textToLog);
-        }
 
+        }
     }
 
-  
+
+
+
+
 }

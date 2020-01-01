@@ -28,22 +28,45 @@ namespace MessageCenter.Code
     }
 
     /// <summary>
-    /// 
+    /// Singleton class that handles message types, recipients, senders, attachments and sending of messages.
     /// </summary>
     public class MessageHandler
     {
+
+        /// <summary>
+        /// The customer receiving the message
+        /// </summary>
         private Customer recipient;
 
+
+        /// <summary>
+        /// The employee sending the message
+        /// </summary>
         private Employee sender;
 
+        /// <summary>
+        /// The chosen message template
+        /// </summary>
         private MessageTemplate msgTemplate;
 
+        /// <summary>
+        ///A dictionary of message variables - Fx EMPLOYEE_FULLNAME -> [employeeFullName]
+        /// </summary>
         private static Dictionary<MESSAGE_VARIABLES, string> messageVariables;
 
+        /// <summary>
+        /// The message itself - Is abstract and will become one of the inheriting classes fx Mail
+        /// </summary>
         private Message message;
 
+        /// <summary>
+        /// List of attachments for the message 
+        /// </summary>
         private List<MessageAttachment> attachments;
 
+        /// <summary>
+        /// CC adresses for mails 
+        /// </summary>
         public string cCAdress = string.Empty;
 
         /// <summary>
@@ -52,7 +75,7 @@ namespace MessageCenter.Code
         public readonly object attachmentsKey = new object();
 
         /// <summary>
-        /// Returns the list of attachments that is locked so that only one thread can access it at a time
+        /// Returns the list of attachments 
         /// </summary>
         public List<MessageAttachment> Attachments
         {
@@ -67,23 +90,38 @@ namespace MessageCenter.Code
             }
         }
 
+        /// <summary>
+        /// Get/Set Message
+        /// </summary>
         public Message Msg
         {
             get { return message; }
             set { message = value; }
         }
 
+        /// <summary>
+        /// Get/set the recipient customer
+        /// </summary>
         public Customer Recipient
         {
             get { return recipient; }
             set { recipient = value; }
         }
 
+        /// <summary>
+        /// Get/set the sender Employee
+        /// </summary>
         public Employee Sender
         {
             get { return sender; }
             set { sender = value; }
         }
+
+        /// <summary>
+        /// Get the message variable string value: fx EMPLOYEE_EMAIL -> [employeeEmail]
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <returns></returns>
         public static string GetMessageVariable(MESSAGE_VARIABLES variable)
         {
 
@@ -96,6 +134,9 @@ namespace MessageCenter.Code
 
         }
 
+        /// <summary>
+        /// Returns the Message variables dictionary
+        /// </summary>
         public static Dictionary<MESSAGE_VARIABLES, string> GetMessageVariables
         {
             get
@@ -109,11 +150,13 @@ namespace MessageCenter.Code
         }
 
 
+        /// <summary>
+        /// Modified Singleton pattern that returns the client's own instance of the MessageHandler
+        /// </summary>
         public static MessageHandler Instance
         {
             get
             {
-
                 HttpSessionState session = HttpContext.Current.Session;
                 if (session["MessageHandler"] == null)
                 {
@@ -147,19 +190,24 @@ namespace MessageCenter.Code
 
 
 
-
+        /// <summary>
+        /// Returns whether or not the Message is setup and ready to be send
+        /// </summary>
         public bool IsReady
         {
             get { return (Sender != null && Recipient != null && MsgTemplate != null); }
         }
 
-
+        /// <summary>
+        /// Private constructor so the class can not be instanciated from outside this class
+        /// </summary>
         private MessageHandler()
         {
-
-
         }
 
+        /// <summary>
+        /// Defines the message variables and their enum counterpart
+        /// </summary>
         private static void SetupMessageVariables()
         {
             messageVariables = new Dictionary<MESSAGE_VARIABLES, string>()
@@ -202,11 +250,11 @@ namespace MessageCenter.Code
         }
 
 
-
+        /// <summary>
+        /// Resets the singleton instance and deletes all temporary files related to the messagehandler
+        /// </summary>
         public static void Reset()
         {
-
-
 
             if (HttpContext.Current.Session["MessageHandler"] == null)
             {
@@ -219,6 +267,11 @@ namespace MessageCenter.Code
             HttpContext.Current.Session["MessageHandler"] = null;
         }
 
+        /// <summary>
+        /// Returns the the value of the input message variable- fx. CUSTOMER_FULLNAME -> "Jane Doe"
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <returns></returns>
         public string GetValueFromMessageVariable(MESSAGE_VARIABLES variable)
         {
             string value = string.Empty;
@@ -277,18 +330,26 @@ namespace MessageCenter.Code
 
         }
 
+        /// <summary>
+        /// Sets a blank message handler - used for creating new message templates
+        /// </summary>
+        /// <param name="type"></param>
         public void SetBlankMessage(int type)
         {
             //An empty message template with the given type (is converted to enum)
             MsgTemplate = new MessageTemplate(type);
 
-            //For path naming
+            //For path naming if User adds attached files to the new template
             Sender = SignIn.Instance.User;
 
+            //Normally set when picking a message template.
             Attachments = new List<MessageAttachment>();
 
         }
 
+        /// <summary>
+        /// Inserts Customer and employee data into the message template and all of its valid attachments
+        /// </summary>
         public void FillMessageWithData()
         {
             if (messageVariables == null)
@@ -320,9 +381,14 @@ namespace MessageCenter.Code
 
         }
 
+        /// <summary>
+        /// Edit all attachments for the input message handler.
+        /// </summary>
+        /// <param name="messageHandler"></param>
         private void AttachmentsInsertData(MessageHandler messageHandler)
         {
-            lock (attachmentsKey)
+            //no other processes are allowed to interact with the files while they're being editted.
+            lock (messageHandler.attachmentsKey)
             {
                 foreach (MessageAttachment attachment in messageHandler.attachments)
                 {
@@ -342,12 +408,15 @@ namespace MessageCenter.Code
             }
         }
 
-
+        /// <summary>
+        /// Replace the main text's message variables with values.
+        /// </summary>
         private void ReplaceMainText()
         {
-
+            //for each variables defines
             foreach (KeyValuePair<MESSAGE_VARIABLES, string> variable in messageVariables)
             {
+                //fx CUSTOMER_FULL_NAME -> "Jane Doe"
                 string value = GetValueFromMessageVariable(variable.Key);
 
                 if (value == string.Empty)
@@ -355,6 +424,7 @@ namespace MessageCenter.Code
                     continue;
                 }
 
+                //Fx Replace [customerFullName] with "Jane Doe"
                 MsgTemplate.Text = MsgTemplate.Text.Replace(
                     GetMessageVariable(variable.Key), value);
 
@@ -391,6 +461,10 @@ namespace MessageCenter.Code
 
         }
 
+        /// <summary>
+        /// Adds the attachments to the message (fx. mails)
+        /// </summary>
+        /// <returns></returns>
         public KeyValuePair<StatusCode, string> AddAttachmentsToMessage()
         {
             StatusCode status = StatusCode.OK;
@@ -405,7 +479,6 @@ namespace MessageCenter.Code
                     {
                         if (attachment.FileType == "docx")
                         {
-
                             //converts word documents to PDF, before sending them                            
                             status =
                             attachment.ConvertDocToPDF();
@@ -561,10 +634,36 @@ namespace MessageCenter.Code
         {
             //Listbox attachments and attachments list is 1:1
 
-            lock (attachmentsKey)
+            if (Attachments.Count - 1 < index)
             {
-                Attachments[index].RemoveTempFile();
-                Attachments.Remove(Attachments[index]);
+                Utility.WriteLog("MessageHandler.RemoveAttachment() was called with an index that is out of bounds!: Count: "
+                    + Attachments.Count + " input index: " + index);
+                return;
+            }
+
+
+            Utility.WriteLog("Removing attached file: '" + Attachments[index].FileName + "'");
+
+            Attachments[index].RemoveTempFile();
+            Attachments.Remove(Attachments[index]);
+        }
+
+        /// <summary>
+        /// Removes an attachment from the message
+        /// </summary>
+        /// <param name="index">The index of the attachment</param>
+        public void RemoveAttachment(string fileName)
+        {
+            Utility.WriteLog("Removing attached file: '" + fileName + "'");
+
+            foreach (MessageAttachment attachment in Attachments)
+            {
+                if (attachment.FileName == fileName)
+                {
+                    Attachments.Remove(attachment);
+                    return;
+                }
+
             }
 
         }
@@ -585,6 +684,9 @@ namespace MessageCenter.Code
                     string newFileName;
                     try
                     {
+                        Utility.WriteLog("Another file with the filename '" + newAttachment.FileName + "' already exists! generating new name...");
+
+
                         //Anything before ".(file type)" Fx. "Test"
                         string fileName = newAttachment.FileName.Replace("." + newAttachment.FileType, "");
 
@@ -594,6 +696,7 @@ namespace MessageCenter.Code
                         //Fx. Test_.png
                         newFileName = fileName + "_." + fileType;
 
+
                     }
                     catch (Exception e)
                     {
@@ -601,16 +704,22 @@ namespace MessageCenter.Code
                         Utility.WriteLog("ERROR in MessageHandler.AddAttachments!: " + e.ToString());
 
                         //If anything should go wrong somehow, just create a unique name
-                        newFileName = "attachment" + DateTime.Now.Millisecond + "."+newAttachment.FileType;
+                        newFileName = "attachment" + DateTime.Now.Millisecond + "." + newAttachment.FileType;
+
 
                     }
                     //Update the attachments file name
                     newAttachment.FileName = newFileName;
+
+                    Utility.WriteLog("Conflicting file has been renamed to '" + newAttachment.FileName + "'");
+
                 }
             }
 
             //Add attachment
             Attachments.Add(newAttachment);
+
+            Utility.WriteLog("'" + newAttachment.FileName + "' has succesfully been added to the Message");
 
             return newAttachment;
         }

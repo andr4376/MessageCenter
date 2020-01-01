@@ -20,7 +20,7 @@
                     <div class="login-box container">
                         <div class="row">
                             <asp:Panel runat="server" DefaultButton="searchBtnCustomer">
-                                <asp:TextBox ID="customerCprInput" runat="server" placeholder="CPR" CssClass="sparkron-search-input" autocomplete="off"></asp:TextBox>
+                                <asp:TextBox ID="customerCprInput" runat="server" placeholder="CPR eller navn" CssClass="sparkron-search-input" autocomplete="off"></asp:TextBox>
                                 <asp:Button ID="searchBtnCustomer" runat="server" OnClick="searchBtnCustomer_Click"
                                     Text="Søg" CssClass="sparkron-search-btn" CausesValidation="False" />
                             </asp:Panel>
@@ -47,7 +47,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <asp:Button ID="btn_Submit_Customer" Text="Vælg Kunde" runat="server" OnClick="btn_Submit_Customer_Click" CssClass="sparkron-submit-btn" CausesValidation="false"/>
+                    <asp:Button ID="btn_Submit_Customer" Text="Vælg Kunde" runat="server" OnClick="btn_Submit_Customer_Click" CssClass="sparkron-submit-btn" CausesValidation="false" />
                 </div>
             </div>
         </div>
@@ -80,7 +80,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <asp:Button ID="UploadFileBtn" Text="Upload Fil" runat="server" OnClick="UploadFileBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false"/>
+                    <asp:Button ID="UploadFileBtn" Text="Upload Fil" runat="server" OnClick="UploadFileBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false" />
                 </div>
             </div>
         </div>
@@ -103,7 +103,7 @@
             <div class="message-template-section-adresse-input row col-md-6">
                 <asp:TextBox CssClass="message-text-input" runat="server" autocomplete="off"
                     ID="customerMailInputText" BorderStyle="None" TextMode="SingleLine" placeholder="Modtagers Email adresse"
-                    Text="<%# this.GetReceiverAdresse %>"></asp:TextBox>
+                    Text="<%# this.GetRecipientAdresse %>"></asp:TextBox>
 
             </div>
             <div class="message-template-section-adresse-input row col-md-6">
@@ -126,42 +126,56 @@
             </div>
 
             <!-- Attachment section -->
-            <div id="AttachmentsSection" runat ="server">
+            <div id="AttachmentsSection" runat="server">
                 <div class="message-template-section row">
-                <h2>Vedhæftede filer</h2>
+                    <h2>Vedhæftede filer</h2>
                     <asp:Panel runat="server" DefaultButton="DownloadAttachmentBtn">
-                    <!-- UpdatePanel tillader at indholdet kan opdateres uden PostBack uden at skulle bruge AJAX -->
-                    <asp:UpdatePanel ID="UPAttachments" runat="server">
+                        <!-- UpdatePanel tillader at indholdet kan opdateres uden PostBack uden at skulle bruge AJAX -->
+                        <asp:UpdatePanel ID="UPAttachments" runat="server">
 
-                        <ContentTemplate>
-                            <asp:ListBox
-                                ID="listBoxAttachments" runat="server"
-                                CssClass="attachments-listbox"></asp:ListBox>
+                            <ContentTemplate>
+                                <asp:ListBox
+                                    ID="listBoxAttachments" runat="server"
+                                    CssClass="attachments-listbox"></asp:ListBox>
 
 
-                        </ContentTemplate>
+                            </ContentTemplate>
 
-                        <Triggers>
-                            <asp:AsyncPostBackTrigger ControlID="RemoveAttachmentButton" EventName="Click" />
-                            
-                        </Triggers>
-                    </asp:UpdatePanel>
+                            <Triggers>
+                                <asp:AsyncPostBackTrigger ControlID="RemoveAttachmentButton" EventName="Click" />
+
+                            </Triggers>
+                        </asp:UpdatePanel>
                     </asp:Panel>
                 </div>
                 <asp:Button ID="DownloadAttachmentBtn" Text="Download" runat="server" OnClick="DownloadAttachmentBtn_Click" CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
                 <asp:Button ID="RemoveAttachmentButton" Text="Fjern" runat="server" OnClick="RemoveAttachmentButton_Click" CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
                 <asp:Button ID="openNewAttachmentModalBtn" Text="Tilføj Fil" runat="server" OnClick="openNewAttachmentModalBtn_Click" CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
             </div>
-
-            <asp:Button ID="sendMailBtn" Text="Send" runat="server" OnClick="sendMailBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false"
-                OnClientClick="this.disabled=true;" UseSubmitBehavior="false" />
-            <asp:Literal ID="messageStatus" Text="" runat="server" />
             
+            <div>
+
+                <asp:Button ID="sendMailBtn" Text="Send" runat="server" OnClick="sendMailBtn_Click" CssClass="sparkron-submit-btn" CausesValidation="false"
+                    OnClientClick="toggleLoader(); this.disabled=true;" UseSubmitBehavior="false" />
+                <div id="loaderDiv" class="loader" style="float:right; display:none"></div>
+            </div>           
+            <asp:Literal ID="messageStatus" Text="" runat="server"/>
         </div>
-
-
-
     </div>
+     <script type="text/javascript">
+         function toggleLoader() {
+
+             var loaderDiv = document.getElementById("loaderDiv");
+
+             if (loaderDiv.style.display === "none") {
+                 loaderDiv.style.display = "block";
+             } else {
+                 loaderDiv.style.display = "none";
+             }
+             
+         }
+
+    </script>
     <!--Mail Message Page Body END-->
 
     <!--SMS Message Page Body-->
@@ -172,7 +186,7 @@
             <div class="message-template-section-adresse-input row">
                 <asp:TextBox CssClass="message-text-input" runat="server" autocomplete="off"
                     ID="smsPhoneNumber" BorderStyle="None" TextMode="SingleLine" placeholder="Modtagers Mobil Nr."
-                    Text="<%# this.GetReceiverAdresse %>"></asp:TextBox>
+                    Text="<%# this.GetRecipientAdresse %>"></asp:TextBox>
 
             </div>
 

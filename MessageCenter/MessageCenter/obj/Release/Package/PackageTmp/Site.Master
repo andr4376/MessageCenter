@@ -46,8 +46,8 @@
             <div class="container">
 
                 <ul class="nav navbar-nav">
-                    <li>                        
-                        <asp:Image ID="logo" runat="server" ImageUrl="~/Images/logo-sparekassen-kronjylland.png" CssClass="logo-img"/>
+                    <li>
+                        <asp:Image ID="logo" runat="server" ImageUrl="~/Images/logo-sparekassen-kronjylland.png" CssClass="logo-img" />
                     </li>
                     <li><a runat="server" href="~/" class="nav-link">Hjem</a></li>
                     <li><a runat="server" href="~/About" class="nav-link">Om siden</a></li>
@@ -61,7 +61,7 @@
             </div>
         </div>
 
-        
+
 
 
 
@@ -72,11 +72,11 @@
 
                     <div class="modal-content">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                         <div class="modal-header">
                             <h2 class="modal-title" id="exampleModalLabel">Login</h2>
-                            
+
                         </div>
                         <div class="modal-body">
 
@@ -100,8 +100,9 @@
 
                         </div>
                         <div class="modal-footer">
-                            <asp:Button ID="btn_login" Text="Login" runat="server" OnClick="btn_login_Click" CssClass="sparkron-submit-btn" 
-                                />
+                            <asp:Button ID="btn_login" Text="Login" runat="server" OnClick="btn_login_Click" CssClass="sparkron-submit-btn"
+                                OnClientClick="toggleSigninLoader();" />
+                            <div id="loaderDivSignin" class="loader" style="float: right; display: none"></div>
                         </div>
                     </div>
                 </div>
@@ -110,30 +111,51 @@
                 function openModal() {
                     $('#loginModal').modal({ show: true });
                 }
+
+                function toggleSigninLoader() {                                                   
+
+                    if (document.getElementById("loginTuserInput").value=="") {
+                        return;
+                    }             
+                                    
+                    if (document.getElementById("loginPasswordInput").value=="") {
+                        return;
+                    }
+               
+                    var loaderDiv = document.getElementById("loaderDivSignin");
+
+                    if (loaderDiv.style.display === "none") {
+                        loaderDiv.style.display = "block";
+                    } else {
+                        loaderDiv.style.display = "none";
+                    }
+
+                }
+
+
             </script>
         </asp:Panel>
         <!--LOGIN MODAL (popup) END-->
 
         <!--Status Modal  (popup)-->
-        <asp:Panel runat="server"  CssClass="sparkron-modal">
+        <asp:Panel runat="server" CssClass="sparkron-modal">
             <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
 
                     <div class="modal-content">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                         <div class="modal-header">
-                            <h2 class="modal-title" ID="statusModalLabel" runat="server"></h2>
-                            
+                            <h2 class="modal-title" id="statusModalLabel" runat="server"></h2>
+
                         </div>
-                        <div class="modal-body">                      
-                          
+                        <div class="modal-body">
+
                             <asp:Literal ID="statusModalText" runat="server"></asp:Literal>
 
                         </div>
                         <div class="modal-footer">
-                                                           
                         </div>
                     </div>
                 </div>
@@ -146,18 +168,20 @@
         </asp:Panel>
         <!--Status Modal END-->
 
-        <!-- MAIN CONTENT-->
+
         <div class="container body-content">
+            <!-- MAIN CONTENT-->
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
             <hr />
+            <!-- Master Page Footer-->
             <footer>
                 <p>&copy; <%: DateTime.Now.Year %> - SparKron Message Center</p>
             </footer>
         </div>
-
-
         <!-- MAIN CONTENT END-->
+
+
     </form>
 </body>
 

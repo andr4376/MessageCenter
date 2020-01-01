@@ -9,31 +9,38 @@ using System.Web.SessionState;
 
 namespace MessageCenter.Code
 {
+    /// <summary>
+    /// A modified singleton class that manages database communication
+    /// </summary>
     public class DatabaseManager
     {
-
-
-
-
         private SQLiteConnection DBConnect;
 
+        /// <summary>
+        /// Returns the message template table name from the configurations file
+        /// </summary>
         private string MessageTemplatesTableName
         {
             get
             {
-
                 return Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.MESSAGE_TEMPLATE_TABLE_NAME);
             }
         }
 
+        /// <summary>
+        /// Returns the message logs table name from the configurations file
+        /// </summary>
         private string MessageLogTableName
         {
             get
             {
-                return Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.MESSAGE_LOG_TABLE_NAME); 
+                return Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.MESSAGE_LOG_TABLE_NAME);
             }
         }
 
+        /// <summary>
+        /// Returns the attachments table name from the configurations file
+        /// </summary>
         private string AttachmentsTableName
         {
             get
@@ -42,6 +49,9 @@ namespace MessageCenter.Code
             }
         }
 
+        /// <summary>
+        /// The current user's databasemanager instance
+        /// </summary>
         public static DatabaseManager Instance
         {
             get
@@ -55,10 +65,15 @@ namespace MessageCenter.Code
             }
         }
 
+        /// <summary>
+        /// private constructor, so this class cannot be instanciated from outside this class 
+        /// </summary>
         private DatabaseManager()
         {
+            //initialize 
             if (Initialize() == StatusCode.ERROR)
             {
+                //error
                 Utility.WriteLog("Failed to initialize DatabaseManager");
                 Utility.PrintWarningMessage("Der kunne ikke oprettes forbindelse til databasen - kontakt venligst teknisk support");
 
@@ -68,6 +83,12 @@ namespace MessageCenter.Code
             // LoadAllMessageTemplates();
 
         }
+
+        /// <summary>
+        /// Extracts a message template object from an sqlite data reader
+        /// </summary>
+        /// <param name="dataReader">the result of the query</param>
+        /// <returns></returns>
         private MessageTemplate ExtractMessageTemplateData(SQLiteDataReader dataReader)
         {
             MessageTemplate tmpMessage = new MessageTemplate(
@@ -114,48 +135,12 @@ namespace MessageCenter.Code
 
 
 
-        /*
-private StatusCode LoadAllMessageTemplates()
-{
-   StatusCode returnCode = StatusCode.OK;
+       
 
-
-   List<MessageTemplate> listOfMessages = new List<MessageTemplate>();
-   MessageTemplate tmpMessage = null;
-
-   DBConnect.Open();
-
-
-
-   SQLiteCommand Command = new SQLiteCommand("select * from " + MessageTemplatesTableName + ";", DBConnect);
-
-   try
-   {
-       using (SQLiteDataReader dataReader = Command.ExecuteReader())
-       {
-           while (dataReader.Read())
-           {
-               tmpMessage = ExtractMessageTemplateData(dataReader);
-
-               listOfMessages.Add(tmpMessage);                        
-           }
-       }
-   }
-   catch (Exception)
-   {
-#if DEBUG
-       System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af alle beskedskabeloner!");
-       throw;
-#endif
-   }
-
-   DBConnect.Close();
-   messages = listOfMessages;
-
-
-   return returnCode;
-}
-*/
+        /// <summary>
+        /// initializing code for the database manager - this is run when the singleton is instanciated
+        /// </summary>
+        /// <returns></returns>
         private StatusCode Initialize()
         {
 
@@ -209,36 +194,44 @@ private StatusCode LoadAllMessageTemplates()
 
 
 
-
+        /// <summary>
+        /// creates a db file if one does not exist
+        /// </summary>
+        /// <returns></returns>
         private StatusCode CreateDbFileIfNotExists()
         {
             try
             {
+                //if file does not exist
                 if (!(File.Exists(FileManager.Instance.DbFile)))
                 {
+                    //create db file
                     SQLiteConnection.CreateFile(FileManager.Instance.DbFile);
+
+                    //inform user, in case there should already exist a db
                     Utility.PrintWarningMessage("Programmet opretter en ny database - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + FileManager.Instance.DbFile + "." +
                     "\nKontakt venligst teknisk support på følgende mail: " +
                     Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
+
                     Utility.WriteLog("Db file created @" + FileManager.Instance.DbFile);
 
                 }
                 else
                 {
+                    //file found - no need to create a new one
                     Utility.WriteLog("Db file found @" + FileManager.Instance.DbFile);
                     return StatusCode.FORHINDRING;
                 }
             }
             catch (System.Exception e)
             {
+                //File was not found but the applikation was not allowed to create a db file!
 
                 Utility.WriteLog(e.Message);
 
                 Utility.PrintWarningMessage("Oops! Programmet kunne ikke oprette database filen - Hvis der burdte findes en database i forvejen, findes den ikke på følgende sti: " + FileManager.Instance.DbFile + "." +
                     "\nKontakt venligst teknisk support på følgende mail: " +
                     Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
-
-
 
                 return StatusCode.ERROR;
             }
@@ -254,10 +247,13 @@ private StatusCode LoadAllMessageTemplates()
         /// <returns></returns>
         public int? AddMessageTemplate(MessageTemplate message)
         {
+            //get the next id
             int? id = GetNextId(MessageTemplatesTableName);
 
+            //if null, auto increment (if this is the first message template)
             string idString = id == null ? "null" : id.ToString();
 
+            //create a command that adds a new message template
             string cmd = "insert into " + MessageTemplatesTableName + " values (" + idString + "," +
               "'" + message.Title + "'," +
               "'" + message.Text + "', " +
@@ -272,6 +268,7 @@ private StatusCode LoadAllMessageTemplates()
                 return id;
             }
 
+            //return the id of the newly added attachment (or null)
             return id;
         }
 
@@ -282,6 +279,7 @@ private StatusCode LoadAllMessageTemplates()
         /// <returns></returns>
         public StatusCode DeleteMessageTemplate(int id)
         {
+            //create command to delete the message template with the input id
             string command = string.Format("delete from {0} where id = {1};"
                 , MessageTemplatesTableName, id.ToString());
 
@@ -289,6 +287,7 @@ private StatusCode LoadAllMessageTemplates()
 
             if (result == StatusCode.OK)
             {
+                //if succesful, delete all of its attachments
                 command = string.Format("delete from {0} where messageId = {1};"
                 , AttachmentsTableName, id.ToString());
 
@@ -298,22 +297,32 @@ private StatusCode LoadAllMessageTemplates()
             return result;
         }
 
+        /// <summary>
+        /// returns the next available id 
+        /// </summary>
+        /// <param name="tablename">the tablename</param>
+        /// <returns></returns>
         public int? GetNextId(string tablename)
         {
+            //select the highest id+1 from the table
             string cmdText = "SELECT MAX(id)+1 from " + tablename + ";";
 
             int? id = null;
-
+            //open db connection
             DBConnect.Open();
 
+            //convert string command to sqlite command
             SQLiteCommand sqliteCmd = new SQLiteCommand(cmdText, DBConnect);
 
             try
             {
+                //execute command
                 using (SQLiteDataReader dataReader = sqliteCmd.ExecuteReader())
                 {
+                    //read result
                     while (dataReader.Read())
                     {
+                        //get the resut id
                         id = dataReader.GetInt32(dataReader.GetOrdinal("MAX(id)+1"));
 
                     }
@@ -325,24 +334,30 @@ private StatusCode LoadAllMessageTemplates()
                 //return null which is fine
 
             }
-
+            //close db connection
             DBConnect.Close();
 
             return id;
         }
 
-
+        /// <summary>
+        /// add an attachment to the db
+        /// </summary>
+        /// <param name="attachment">the attachment</param>
+        /// <param name="messageTemplateId">the message template it should be related to</param>
+        /// <returns></returns>
         public StatusCode AddAttachmentToDB(MessageAttachment attachment, int messageTemplateId)
         {
             StatusCode status = StatusCode.OK;
 
+            //create command to insert attachment
             SQLiteCommand cmd = new SQLiteCommand(
                 "insert into " + AttachmentsTableName + " values (null," +
               messageTemplateId +
               ", '" + attachment.FileName + "', @fileData)"
               , DBConnect);
 
-            //Create @fileData parameter that converts 
+            //Create @fileData parameter that converts the data into a "blob"
             SQLiteParameter parameter = new SQLiteParameter("@fileData", System.Data.DbType.Binary);
             parameter.Value = attachment.FileData;
             cmd.Parameters.Add(parameter);
@@ -364,27 +379,38 @@ private StatusCode LoadAllMessageTemplates()
             return status;
         }
 
-
+        /// <summary>
+        /// Execute the input command without performing a query
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         private StatusCode ExecuteSQLiteNonQuery(string command)
         {
             StatusCode returnCode = StatusCode.OK;
 
+            //open db connection
             DBConnect.Open();
+
+            //convert input to a sqlite command
             SQLiteCommand Command = new SQLiteCommand(command, DBConnect);
 
             try
             {
+                //execute command
                 Command.ExecuteNonQuery();
             }
             catch (System.Exception e)
             {
+                //if failed, print why
                 Utility.WriteLog("Error in executing SQLiteNonQuery! Error messages: \n" + e.Message);
                 Utility.WriteLog("SQLite command: " + command);
 
                 returnCode = StatusCode.ERROR;
             }
+            //close connection
             DBConnect.Close();
 
+            //return status of the command execution
             return returnCode;
         }
 
@@ -398,33 +424,40 @@ private StatusCode LoadAllMessageTemplates()
             List<MessageTemplate> listOfMessages = new List<MessageTemplate>();
             MessageTemplate tmpMessage = null;
 
+            //open db connection
             DBConnect.Open();
 
+            //create a comman that gets all message templates
             SQLiteCommand Command = new SQLiteCommand("select * from "
             + MessageTemplatesTableName + ";", DBConnect);
 
             try
             {
+                //execute command
                 using (SQLiteDataReader dataReader = Command.ExecuteReader())
                 {
-                    while (dataReader.Read())
+                    //read result
+                    while (dataReader.Read())//for each message template
                     {
+                        //extract as message template
                         tmpMessage = ExtractMessageTemplateData(dataReader);
 
+                        //add to list
                         listOfMessages.Add(tmpMessage);
                     }
                 }
             }
             catch (Exception)
             {
-#if DEBUG
+
                 System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af alle beskedskabeloner!");
-                throw;
-#endif
+
             }
 
+            //close db connection
             DBConnect.Close();
 
+            //return list of message templates
             return listOfMessages;
         }
         /*
@@ -455,7 +488,11 @@ private StatusCode LoadAllMessageTemplates()
 
 
 
-
+        /// <summary>
+        /// return a list containing all message templates where the title contains the input string
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public List<MessageTemplate> GetMessagesTitleContainsText(string text)
         {
             List<MessageTemplate> messagesContainingString = DBQueryTitleContains(text);
@@ -484,8 +521,10 @@ private StatusCode LoadAllMessageTemplates()
 
             List<MessageAttachment> attachments = new List<MessageAttachment>();
 
+            //open db connection
             DBConnect.Open();
 
+            //create command that gets all attachments related to the input messageTemplate id
             SQLiteCommand command = new SQLiteCommand("select * from "
             + AttachmentsTableName +
             " WHERE messageId = " + messageId + ";", DBConnect);
@@ -494,6 +533,7 @@ private StatusCode LoadAllMessageTemplates()
 
             try
             {
+                //execute command
                 using (SQLiteDataReader dataReader = command.ExecuteReader())
                 {
                     while (dataReader.Read()) //foreach attachment related to the message id
@@ -503,6 +543,7 @@ private StatusCode LoadAllMessageTemplates()
 
                         if (tmpAttachment != null)
                         {
+                            //add to list
                             attachments.Add(tmpAttachment);
                         }
 
@@ -513,13 +554,13 @@ private StatusCode LoadAllMessageTemplates()
             {
                 System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af vedhæftede filer for besked med id " + messageId.ToString() + "!" +
                     "\n SQL kommando: " + command);
-#if DEBUG
-                throw;
-#endif
+
             }
 
+            //close db connection
             DBConnect.Close();
 
+            //return list of attachments
             return attachments;
         }
 
@@ -532,45 +573,58 @@ private StatusCode LoadAllMessageTemplates()
         {
 
             List<MessageTemplate> listOfMessages = new List<MessageTemplate>();
+
             MessageTemplate tmpMessage = null;
 
+            //open the db connection
             DBConnect.Open();
 
+            //create command
             SQLiteCommand Command = new SQLiteCommand("select * from "
             + MessageTemplatesTableName +
             " WHERE title LIKE '%" + textToContain + "%';", DBConnect);
 
             try
             {
+                //execute command
                 using (SQLiteDataReader dataReader = Command.ExecuteReader())
                 {
-                    while (dataReader.Read())
+                    //read the result
+                    while (dataReader.Read())//foreach message template in result
                     {
+                        //convert result to messagetemplate
                         tmpMessage = ExtractMessageTemplateData(dataReader);
 
+                        //add to list
                         listOfMessages.Add(tmpMessage);
                     }
                 }
             }
             catch (Exception)
             {
-#if DEBUG
                 System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af alle beskedskabeloner!");
-                throw;
-#endif
-            }
 
+            }
+            //close db connection
             DBConnect.Close();
 
+            //return the list of msg templates, or an empty one if none was found
             return listOfMessages;
         }
+        /// <summary>
+        /// Returns the message template with the input id, if it exists
+        /// </summary>
+        /// <param name="id">unique identifier of the message template</param>
+        /// <returns></returns>
         public MessageTemplate GetMessageTemplateFromId(int id)
         {
 
             MessageTemplate tmpMessage = null;
 
+            //open the db connection
             DBConnect.Open();
 
+            //build command 
             SQLiteCommand command = new SQLiteCommand("select * from "
             + MessageTemplatesTableName +
             " WHERE id = " + id + " " +
@@ -579,14 +633,18 @@ private StatusCode LoadAllMessageTemplates()
 
             try
             {
+                //ececute command
                 using (SQLiteDataReader dataReader = command.ExecuteReader())
                 {
+                    //Read result
                     while (dataReader.Read())
                     {
+                        //try to extract a message tempalte from the datareader
                         tmpMessage = ExtractMessageTemplateData(dataReader);
 
                         if (tmpMessage != null)
                         {
+                            //success
                             break;
                         }
 
@@ -597,13 +655,12 @@ private StatusCode LoadAllMessageTemplates()
             {
                 System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af beskedskabelon med id " + id.ToString() + "!" +
                     "\n SQL kommando: " + command);
-#if DEBUG
-                throw;
-#endif
             }
 
+            //close db connection
             DBConnect.Close();
 
+            //Return the message template or null if none was found
             return tmpMessage;
         }
 
@@ -611,13 +668,13 @@ private StatusCode LoadAllMessageTemplates()
         /// <summary>
         /// Stores and logs information about the recently sent message (or attempt)
         /// </summary>
-        /// <param name="messageTemplateId"></param>
-        /// <param name="status"></param>
-        /// <param name="senderTuser"></param>
-        /// <param name="ricipientCpr"></param>
-        /// <param name="ricipientAdresse"></param>
-        /// <param name="title"></param>
-        /// <param name="text"></param>
+        /// <param name="messageTemplateId">id of the message template</param>
+        /// <param name="status">statuscode of the sent message</param>
+        /// <param name="senderTuser">t user of the sender</param>
+        /// <param name="ricipientCpr">cpr of the initially selected recipient</param>
+        /// <param name="ricipientAdresse">the actual adress the message was sent to</param>
+        /// <param name="title">the title of the sent message</param>
+        /// <param name="text">the main text of the sent message</param>
         public void LogSentMessage(int? messageTemplateId, StatusCode status, string senderTuser, string ricipientCpr,
             string ricipientAdresse, string title, string text)
         {
@@ -639,8 +696,8 @@ private StatusCode LoadAllMessageTemplates()
                 senderTuser,                      //ect.
                 ricipientCpr,
                 ricipientAdresse,
-                title,
-                text,
+                title.Replace("'", ""),
+                text.Replace("'", ""),
                 timeStamp
                 );
 
@@ -789,3 +846,45 @@ private StatusCode LoadAllMessageTemplates()
         return status;
     }
     */
+/*
+private StatusCode LoadAllMessageTemplates()
+{
+StatusCode returnCode = StatusCode.OK;
+
+
+List<MessageTemplate> listOfMessages = new List<MessageTemplate>();
+MessageTemplate tmpMessage = null;
+
+DBConnect.Open();
+
+
+
+SQLiteCommand Command = new SQLiteCommand("select * from " + MessageTemplatesTableName + ";", DBConnect);
+
+try
+{
+  using (SQLiteDataReader dataReader = Command.ExecuteReader())
+  {
+      while (dataReader.Read())
+      {
+          tmpMessage = ExtractMessageTemplateData(dataReader);
+
+          listOfMessages.Add(tmpMessage);                        
+      }
+  }
+}
+catch (Exception)
+{
+#if DEBUG
+  System.Diagnostics.Debug.WriteLine("ERROR! fejl ved udhentning af alle beskedskabeloner!");
+  throw;
+#endif
+}
+
+DBConnect.Close();
+messages = listOfMessages;
+
+
+return returnCode;
+}
+*/

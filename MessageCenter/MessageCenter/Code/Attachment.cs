@@ -281,6 +281,9 @@ namespace MessageCenter.Code
             return convertStatus;
         }
 
+        /// <summary>
+        /// Removes the temporary file for this attachment
+        /// </summary>
         public void RemoveTempFile()
         {
             FileManager.Instance.DeleteFile(FilePath);

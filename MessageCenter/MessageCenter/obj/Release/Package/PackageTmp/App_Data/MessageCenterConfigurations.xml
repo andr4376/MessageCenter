@@ -1,18 +1,18 @@
 <configurations>
-<supportEmail>andr4376@gmail.com</supportEmail>
-<dbFileName>database.db</dbFileName>
-  <messageTemplateTableName>MessageTemplates</messageTemplateTableName>
-  <messageLogTableName>MessageLog</messageLogTableName>
-<attachmentsTableName>Attachments</attachmentsTableName>
-<apiUrl>https://messagecenterdataapi.azurewebsites.net/api/</apiUrl>
-<getAllEmployeesParameters>employees/</getAllEmployeesParameters>
-<getAllCustomerParameters>customers/</getAllCustomerParameters>
-<getEmployeeFromTUserParameters>employees/tuser/</getEmployeeFromTUserParameters>
-<getCustomerFromCprParameters>customers/cpr/</getCustomerFromCprParameters>
-<getEmployeeFromCredentials>employees/login/</getEmployeeFromCredentials>
-<getCustomerFromAdvisor>customers/advisor/</getCustomerFromAdvisor>
-  <admins>
-     <Tuser>T210672</Tuser>
-     <Tuser>T200454</Tuser>
-  </admins>
+    <supportEmail>andr4376@gmail.com</supportEmail>
+    <dbFileName>database.db</dbFileName>
+    <messageTemplateTableName>MessageTemplates</messageTemplateTableName>
+    <messageLogTableName>MessageLog</messageLogTableName>
+    <attachmentsTableName>Attachments</attachmentsTableName>
+    <apiUrl>https://messagecenterdataapi.azurewebsites.net/api/</apiUrl>
+    <getAllEmployeesParameters>employees/</getAllEmployeesParameters>
+    <getAllCustomerParameters>customers/</getAllCustomerParameters>
+    <getEmployeeFromTUserParameters>employees/tuser/</getEmployeeFromTUserParameters>
+    <getCustomerFromCprParameters>customers/cpr/</getCustomerFromCprParameters>
+    <getEmployeeFromCredentials>employees/login/</getEmployeeFromCredentials>
+    <getCustomerFromAdvisor>customers/advisor/</getCustomerFromAdvisor>
+    <admins>
+       <Tuser>T210672</Tuser>
+       <Tuser>T200454</Tuser>
+    </admins>
 </configurations>

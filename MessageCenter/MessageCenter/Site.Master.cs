@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.Services;
 using System.Web.UI;
@@ -57,11 +58,18 @@ namespace MessageCenter
 
                     //Reopen modal to display welcome message
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
+
+                    //Close modal automatically after a delay (some users thought that the welcome message means the app is loading something)
+                    int msDelay = 3000;
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "closeModal", "closeModal(" + msDelay + ");", true);
+
                 }
 
                 Session["NewLogin"] = null;
             }
         }
+
+
 
 
         protected void btn_login_Click(object sender, EventArgs e)
@@ -108,10 +116,10 @@ namespace MessageCenter
                 //TECHNICAL ERROR
                 case StatusCode.ERROR:
                     btn_login.Enabled = true;
-                    loginStatusText.Text = "Fejl ved hentning af login info, kontakt venligst it-support!";
+                    loginStatusText.Text = "API Fejl ved hentning af login info, kontakt venligst it-support! " +
+                        Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL);
                     break;
             }
-
 
             //Reopen the login modal in case of invalid credentials / error
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);

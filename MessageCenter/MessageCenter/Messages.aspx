@@ -148,8 +148,10 @@
                         </asp:UpdatePanel>
                     </asp:Panel>
                 </div>
-                <asp:Button ID="DownloadAttachmentBtn" Text="Download" runat="server" OnClick="DownloadAttachmentBtn_Click" CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
-                <asp:Button ID="RemoveAttachmentButton" Text="Fjern" runat="server" OnClick="RemoveAttachmentButton_Click" CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
+                <asp:Button ID="DownloadAttachmentBtn" Text="Download" runat="server" OnClick="DownloadAttachmentBtn_Click" 
+                    CssClass="sparkron-submit-btn-sm" CausesValidation="false"  />
+                <asp:Button ID="RemoveAttachmentButton" Text="Fjern" runat="server" OnClick="RemoveAttachmentButton_Click"
+                    CssClass="sparkron-submit-btn-sm" CausesValidation="false"/>
                 <asp:Button ID="openNewAttachmentModalBtn" Text="Tilføj Fil" runat="server" OnClick="openNewAttachmentModalBtn_Click" CssClass="sparkron-submit-btn-sm" CausesValidation="false" />
             </div>
             

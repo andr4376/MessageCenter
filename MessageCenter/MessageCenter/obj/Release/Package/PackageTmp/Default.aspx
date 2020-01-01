@@ -21,8 +21,21 @@
         <!-- ListBox som indeholder Besked Skabeloner START-->
         <div class="container col-md-8" style="padding-left: 50px">
             <h2 class="sparkron-box-header">
-                <asp:Image ID="logo" runat="server" ImageUrl="~/Images/envelope.png" CssClass="mini-logo" />
-                Besked skabeloner</h2>
+                <asp:Image ID="logo" runat="server" ImageUrl="~/Images/envelope.png" CssClass="mini-logo"  />
+
+                <asp:ImageButton ID="addNewMessageBtn" runat="server" 
+                    ImageUrl="~/Images/addNew.png" CssClass="mini-logo-right" 
+                    OnClick="addNewMessageBtn_Click" Visible="<%#ShowAdminInterface%>"
+                    CausesValidation="false"
+                     ToolTip="Tilføj ny besked skabelon"/>
+
+                <asp:ImageButton ID="removeMessageTemplate" runat="server"
+                    ImageUrl="~/Images/delete.png" CssClass="mini-logo-right" 
+                    OnClick="removeMessageTemplate_Click" Visible="<%#ShowAdminInterface%>"
+                    CausesValidation="false"
+                    ToolTip="Slet den valgte besked skabelon"/>
+                Besked skabeloner
+            </h2>
 
             <!-- Panel, så Enter kan vælge listbox item -->
             <asp:Panel runat="server" DefaultButton="btn_proceedToMessagePage">
@@ -39,12 +52,11 @@
                         <asp:AsyncPostBackTrigger ControlID="removeMessageTemplate" EventName="Click" />
                     </Triggers>
                 </asp:UpdatePanel>
-            </asp:Panel>
-            <asp:Button ID="addNewMessageBtn" Text="Tilføj Besked" runat="server" OnClick="addNewMessageBtn_Click"
-                CssClass="sparkron-submit-btn-sm" CausesValidation="false" Visible="<%#ShowAdminInterface%>" />
 
-            <asp:Button ID="removeMessageTemplate" Text="Slet Besked" runat="server" OnClick="removeMessageTemplate_Click"
-                CssClass="sparkron-submit-btn-sm" CausesValidation="false" Visible="<%#ShowAdminInterface%>" />
+            </asp:Panel>
+            
+
+            
 
             <!--fortsæt knap-->
             <asp:Button ID="btn_proceedToMessagePage" Text="Fortsæt" runat="server" OnClick="btn_proceedToMessagePage_Click" CssClass="sparkron-submit-btn" CausesValidation="false" />

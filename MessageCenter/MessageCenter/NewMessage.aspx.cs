@@ -13,6 +13,9 @@ namespace MessageCenter
     {
 
 
+        /// <summary>
+        /// Returns whether or not the msgTemplate is of type mail
+        /// </summary>
         public bool IsMail
         {
             get
@@ -24,32 +27,45 @@ namespace MessageCenter
                 return MessageHandler.Instance.MsgTemplate.MessageType == MessageType.MAIL;
             }
         }
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            //If user is not valid
             if (!SignIn.Instance.IsLoggedIn ||
                 !SignIn.Instance.IsAdmin)
             {
+                //got to front page
                 Response.Redirect("Default.aspx");
 
             }
 
+            //If this is the initial load
             if (!IsPostBack)
             {
                 Initialize();
 
             }
 
+            //Create the html table of message variables
             SetupVariablesTable();
 
 
         }
+
         protected void Page_PreRender(object sender, EventArgs e)
         {
+            //Show html elements if msg template is ready
             messageTemplateBody.Visible = MessageHandler.Instance.MsgTemplate != null;
+
+            //show attachments if mail
             AttachmentsSection.Visible = IsMail;
 
         }
 
+        /// <summary>
+        /// Updates the list of attachments 
+        /// </summary>
+        /// <param name="attachments"></param>
         private void UpdateAttachmentsListbox(List<MessageAttachment> attachments)
         {
             if (listBoxAttachments.Items.Count > 0)
@@ -66,16 +82,25 @@ namespace MessageCenter
             }
         }
 
+        /// <summary>
+        /// Code for initializing
+        /// </summary>
         private void Initialize()
         {
+            //Make sure the Messagehandler singleton is new
             MessageHandler.Reset();
+
+            //opens the "select message type" modal
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openPickMessageTypeModal();", true);
 
         }
 
+        /// <summary>
+        /// Creates a html table of message variables with a  description 
+        /// </summary>
         private void SetupVariablesTable()
         {
-
+            //For each message variable
             foreach (KeyValuePair<MESSAGE_VARIABLES, string> variable in MessageHandler.GetMessageVariables)
             {
                 string description = string.Empty;
@@ -140,71 +165,86 @@ namespace MessageCenter
                         break;
                 }
 
+                //Create a new row
                 TableRow row = new TableRow();
 
+                //Create a cell for the variable name
                 TableCell variableName = new TableCell();
                 variableName.Text = variable.Value;
                 row.Cells.Add(variableName);
 
+                //Create a cell for the variable description
                 TableCell variableDescription = new TableCell();
                 variableDescription.Text = description;
                 row.Cells.Add(variableDescription);
 
+                //add row to table
                 variablesTable.Rows.Add(row);
             }
         }
 
+        /// <summary>
+        /// Click event for the download attachment button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void DownloadAttachmentBtn_Click(object sender, EventArgs e)
         {
             DownloadSelectedAttachment();
         }
 
+        /// <summary>
+        /// click event for removing a selected attachment
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void RemoveAttachmentButton_Click(object sender, EventArgs e)
         {
+            //if an attachment is not selected
             if (listBoxAttachments.SelectedItem == null)
             {
                 return;
             }
+            //get file name
+            string fileName = listBoxAttachments.SelectedItem.Text;
 
-            int messageIndex;
-
-            if (!Int32.TryParse(listBoxAttachments.SelectedValue, out messageIndex))
-            {
-                Utility.PrintWarningMessage("Noget gik galt ved identificering af den valgte fil - kontakt venligst teknisk support: " +
-                    Configurations.GetConfigurationsValue(CONFIGURATIONS_ATTRIBUTES.SUPPORT_EMAIL));
-
-                return;
-            }
-
-            MessageHandler.Instance.RemoveAttachment(messageIndex);
+            //Remove selected attachment (and its files)                
+            MessageHandler.Instance.RemoveAttachment(fileName);
 
 
-
+            //update the listbox
             UpdateAttachmentsListbox(MessageHandler.Instance.Attachments);
 
 
         }
-
+        /// <summary>
+        /// click event that opens the "add attachment" modal
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void openNewAttachmentModalBtn_Click(object sender, EventArgs e)
         {
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openAttachmentModal();", true);
 
         }
 
+        /// <summary>
+        /// Click event for uploading the selected file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void UploadFileBtn_Click(object sender, EventArgs e)
         {
-
-
-
             MessageAttachment tmp;
+
+            //if file is being uploaded
             if (AttachmentFileUpload.HasFile)
             {
-
+                //convert the file to a MessageAttachment
                 tmp = new MessageAttachment(
                     AttachmentFileUpload.FileName, AttachmentFileUpload.FileBytes);
 
-
-
+                //add attachment to list and update listbox
                 lock (MessageHandler.Instance.attachmentsKey)
                 {
                     tmp = MessageHandler.Instance.AddAttachment(tmp);
@@ -212,17 +252,22 @@ namespace MessageCenter
                     UpdateAttachmentsListbox(MessageHandler.Instance.Attachments);
                 }
 
+                //create the temporary file
                 StatusCode createFileStatus = tmp.CreateTempFile();
 
-
+                //Close the "add attachment" modal
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "closeAttachmentModal();", true);
             }
 
         }
 
+        /// <summary>
+        /// Creates a file download of the selected attachment for the user
+        /// </summary>
         private void DownloadSelectedAttachment()
         {
 
+            //if a file is not selected
             if (listBoxAttachments.SelectedItem == null)
             {
                 return;
@@ -230,6 +275,7 @@ namespace MessageCenter
 
             int messageIndex;
 
+            //Try to get the selected index
             if (!Int32.TryParse(listBoxAttachments.SelectedValue, out messageIndex))
             {
                 Utility.PrintWarningMessage("Noget gik galt ved identificering af den valgte fil - kontakt venligst teknisk support: " +
@@ -238,6 +284,7 @@ namespace MessageCenter
                 return;
             }
 
+            //if file does not exist - return
             if (!(MessageHandler.Instance.Attachments[messageIndex] != null && File.Exists(
                 MessageHandler.Instance.Attachments[messageIndex].FilePath)))
             {
@@ -245,29 +292,40 @@ namespace MessageCenter
             }
 
             Response.Clear();
+
+            //Prepare to write the file to the user.
             Response.ContentType = "application/octet-stream";
+            //set name of file
             Response.AppendHeader("content-disposition", "filename="
             + MessageHandler.Instance.Attachments[messageIndex].FileName);
+
+            //send the file.
             Response.WriteFile(MessageHandler.Instance.Attachments[messageIndex].FilePath);
+
+            //clear
             Response.Flush();
             Response.End();
         }
 
-
+        /// <summary>
+        /// Click event for saving the message template
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void CreateMessageBtn_Click(object sender, EventArgs e)
         {
-
+            //remove "'" fro mthe title and text since sqlite doesnt like those. TODO: find better solution
             MessageHandler.Instance.MsgTemplate.Title = titleTextBox.Text.Replace("'", "");
-
             MessageHandler.Instance.MsgTemplate.Text = messageTextTextBox.Text.Replace("'", "");
 
+            //if title and text is not filled out
             if (!MessageHandler.Instance.MsgTemplate.IsValid)
             {
                 return;
             }
             if (MessageHandler.Instance.MsgTemplate.IsValid)
             {
-                //Save the message template
+                //Save the message template - and get the id
                 int? id = DatabaseManager.Instance.AddMessageTemplate(MessageHandler.Instance.MsgTemplate);
 
 
@@ -306,7 +364,11 @@ namespace MessageCenter
         }
 
 
-
+        /// <summary>
+        /// on click event for confirming choice of message type.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void selectMsgTypeBtn_Click(object sender, EventArgs e)
         {
             int type;

@@ -50,7 +50,7 @@ h2 {
 	border: none;
 	background-color: inherit;
 	overflow-y: scroll;
-	word-break: break-all;
+	word-break: break-word;
 }
 
 	.template-msg-listbox > option:hover {
@@ -81,6 +81,7 @@ select:focus {
 	margin-bottom: inherit;
 	box-shadow: 10px 10px 8px 0px rgba(0,0,0,0.22);
 	color: white;
+	
 }
 /*the box containing the listbox*/
 .sparkron-box {
@@ -89,7 +90,6 @@ select:focus {
 	border-bottom-left-radius: 25px;
 	border-bottom-right-radius: 5px;
 	border: 3px solid #313131;
-	height: 500px !important;
 	width: 100%;
 	box-shadow: 10px 10px 8px 0px rgba(0,0,0,0.22);
 }
@@ -109,7 +109,13 @@ select:focus {
 	max-height: 5%;
 	max-width: 5%;
 }
-
+.mini-logo-right {
+	max-height: 5%;
+	max-width: 5%;
+	float: right;
+	margin-right: 15px;
+	margin-top: 3px;
+}
 
 .sparkron-submit-btn {
 	font-family: 'Titillium Web', sans-serif;
@@ -283,5 +289,28 @@ width:100%;
 		position: -webkit-sticky; /* Safari */
 		position: sticky;
 		top: 51px;
+	}
+}
+
+.template-msg-listbox > option {
+
+
+}
+.loader {
+	border: 4px solid #f3f3f3; 
+	border-top: 4px solid #D11A24; 
+	border-radius: 50%;
+	width: 30px;
+	height: 30px;
+	animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
 	}
 }

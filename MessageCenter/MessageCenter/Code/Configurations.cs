@@ -24,6 +24,9 @@ namespace MessageCenter.Code
         GET_CUSTOMER_FROM_ADVISOR_TUSER_API_PARAMETERS
     }
 
+    /// <summary>
+    /// A static class that handles communication with the configurations file
+    /// </summary>
     public static class Configurations
     {
         /// <summary>

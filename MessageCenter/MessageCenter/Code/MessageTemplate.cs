@@ -79,7 +79,7 @@ namespace MessageCenter.Code
                 string pathName;
 
                 pathName = initialTitle;
-
+                //replace all dangerous chars with '_'
                 foreach (char forbiddenChar in System.IO.Path.GetInvalidPathChars())
                 {
                     pathName = pathName.Replace(forbiddenChar, '_');
@@ -99,7 +99,7 @@ namespace MessageCenter.Code
                 string fileName;
 
                 fileName = initialTitle;
-
+                //replace all dangerous chars with '_'
                 foreach (char forbiddenChar in System.IO.Path.GetInvalidFileNameChars())
                 {
                     fileName = fileName.Replace(forbiddenChar, '_');

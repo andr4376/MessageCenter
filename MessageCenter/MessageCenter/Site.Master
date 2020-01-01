@@ -112,16 +112,28 @@
                     $('#loginModal').modal({ show: true });
                 }
 
-                function toggleSigninLoader() {                                                   
+                function closeModal(ms) {
 
-                    if (document.getElementById("loginTuserInput").value=="") {
-                        return;
-                    }             
-                                    
-                    if (document.getElementById("loginPasswordInput").value=="") {
+                    if (ms === undefined) {
+                        ms = 2500;
+                    }
+
+                    setTimeout(function () {
+                        $('#loginModal').modal('hide');
+                    }, ms);
+
+                }
+
+                function toggleSigninLoader() {
+
+                    if (document.getElementById("loginTuserInput").value == "") {
                         return;
                     }
-               
+
+                    if (document.getElementById("loginPasswordInput").value == "") {
+                        return;
+                    }
+
                     var loaderDiv = document.getElementById("loaderDivSignin");
 
                     if (loaderDiv.style.display === "none") {

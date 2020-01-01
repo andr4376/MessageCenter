@@ -142,24 +142,29 @@ namespace MessageCenter
             }
 
             //Add elements
-            listBoxMessageTemplates.DataSource = listOfMsgTemplates;
-            listBoxMessageTemplates.DataTextField = "Title";
-            listBoxMessageTemplates.DataValueField = "Id";
-            listBoxMessageTemplates.DataBind();
+            listBoxMessageTemplates.DataSource = listOfMsgTemplates; //Data source = the list
+            listBoxMessageTemplates.DataTextField = "Title"; // Display text = title
+            listBoxMessageTemplates.DataValueField = "Id"; // internal value = id
+            listBoxMessageTemplates.DataBind(); //Databind
 
-
+            //maximum height of the listbox
             int listBoxMaxHeight = 500;
+
+            //Minumum height of the listbox
             int listBoxMinHeight = 75;
+
+            //Size of each element (pixels)
             int listBoxItemHeight = 25;
 
             //get a height for listbox to fit elements
             int listboxHeight = listBoxItemHeight * (listOfMsgTemplates.Count + 1);
 
-            if (listboxHeight > listBoxMaxHeight)
-                listboxHeight = listBoxMaxHeight;
+            if (listboxHeight > listBoxMaxHeight) // if too big
+                listboxHeight = listBoxMaxHeight; //make max size
 
-            if (listboxHeight < listBoxMinHeight)
-                listboxHeight = listBoxMinHeight;
+            if (listboxHeight < listBoxMinHeight) // if too small
+                listboxHeight = listBoxMinHeight;// make minumim size
+            
             //set height
             listBoxMessageTemplates.Height = listboxHeight;
 

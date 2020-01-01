@@ -52,7 +52,7 @@ namespace MessageCenter.Code
         }
 
         /// <summary>
-        /// TODO:
+        /// TODO: 
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
@@ -92,12 +92,17 @@ namespace MessageCenter.Code
             return new KeyValuePair<StatusCode, string>(sentStatus,description);
         }
 
+        /// <summary>
+        /// Add Message Attachments
+        /// </summary>
+        /// <param name="messageAttachment"></param>
         public void AttachFile(MessageAttachment messageAttachment)
         {
             if (messageAttachment == null)
             {
                 return;
             }
+            //Convert the "MessageAttachment" into an actual Mail Attachment
             this.mailMessage.Attachments.Add(new Attachment(messageAttachment.FilePath));
         }
 

@@ -11,6 +11,10 @@
         Appen kan også rediger denne data ind i Word Dokumenter, og automatisk sende dem som PDF filer (ikke understøttet i Azure versionen).
     </p>
 
+    <h3>Demo video:</h3>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/Xn9592Vx4uU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <br />
+    <br />
     <!--Collapsable panels-->
     <div class="panel-group">
         <div class="panel panel-default">
